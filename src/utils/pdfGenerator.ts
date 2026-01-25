@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import type { Invoice, CompanyProfile, PastProject, PDFPage } from '../types/invoice';
+import type { Invoice, CompanyProfile } from '../types/invoice';
 import { defaultCompanyProfile, defaultPDFPages } from '../types/invoice';
 
 const QNS_GREEN = '#8BC34A';
@@ -328,8 +328,6 @@ const drawQuotationPage = (doc: jsPDF, invoice: Invoice): number => {
   doc.text(invoice.numberOfCourts.toString(), pageWidth - 35, y);
 
   y += 15;
-
-  let total = invoice.subTotal * invoice.numberOfCourts;
 
   doc.setFontSize(12);
   doc.setFont('helvetica', 'bold');
