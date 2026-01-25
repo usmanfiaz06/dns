@@ -1,17 +1,16 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import type { Invoice } from '../types/invoice';
+import type { Invoice, CompanyProfile, PastProject, PDFPage } from '../types/invoice';
+import { defaultCompanyProfile, defaultPDFPages } from '../types/invoice';
 
 const QNS_GREEN = '#8BC34A';
 const TEXT_DARK = '#1a1a1a';
 const TEXT_GRAY = '#666666';
 
-// Helper to format currency
 const formatCurrency = (amount: number): string => {
   return `PKR ${amount.toLocaleString('en-PK')}`;
 };
 
-// Helper to format date
 const formatDate = (dateStr: string): string => {
   const date = new Date(dateStr);
   const day = date.getDate().toString().padStart(2, '0');
@@ -20,87 +19,105 @@ const formatDate = (dateStr: string): string => {
   return `${day}-${month}-${year}`;
 };
 
-// Draw QNS Logo placeholder (circle with text)
-const drawLogo = (doc: jsPDF, x: number, y: number, size: number = 40) => {
-  // Draw circle
+const drawLogo = (doc: jsPDF, x: number, y: number, size: number = 40, profile?: CompanyProfile) => {
+  if (profile?.logoData) {
+    try {
+      doc.addImage(profile.logoData, 'PNG', x, y, size, size);
+      doc.setTextColor(TEXT_DARK);
+      doc.setFontSize(18);
+      doc.setFont('helvetica', 'bold');
+      doc.text(profile.companyName || 'QNS', x + size + 5, y + size / 2 - 2);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.text(profile.tagline || 'Padle Courts', x + size + 5, y + size / 2 + 6);
+      doc.setFontSize(10);
+      doc.setTextColor(TEXT_GRAY);
+      doc.text(profile.byLine || 'by Super Dialer (Pvt. SMC) ltd.', x + size + 45, y + size / 2 + 2);
+    } catch {
+      drawDefaultLogo(doc, x, y, size, profile);
+    }
+  } else {
+    drawDefaultLogo(doc, x, y, size, profile);
+  }
+};
+
+const drawDefaultLogo = (doc: jsPDF, x: number, y: number, size: number, profile?: CompanyProfile) => {
   doc.setFillColor(QNS_GREEN);
   doc.circle(x + size / 2, y + size / 2, size / 2, 'F');
-
-  // Draw inner circle design
   doc.setDrawColor(255, 255, 255);
   doc.setLineWidth(2);
   doc.circle(x + size / 2, y + size / 2, size / 3, 'S');
-
-  // Draw diagonal line in circle
   const cx = x + size / 2;
   const cy = y + size / 2;
   const r = size / 3;
   doc.line(cx - r * 0.7, cy + r * 0.7, cx + r * 0.7, cy - r * 0.7);
 
-  // Draw QNS text
   doc.setTextColor(TEXT_DARK);
   doc.setFontSize(18);
   doc.setFont('helvetica', 'bold');
-  doc.text('QNS', x + size + 5, y + size / 2 - 2);
-
+  doc.text(profile?.companyName || 'QNS', x + size + 5, y + size / 2 - 2);
   doc.setFontSize(8);
   doc.setFont('helvetica', 'normal');
-  doc.text('Padle Courts', x + size + 5, y + size / 2 + 6);
-
-  // Company name
+  doc.text(profile?.tagline || 'Padle Courts', x + size + 5, y + size / 2 + 6);
   doc.setFontSize(10);
   doc.setTextColor(TEXT_GRAY);
-  doc.text('by Super Dialer (Pvt. SMC) ltd.', x + size + 45, y + size / 2 + 2);
+  doc.text(profile?.byLine || 'by Super Dialer (Pvt. SMC) ltd.', x + size + 45, y + size / 2 + 2);
 };
 
-// Draw header with green line
-const drawHeader = (doc: jsPDF) => {
-  drawLogo(doc, 15, 10, 25);
-
-  // Green line under header
+const drawHeader = (doc: jsPDF, profile?: CompanyProfile) => {
+  drawLogo(doc, 15, 10, 25, profile);
   doc.setFillColor(QNS_GREEN);
   doc.rect(0, 42, doc.internal.pageSize.width, 3, 'F');
 };
 
-// Page 1: Cover Page
 const drawCoverPage = (doc: jsPDF, invoice: Invoice) => {
   const pageWidth = doc.internal.pageSize.width;
   const pageHeight = doc.internal.pageSize.height;
+  const profile = invoice.companyProfile || defaultCompanyProfile;
 
-  // Background gradient effect (light green)
   doc.setFillColor(245, 250, 240);
   doc.rect(0, 0, pageWidth, pageHeight, 'F');
 
-  // Large QNS branding
-  doc.setFillColor(QNS_GREEN);
-  doc.circle(pageWidth / 2, 80, 35, 'F');
-
-  doc.setDrawColor(255, 255, 255);
-  doc.setLineWidth(3);
-  doc.circle(pageWidth / 2, 80, 23, 'S');
-  doc.line(pageWidth / 2 - 16, 96, pageWidth / 2 + 16, 64);
+  // Logo
+  if (profile.logoData) {
+    try {
+      doc.addImage(profile.logoData, 'PNG', pageWidth / 2 - 35, 45, 70, 70);
+    } catch {
+      doc.setFillColor(QNS_GREEN);
+      doc.circle(pageWidth / 2, 80, 35, 'F');
+      doc.setDrawColor(255, 255, 255);
+      doc.setLineWidth(3);
+      doc.circle(pageWidth / 2, 80, 23, 'S');
+      doc.line(pageWidth / 2 - 16, 96, pageWidth / 2 + 16, 64);
+    }
+  } else {
+    doc.setFillColor(QNS_GREEN);
+    doc.circle(pageWidth / 2, 80, 35, 'F');
+    doc.setDrawColor(255, 255, 255);
+    doc.setLineWidth(3);
+    doc.circle(pageWidth / 2, 80, 23, 'S');
+    doc.line(pageWidth / 2 - 16, 96, pageWidth / 2 + 16, 64);
+  }
 
   doc.setTextColor(TEXT_DARK);
   doc.setFontSize(32);
   doc.setFont('helvetica', 'bold');
-  doc.text('QNS', pageWidth / 2, 140, { align: 'center' });
+  doc.text(profile.companyName || 'QNS', pageWidth / 2, 140, { align: 'center' });
 
   doc.setFontSize(14);
   doc.setFont('helvetica', 'normal');
-  doc.text('Padle Courts', pageWidth / 2, 152, { align: 'center' });
+  doc.text(profile.tagline || 'Padle Courts', pageWidth / 2, 152, { align: 'center' });
 
   doc.setFontSize(11);
   doc.setTextColor(TEXT_GRAY);
-  doc.text('by Super Dialer (Pvt. SMC) ltd.', pageWidth / 2, 165, { align: 'center' });
+  doc.text(profile.byLine || 'by Super Dialer (Pvt. SMC) ltd.', pageWidth / 2, 165, { align: 'center' });
 
-  // Title
   doc.setFontSize(28);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(TEXT_DARK);
   doc.text('PADEL COURTS', pageWidth / 2, 200, { align: 'center' });
   doc.text('QUOTATION', pageWidth / 2, 215, { align: 'center' });
 
-  // Client info box
   doc.setFillColor(255, 255, 255);
   doc.roundedRect(30, 235, pageWidth - 60, 50, 5, 5, 'F');
   doc.setDrawColor(QNS_GREEN);
@@ -120,58 +137,53 @@ const drawCoverPage = (doc: jsPDF, invoice: Invoice) => {
   doc.setTextColor(TEXT_GRAY);
   doc.text(`Date: ${formatDate(invoice.date)}`, pageWidth - 45, 255, { align: 'right' });
 
-  // Footer text
   doc.setFontSize(10);
   doc.setTextColor(TEXT_GRAY);
   doc.text('Premium Padel Court Designers & Builders', pageWidth / 2, pageHeight - 30, { align: 'center' });
 };
 
-// Page 2: About / Introduction
-const drawIntroPage = (doc: jsPDF) => {
-  drawHeader(doc);
+const drawIntroPage = (doc: jsPDF, invoice: Invoice) => {
+  const profile = invoice.companyProfile || defaultCompanyProfile;
+  drawHeader(doc, profile);
 
   const pageWidth = doc.internal.pageSize.width;
   let y = 60;
 
-  // About section
   doc.setFontSize(20);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(TEXT_DARK);
-  doc.text('About QNS Padel Courts', 20, y);
+  doc.text(profile.aboutTitle || 'About QNS Padel Courts', 20, y);
 
   y += 20;
 
-  const aboutText = `QNS - Premium Padel Courts. We are elite padel-court designers & builders, founded by pro players for players. At QNS, we don't just build courts - we engineer high-performance playing environments based on first-hand experience.
-
-With deep expertise in padel, our team understands every nuance: optimal court geometry, high-grade surface materials, advanced lighting systems, shock absorption, weather resilience, and athlete comfort.
-
-We source only industry-leading materials, rigorously tested for durability, consistency, and player performance.`;
+  // Add intro image if available
+  if (profile.introImage) {
+    try {
+      doc.addImage(profile.introImage, 'JPEG', 20, y, pageWidth - 40, 60);
+      y += 70;
+    } catch {
+      // Skip if image fails
+    }
+  }
 
   doc.setFontSize(11);
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(TEXT_GRAY);
 
+  const aboutText = profile.aboutText || defaultCompanyProfile.aboutText;
   const splitText = doc.splitTextToSize(aboutText, pageWidth - 40);
   doc.text(splitText, 20, y);
 
   y += splitText.length * 6 + 30;
 
-  // Why Choose Us
   doc.setFontSize(16);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(TEXT_DARK);
-  doc.text('Why Choose QNS?', 20, y);
+  doc.text('Why Choose Us?', 20, y);
 
   y += 15;
 
-  const features = [
-    'Founded by professional padel players',
-    'Industry-leading materials and construction',
-    'FIP standards compliance',
-    'Complete installation and support',
-    'Weather-resilient designs',
-    'Custom configurations available'
-  ];
+  const features = profile.features || defaultCompanyProfile.features;
 
   doc.setFontSize(11);
   doc.setFont('helvetica', 'normal');
@@ -185,9 +197,9 @@ We source only industry-leading materials, rigorously tested for durability, con
   });
 };
 
-// Page 3: Past Projects / Gallery placeholder
-const drawProjectsPage = (doc: jsPDF) => {
-  drawHeader(doc);
+const drawProjectsPage = (doc: jsPDF, invoice: Invoice) => {
+  const profile = invoice.companyProfile || defaultCompanyProfile;
+  drawHeader(doc, profile);
 
   const pageWidth = doc.internal.pageSize.width;
   let y = 60;
@@ -202,37 +214,72 @@ const drawProjectsPage = (doc: jsPDF) => {
   doc.setFontSize(11);
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(TEXT_GRAY);
-  doc.text('A showcase of our premium padel court installations across Pakistan.', 20, y);
+  doc.text('A showcase of our premium padel court installations.', 20, y);
 
   y += 25;
 
-  // Project boxes (placeholders for images)
-  const boxWidth = (pageWidth - 50) / 2;
-  const boxHeight = 70;
+  const projects = (invoice.pastProjects || []).filter(p => p.enabled);
 
-  // Row 1
-  doc.setFillColor(240, 245, 235);
-  doc.roundedRect(20, y, boxWidth, boxHeight, 3, 3, 'F');
-  doc.roundedRect(30 + boxWidth, y, boxWidth, boxHeight, 3, 3, 'F');
+  if (projects.length === 0) {
+    // Draw placeholder boxes
+    const boxWidth = (pageWidth - 50) / 2;
+    const boxHeight = 70;
 
-  doc.setFontSize(9);
-  doc.setTextColor(TEXT_GRAY);
-  doc.text('Project Image', 20 + boxWidth / 2, y + boxHeight / 2, { align: 'center' });
-  doc.text('Project Image', 30 + boxWidth + boxWidth / 2, y + boxHeight / 2, { align: 'center' });
+    doc.setFillColor(240, 245, 235);
+    doc.roundedRect(20, y, boxWidth, boxHeight, 3, 3, 'F');
+    doc.roundedRect(30 + boxWidth, y, boxWidth, boxHeight, 3, 3, 'F');
 
-  y += boxHeight + 15;
+    doc.setFontSize(9);
+    doc.setTextColor(TEXT_GRAY);
+    doc.text('Project Image', 20 + boxWidth / 2, y + boxHeight / 2, { align: 'center' });
+    doc.text('Project Image', 30 + boxWidth + boxWidth / 2, y + boxHeight / 2, { align: 'center' });
+  } else {
+    projects.forEach((project, index) => {
+      if (y > 230) {
+        doc.addPage();
+        drawHeader(doc, profile);
+        y = 60;
+      }
 
-  // Row 2
-  doc.setFillColor(240, 245, 235);
-  doc.roundedRect(20, y, boxWidth, boxHeight, 3, 3, 'F');
-  doc.roundedRect(30 + boxWidth, y, boxWidth, boxHeight, 3, 3, 'F');
+      // Project title
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(TEXT_DARK);
+      doc.text(`${index + 1}. ${project.name}`, 20, y);
+      y += 8;
 
-  doc.text('Project Image', 20 + boxWidth / 2, y + boxHeight / 2, { align: 'center' });
-  doc.text('Project Image', 30 + boxWidth + boxWidth / 2, y + boxHeight / 2, { align: 'center' });
+      // Project description
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(TEXT_GRAY);
+      const descLines = doc.splitTextToSize(project.description, pageWidth - 40);
+      doc.text(descLines, 20, y);
+      y += descLines.length * 5 + 10;
 
-  y += boxHeight + 25;
+      // Project images
+      if (project.images && project.images.length > 0) {
+        const imgWidth = (pageWidth - 60) / Math.min(project.images.length, 3);
+        const imgHeight = 50;
 
-  // Testimonial
+        project.images.slice(0, 3).forEach((img, imgIndex) => {
+          try {
+            doc.addImage(img.data, 'JPEG', 20 + imgIndex * (imgWidth + 10), y, imgWidth, imgHeight);
+          } catch {
+            doc.setFillColor(240, 245, 235);
+            doc.roundedRect(20 + imgIndex * (imgWidth + 10), y, imgWidth, imgHeight, 3, 3, 'F');
+          }
+        });
+        y += imgHeight + 20;
+      } else {
+        y += 10;
+      }
+    });
+  }
+
+  // Testimonial at bottom
+  if (y < 230) {
+    y = 230;
+  }
   doc.setFillColor(QNS_GREEN);
   doc.setTextColor(255, 255, 255);
   doc.roundedRect(20, y, pageWidth - 40, 40, 3, 3, 'F');
@@ -242,14 +289,13 @@ const drawProjectsPage = (doc: jsPDF) => {
   doc.text('"Excellence in every court we build"', pageWidth / 2, y + 25, { align: 'center' });
 };
 
-// Quotation Page
-const drawQuotationPage = (doc: jsPDF, invoice: Invoice) => {
-  drawHeader(doc);
+const drawQuotationPage = (doc: jsPDF, invoice: Invoice): number => {
+  const profile = invoice.companyProfile || defaultCompanyProfile;
+  drawHeader(doc, profile);
 
   const pageWidth = doc.internal.pageSize.width;
   let y = 55;
 
-  // Title
   doc.setFontSize(24);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(TEXT_DARK);
@@ -258,7 +304,6 @@ const drawQuotationPage = (doc: jsPDF, invoice: Invoice) => {
 
   y += 30;
 
-  // Client info section
   doc.setFontSize(11);
   doc.setFont('helvetica', 'bold');
   doc.text('Client Name:', 20, y);
@@ -284,16 +329,8 @@ const drawQuotationPage = (doc: jsPDF, invoice: Invoice) => {
 
   y += 15;
 
-  // Calculate total
   let total = invoice.subTotal * invoice.numberOfCourts;
-  let taxAmount = 0;
 
-  if (invoice.includeTax) {
-    taxAmount = total * (invoice.taxPercentage / 100);
-    total += taxAmount;
-  }
-
-  // Sub total line
   doc.setFontSize(12);
   doc.setFont('helvetica', 'bold');
   let subTotalText = `SUB TOTAL: ${formatCurrency(invoice.subTotal * invoice.numberOfCourts)} /-`;
@@ -308,10 +345,8 @@ const drawQuotationPage = (doc: jsPDF, invoice: Invoice) => {
 
   y += 15;
 
-  // Quotation table
   const enabledItems = invoice.quotationItems.filter(item => item.enabled);
 
-  // Table header
   doc.setFillColor(QNS_GREEN);
   doc.rect(15, y, pageWidth - 30, 10, 'F');
 
@@ -322,7 +357,6 @@ const drawQuotationPage = (doc: jsPDF, invoice: Invoice) => {
 
   y += 15;
 
-  // Table content
   const tableData = enabledItems.map((item, index) => [
     (index + 1).toString(),
     item.name,
@@ -354,24 +388,22 @@ const drawQuotationPage = (doc: jsPDF, invoice: Invoice) => {
   return (doc as any).lastAutoTable.finalY + 10;
 };
 
-// Terms and conditions page
 const drawTermsPage = (doc: jsPDF, invoice: Invoice, startY?: number) => {
+  const profile = invoice.companyProfile || defaultCompanyProfile;
   let y = startY || 50;
   const pageWidth = doc.internal.pageSize.width;
 
   if (!startY) {
-    drawHeader(doc);
+    drawHeader(doc, profile);
     y = 55;
   }
 
-  // Check if we need a new page
   if (y > 200) {
     doc.addPage();
-    drawHeader(doc);
+    drawHeader(doc, profile);
     y = 55;
   }
 
-  // Civil Work section
   doc.setFontSize(12);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(TEXT_DARK);
@@ -390,7 +422,6 @@ const drawTermsPage = (doc: jsPDF, invoice: Invoice, startY?: number) => {
 
   y += 15;
 
-  // Payment Structure
   doc.setFontSize(12);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(TEXT_DARK);
@@ -408,7 +439,6 @@ const drawTermsPage = (doc: jsPDF, invoice: Invoice, startY?: number) => {
 
   y += 15;
 
-  // Add-ons
   const enabledAddOns = invoice.addOns.filter(a => a.enabled);
   if (enabledAddOns.length > 0) {
     doc.setFontSize(12);
@@ -429,7 +459,6 @@ const drawTermsPage = (doc: jsPDF, invoice: Invoice, startY?: number) => {
     y += 8;
   }
 
-  // Terms & Conditions
   doc.setFontSize(12);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(TEXT_DARK);
@@ -446,7 +475,6 @@ const drawTermsPage = (doc: jsPDF, invoice: Invoice, startY?: number) => {
     y += splitTerm.length * 5 + 3;
   });
 
-  // Tax info if applicable
   if (invoice.includeTax) {
     y += 5;
     doc.setFontSize(10);
@@ -455,60 +483,56 @@ const drawTermsPage = (doc: jsPDF, invoice: Invoice, startY?: number) => {
   }
 };
 
-export const generatePDF = (invoice: Invoice): void => {
+const generatePDFDocument = (invoice: Invoice): jsPDF => {
   const doc = new jsPDF({
     orientation: 'portrait',
     unit: 'mm',
     format: 'a4'
   });
 
-  // Page 1: Cover
-  drawCoverPage(doc, invoice);
+  const pages = [...(invoice.pdfPages || defaultPDFPages)]
+    .filter(p => p.enabled)
+    .sort((a, b) => a.order - b.order);
 
-  // Page 2: Introduction
-  doc.addPage();
-  drawIntroPage(doc);
+  let isFirstPage = true;
+  let quotationEndY: number | undefined;
 
-  // Page 3: Projects
-  doc.addPage();
-  drawProjectsPage(doc);
+  pages.forEach(page => {
+    if (!isFirstPage) {
+      doc.addPage();
+    }
+    isFirstPage = false;
 
-  // Page 4: Quotation
-  doc.addPage();
-  const quotationEndY = drawQuotationPage(doc, invoice);
+    switch (page.type) {
+      case 'cover':
+        drawCoverPage(doc, invoice);
+        break;
+      case 'intro':
+        drawIntroPage(doc, invoice);
+        break;
+      case 'projects':
+        drawProjectsPage(doc, invoice);
+        break;
+      case 'quotation':
+        quotationEndY = drawQuotationPage(doc, invoice);
+        break;
+      case 'terms':
+        drawTermsPage(doc, invoice, quotationEndY);
+        quotationEndY = undefined;
+        break;
+    }
+  });
 
-  // Page 5 or continue: Terms
-  drawTermsPage(doc, invoice, quotationEndY);
+  return doc;
+};
 
-  // Save PDF
+export const generatePDF = (invoice: Invoice): void => {
+  const doc = generatePDFDocument(invoice);
   const fileName = `QNS_Quotation_${invoice.clientName.replace(/\s+/g, '_') || 'Client'}_${formatDate(invoice.date)}.pdf`;
   doc.save(fileName);
 };
 
 export const previewPDF = (invoice: Invoice): string => {
-  const doc = new jsPDF({
-    orientation: 'portrait',
-    unit: 'mm',
-    format: 'a4'
-  });
-
-  // Page 1: Cover
-  drawCoverPage(doc, invoice);
-
-  // Page 2: Introduction
-  doc.addPage();
-  drawIntroPage(doc);
-
-  // Page 3: Projects
-  doc.addPage();
-  drawProjectsPage(doc);
-
-  // Page 4: Quotation
-  doc.addPage();
-  const quotationEndY = drawQuotationPage(doc, invoice);
-
-  // Page 5 or continue: Terms
-  drawTermsPage(doc, invoice, quotationEndY);
-
+  const doc = generatePDFDocument(invoice);
   return doc.output('datauristring');
 };

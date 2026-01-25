@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import type { Invoice } from '../types/invoice';
-import { Plus, FileText, Edit2, Copy, Trash2, Download } from 'lucide-react';
+import { Plus, FileText, Edit2, Copy, Trash2, Download, Link, Eye, Clock, Calendar } from 'lucide-react';
 import { generatePDF } from '../utils/pdfGenerator';
 
 interface InvoiceListProps {
@@ -19,11 +20,63 @@ const formatDate = (dateStr: string): string => {
   });
 };
 
+const formatDateTime = (dateStr: string): string => {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
+
 const formatCurrency = (amount: number): string => {
   return `PKR ${amount.toLocaleString('en-PK')}`;
 };
 
+const getTimeAgo = (dateStr: string): string => {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
+  return formatDate(dateStr);
+};
+
 export function InvoiceList({ invoices, onCreateNew, onEdit, onDuplicate, onDelete }: InvoiceListProps) {
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [viewStatsId, setViewStatsId] = useState<string | null>(null);
+
+  const handleCopyLink = async (invoice: Invoice) => {
+    const shareUrl = `${window.location.origin}${window.location.pathname}#/view/${invoice.id}`;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopiedId(invoice.id);
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = shareUrl;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      setCopiedId(invoice.id);
+      setTimeout(() => setCopiedId(null), 2000);
+    }
+  };
+
+  const getTotalViews = (invoice: Invoice): number => {
+    return invoice.shareLinks?.reduce((total, link) => total + (link.views?.length || 0), 0) || 0;
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -81,7 +134,7 @@ export function InvoiceList({ invoices, onCreateNew, onEdit, onDuplicate, onDele
                       Client
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Date
+                      Invoice Date
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Courts
@@ -90,7 +143,10 @@ export function InvoiceList({ invoices, onCreateNew, onEdit, onDuplicate, onDele
                       Amount
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
+                      Created / Modified
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Views
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
@@ -113,8 +169,11 @@ export function InvoiceList({ invoices, onCreateNew, onEdit, onDuplicate, onDele
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {formatDate(invoice.date)}
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-1 text-sm text-gray-500">
+                          <Calendar size={14} />
+                          {formatDate(invoice.date)}
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {invoice.numberOfCourts}
@@ -123,19 +182,52 @@ export function InvoiceList({ invoices, onCreateNew, onEdit, onDuplicate, onDele
                         {formatCurrency(invoice.subTotal * invoice.numberOfCourts)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          invoice.includeTax ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'
-                        }`}>
-                          {invoice.includeTax ? 'With Tax' : 'Excl. Tax'}
-                        </span>
-                        {invoice.includeCivilWork && (
-                          <span className="ml-1 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            + Civil
-                          </span>
+                        <div className="text-xs text-gray-500 space-y-1">
+                          <div className="flex items-center gap-1" title={`Created: ${formatDateTime(invoice.createdAt)}`}>
+                            <Calendar size={12} className="text-green-500" />
+                            <span>{getTimeAgo(invoice.createdAt)}</span>
+                          </div>
+                          {invoice.updatedAt !== invoice.createdAt && (
+                            <div className="flex items-center gap-1" title={`Modified: ${formatDateTime(invoice.updatedAt)}`}>
+                              <Clock size={12} className="text-blue-500" />
+                              <span>{getTimeAgo(invoice.updatedAt)}</span>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <button
+                          onClick={() => setViewStatsId(viewStatsId === invoice.id ? null : invoice.id)}
+                          className="flex items-center gap-1 text-sm text-gray-500 hover:text-[#8BC34A] transition-colors"
+                          title="View statistics"
+                        >
+                          <Eye size={14} />
+                          <span>{getTotalViews(invoice)}</span>
+                        </button>
+                        {viewStatsId === invoice.id && invoice.shareLinks && invoice.shareLinks.length > 0 && (
+                          <div className="absolute mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-10 min-w-[200px]">
+                            <p className="text-xs font-medium text-gray-700 mb-2">Recent Views</p>
+                            {invoice.shareLinks.flatMap(link => link.views || []).slice(0, 5).map((view, idx) => (
+                              <p key={idx} className="text-xs text-gray-500">
+                                {formatDateTime(view.timestamp)}
+                              </p>
+                            ))}
+                          </div>
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex items-center justify-end gap-1">
+                          <button
+                            onClick={() => handleCopyLink(invoice)}
+                            className={`p-2 rounded-lg transition-colors ${
+                              copiedId === invoice.id
+                                ? 'text-green-600 bg-green-50'
+                                : 'text-gray-400 hover:text-[#8BC34A] hover:bg-[#8BC34A]/10'
+                            }`}
+                            title={copiedId === invoice.id ? 'Copied!' : 'Copy share link'}
+                          >
+                            <Link size={18} />
+                          </button>
                           <button
                             onClick={() => generatePDF(invoice)}
                             className="p-2 text-gray-400 hover:text-[#8BC34A] hover:bg-[#8BC34A]/10 rounded-lg transition-colors"

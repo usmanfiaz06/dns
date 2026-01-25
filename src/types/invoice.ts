@@ -13,6 +13,52 @@ export interface AddOn {
   enabled: boolean;
 }
 
+export interface ProjectImage {
+  id: string;
+  data: string; // Base64 encoded image
+  caption?: string;
+}
+
+export interface PastProject {
+  id: string;
+  name: string;
+  description: string;
+  images: ProjectImage[];
+  enabled: boolean;
+}
+
+export interface CompanyProfile {
+  logoData?: string; // Base64 encoded logo
+  companyName: string;
+  tagline: string;
+  byLine: string;
+  aboutTitle: string;
+  aboutText: string;
+  features: string[];
+  introImage?: string; // Base64 encoded image for intro page
+}
+
+export interface PDFPage {
+  id: string;
+  type: 'cover' | 'intro' | 'projects' | 'quotation' | 'terms' | 'custom';
+  name: string;
+  enabled: boolean;
+  order: number;
+}
+
+export interface ShareLink {
+  id: string;
+  invoiceId: string;
+  shortCode: string;
+  createdAt: string;
+  views: ShareView[];
+}
+
+export interface ShareView {
+  timestamp: string;
+  userAgent?: string;
+}
+
 export interface Invoice {
   id: string;
   clientName: string;
@@ -37,7 +83,50 @@ export interface Invoice {
   completionDays: number;
   createdAt: string;
   updatedAt: string;
+  // New fields
+  pastProjects: PastProject[];
+  companyProfile: CompanyProfile;
+  pdfPages: PDFPage[];
+  shareLinks: ShareLink[];
 }
+
+export const defaultCompanyProfile: CompanyProfile = {
+  companyName: 'QNS',
+  tagline: 'Padle Courts',
+  byLine: 'by Super Dialer (Pvt. SMC) ltd.',
+  aboutTitle: 'About QNS Padel Courts',
+  aboutText: `QNS - Premium Padel Courts. We are elite padel-court designers & builders, founded by pro players for players. At QNS, we don't just build courts - we engineer high-performance playing environments based on first-hand experience.
+
+With deep expertise in padel, our team understands every nuance: optimal court geometry, high-grade surface materials, advanced lighting systems, shock absorption, weather resilience, and athlete comfort.
+
+We source only industry-leading materials, rigorously tested for durability, consistency, and player performance.`,
+  features: [
+    'Founded by professional padel players',
+    'Industry-leading materials and construction',
+    'FIP standards compliance',
+    'Complete installation and support',
+    'Weather-resilient designs',
+    'Custom configurations available'
+  ]
+};
+
+export const defaultPastProjects: PastProject[] = [
+  {
+    id: '1',
+    name: 'The Courtside Club',
+    description: 'Premium padel facility featuring 4 courts with LED lighting and spectator seating.',
+    images: [],
+    enabled: true
+  }
+];
+
+export const defaultPDFPages: PDFPage[] = [
+  { id: '1', type: 'cover', name: 'Cover Page', enabled: true, order: 0 },
+  { id: '2', type: 'intro', name: 'Company Introduction', enabled: true, order: 1 },
+  { id: '3', type: 'projects', name: 'Past Projects', enabled: true, order: 2 },
+  { id: '4', type: 'quotation', name: 'Quotation Details', enabled: true, order: 3 },
+  { id: '5', type: 'terms', name: 'Terms & Conditions', enabled: true, order: 4 }
+];
 
 export const defaultQuotationItems: QuotationItem[] = [
   {
@@ -176,6 +265,11 @@ export const createNewInvoice = (): Invoice => {
     },
     completionDays: 45,
     createdAt: now.toISOString(),
-    updatedAt: now.toISOString()
+    updatedAt: now.toISOString(),
+    // New fields
+    pastProjects: JSON.parse(JSON.stringify(defaultPastProjects)),
+    companyProfile: JSON.parse(JSON.stringify(defaultCompanyProfile)),
+    pdfPages: JSON.parse(JSON.stringify(defaultPDFPages)),
+    shareLinks: []
   };
 };

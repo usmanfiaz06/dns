@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import type { Invoice, QuotationItem, AddOn } from '../types/invoice';
+import { useState, useRef } from 'react';
+import type { Invoice, QuotationItem, AddOn, PastProject, CompanyProfile, PDFPage } from '../types/invoice';
 import {
   ArrowLeft,
   Save,
@@ -9,7 +9,16 @@ import {
   Trash2,
   GripVertical,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Upload,
+  Image,
+  Building,
+  FolderOpen,
+  FileText,
+  Link,
+  X,
+  ArrowUp,
+  ArrowDown
 } from 'lucide-react';
 import { generatePDF, previewPDF } from '../utils/pdfGenerator';
 
@@ -29,6 +38,11 @@ export function InvoiceEditor({ invoice, onChange, onSave, onBack, isNew }: Invo
   const [activeSection, setActiveSection] = useState<string | null>('basic');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
+  const logoInputRef = useRef<HTMLInputElement>(null);
+  const introImageInputRef = useRef<HTMLInputElement>(null);
+  const projectImageInputRef = useRef<HTMLInputElement>(null);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
 
   const updateInvoice = (updates: Partial<Invoice>) => {
     onChange({ ...invoice, ...updates, updatedAt: new Date().toISOString() });
@@ -38,6 +52,106 @@ export function InvoiceEditor({ invoice, onChange, onSave, onBack, isNew }: Invo
     setActiveSection(activeSection === section ? null : section);
   };
 
+  // Company Profile handlers
+  const updateCompanyProfile = (updates: Partial<CompanyProfile>) => {
+    updateInvoice({ companyProfile: { ...invoice.companyProfile, ...updates } });
+  };
+
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        updateCompanyProfile({ logoData: reader.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleIntroImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        updateCompanyProfile({ introImage: reader.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Past Projects handlers
+  const addProject = () => {
+    const newProject: PastProject = {
+      id: crypto.randomUUID(),
+      name: 'New Project',
+      description: 'Project description',
+      images: [],
+      enabled: true
+    };
+    updateInvoice({ pastProjects: [...(invoice.pastProjects || []), newProject] });
+  };
+
+  const updateProject = (id: string, updates: Partial<PastProject>) => {
+    const newProjects = (invoice.pastProjects || []).map(p =>
+      p.id === id ? { ...p, ...updates } : p
+    );
+    updateInvoice({ pastProjects: newProjects });
+  };
+
+  const removeProject = (id: string) => {
+    updateInvoice({ pastProjects: (invoice.pastProjects || []).filter(p => p.id !== id) });
+  };
+
+  const handleProjectImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && selectedProjectId) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const project = (invoice.pastProjects || []).find(p => p.id === selectedProjectId);
+        if (project) {
+          const newImage = {
+            id: crypto.randomUUID(),
+            data: reader.result as string,
+            caption: ''
+          };
+          updateProject(selectedProjectId, { images: [...project.images, newImage] });
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeProjectImage = (projectId: string, imageId: string) => {
+    const project = (invoice.pastProjects || []).find(p => p.id === projectId);
+    if (project) {
+      updateProject(projectId, { images: project.images.filter(img => img.id !== imageId) });
+    }
+  };
+
+  // PDF Pages handlers
+  const updatePDFPage = (id: string, updates: Partial<PDFPage>) => {
+    const newPages = (invoice.pdfPages || []).map(p =>
+      p.id === id ? { ...p, ...updates } : p
+    );
+    updateInvoice({ pdfPages: newPages });
+  };
+
+  const movePDFPage = (id: string, direction: 'up' | 'down') => {
+    const pages = [...(invoice.pdfPages || [])].sort((a, b) => a.order - b.order);
+    const index = pages.findIndex(p => p.id === id);
+    if (direction === 'up' && index > 0) {
+      const temp = pages[index].order;
+      pages[index].order = pages[index - 1].order;
+      pages[index - 1].order = temp;
+    } else if (direction === 'down' && index < pages.length - 1) {
+      const temp = pages[index].order;
+      pages[index].order = pages[index + 1].order;
+      pages[index + 1].order = temp;
+    }
+    updateInvoice({ pdfPages: pages });
+  };
+
+  // Quotation Items handlers
   const updateQuotationItem = (id: string, updates: Partial<QuotationItem>) => {
     const newItems = invoice.quotationItems.map(item =>
       item.id === id ? { ...item, ...updates } : item
@@ -59,6 +173,7 @@ export function InvoiceEditor({ invoice, onChange, onSave, onBack, isNew }: Invo
     updateInvoice({ quotationItems: invoice.quotationItems.filter(item => item.id !== id) });
   };
 
+  // AddOns handlers
   const updateAddOn = (id: string, updates: Partial<AddOn>) => {
     const newAddOns = invoice.addOns.map(addon =>
       addon.id === id ? { ...addon, ...updates } : addon
@@ -81,6 +196,7 @@ export function InvoiceEditor({ invoice, onChange, onSave, onBack, isNew }: Invo
     updateInvoice({ addOns: invoice.addOns.filter(addon => addon.id !== id) });
   };
 
+  // Terms handlers
   const updateTermsAndConditions = (index: number, value: string) => {
     const newTerms = [...invoice.termsAndConditions];
     newTerms[index] = value;
@@ -96,6 +212,22 @@ export function InvoiceEditor({ invoice, onChange, onSave, onBack, isNew }: Invo
     updateInvoice({ termsAndConditions: newTerms });
   };
 
+  // Feature handlers
+  const updateFeature = (index: number, value: string) => {
+    const newFeatures = [...(invoice.companyProfile?.features || [])];
+    newFeatures[index] = value;
+    updateCompanyProfile({ features: newFeatures });
+  };
+
+  const addFeature = () => {
+    updateCompanyProfile({ features: [...(invoice.companyProfile?.features || []), 'New feature'] });
+  };
+
+  const removeFeature = (index: number) => {
+    const newFeatures = (invoice.companyProfile?.features || []).filter((_, i) => i !== index);
+    updateCompanyProfile({ features: newFeatures });
+  };
+
   const handlePreview = () => {
     const url = previewPDF(invoice);
     setPreviewUrl(url);
@@ -106,6 +238,24 @@ export function InvoiceEditor({ invoice, onChange, onSave, onBack, isNew }: Invo
     generatePDF(invoice);
   };
 
+  const handleCopyLink = async () => {
+    const shareUrl = `${window.location.origin}${window.location.pathname}#/view/${invoice.id}`;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
+    } catch {
+      const textArea = document.createElement('textarea');
+      textArea.value = shareUrl;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
+    }
+  };
+
   // Calculate totals
   const baseTotal = invoice.subTotal * invoice.numberOfCourts;
   const taxAmount = invoice.includeTax ? baseTotal * (invoice.taxPercentage / 100) : 0;
@@ -113,8 +263,33 @@ export function InvoiceEditor({ invoice, onChange, onSave, onBack, isNew }: Invo
   const addOnsTotal = invoice.addOns.filter(a => a.enabled).reduce((sum, a) => sum + a.price, 0);
   const grandTotal = baseTotal + taxAmount + civilWorkAmount + addOnsTotal;
 
+  const sortedPDFPages = [...(invoice.pdfPages || [])].sort((a, b) => a.order - b.order);
+
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Hidden file inputs */}
+      <input
+        type="file"
+        ref={logoInputRef}
+        onChange={handleLogoUpload}
+        accept="image/*"
+        className="hidden"
+      />
+      <input
+        type="file"
+        ref={introImageInputRef}
+        onChange={handleIntroImageUpload}
+        accept="image/*"
+        className="hidden"
+      />
+      <input
+        type="file"
+        ref={projectImageInputRef}
+        onChange={handleProjectImageUpload}
+        accept="image/*"
+        className="hidden"
+      />
+
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -136,6 +311,17 @@ export function InvoiceEditor({ invoice, onChange, onSave, onBack, isNew }: Invo
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <button
+                onClick={handleCopyLink}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                  copiedLink
+                    ? 'text-green-700 bg-green-100'
+                    : 'text-gray-700 bg-gray-100 hover:bg-gray-200'
+                }`}
+              >
+                <Link size={18} />
+                {copiedLink ? 'Copied!' : 'Copy Link'}
+              </button>
               <button
                 onClick={handlePreview}
                 className="flex items-center gap-2 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
@@ -172,15 +358,16 @@ export function InvoiceEditor({ invoice, onChange, onSave, onBack, isNew }: Invo
                 onClick={() => toggleSection('basic')}
                 className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
               >
-                <h2 className="text-lg font-semibold text-gray-900">Basic Information</h2>
+                <div className="flex items-center gap-3">
+                  <FileText size={20} className="text-[#8BC34A]" />
+                  <h2 className="text-lg font-semibold text-gray-900">Basic Information</h2>
+                </div>
                 {activeSection === 'basic' ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
               </button>
               {activeSection === 'basic' && (
                 <div className="px-6 pb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Client Name
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Client Name</label>
                     <input
                       type="text"
                       value={invoice.clientName}
@@ -190,9 +377,7 @@ export function InvoiceEditor({ invoice, onChange, onSave, onBack, isNew }: Invo
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Date
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
                     <input
                       type="date"
                       value={invoice.date}
@@ -201,9 +386,7 @@ export function InvoiceEditor({ invoice, onChange, onSave, onBack, isNew }: Invo
                     />
                   </div>
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Description
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                     <input
                       type="text"
                       value={invoice.description}
@@ -213,9 +396,7 @@ export function InvoiceEditor({ invoice, onChange, onSave, onBack, isNew }: Invo
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Number of Courts
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Number of Courts</label>
                     <input
                       type="number"
                       min="1"
@@ -225,9 +406,7 @@ export function InvoiceEditor({ invoice, onChange, onSave, onBack, isNew }: Invo
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Court Size
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Court Size</label>
                     <input
                       type="text"
                       value={invoice.courtSize}
@@ -237,9 +416,7 @@ export function InvoiceEditor({ invoice, onChange, onSave, onBack, isNew }: Invo
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Base Price per Court (PKR)
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Base Price per Court (PKR)</label>
                     <input
                       type="number"
                       value={invoice.subTotal}
@@ -248,9 +425,7 @@ export function InvoiceEditor({ invoice, onChange, onSave, onBack, isNew }: Invo
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Completion Days
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Completion Days</label>
                     <input
                       type="number"
                       min="1"
@@ -259,6 +434,314 @@ export function InvoiceEditor({ invoice, onChange, onSave, onBack, isNew }: Invo
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8BC34A] focus:border-transparent outline-none transition-all"
                     />
                   </div>
+                </div>
+              )}
+            </div>
+
+            {/* Company Profile */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <button
+                onClick={() => toggleSection('company')}
+                className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <Building size={20} className="text-[#8BC34A]" />
+                  <h2 className="text-lg font-semibold text-gray-900">Company Profile</h2>
+                </div>
+                {activeSection === 'company' ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+              </button>
+              {activeSection === 'company' && (
+                <div className="px-6 pb-6 space-y-6">
+                  {/* Logo Upload */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Company Logo</label>
+                    <div className="flex items-center gap-4">
+                      {invoice.companyProfile?.logoData ? (
+                        <div className="relative">
+                          <img
+                            src={invoice.companyProfile.logoData}
+                            alt="Logo"
+                            className="w-20 h-20 object-contain border rounded-lg"
+                          />
+                          <button
+                            onClick={() => updateCompanyProfile({ logoData: undefined })}
+                            className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full"
+                          >
+                            <X size={12} />
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+                          <Image size={24} className="text-gray-400" />
+                        </div>
+                      )}
+                      <button
+                        onClick={() => logoInputRef.current?.click()}
+                        className="px-4 py-2 text-sm font-medium text-[#8BC34A] border border-[#8BC34A] rounded-lg hover:bg-[#8BC34A]/10 transition-colors"
+                      >
+                        <Upload size={16} className="inline mr-2" />
+                        Upload Logo
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Company Details */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+                      <input
+                        type="text"
+                        value={invoice.companyProfile?.companyName || ''}
+                        onChange={(e) => updateCompanyProfile({ companyName: e.target.value })}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8BC34A] focus:border-transparent outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Tagline</label>
+                      <input
+                        type="text"
+                        value={invoice.companyProfile?.tagline || ''}
+                        onChange={(e) => updateCompanyProfile({ tagline: e.target.value })}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8BC34A] focus:border-transparent outline-none"
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">By Line</label>
+                      <input
+                        type="text"
+                        value={invoice.companyProfile?.byLine || ''}
+                        onChange={(e) => updateCompanyProfile({ byLine: e.target.value })}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8BC34A] focus:border-transparent outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Intro Image */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Introduction Image</label>
+                    <div className="flex items-start gap-4">
+                      {invoice.companyProfile?.introImage ? (
+                        <div className="relative">
+                          <img
+                            src={invoice.companyProfile.introImage}
+                            alt="Intro"
+                            className="w-40 h-24 object-cover border rounded-lg"
+                          />
+                          <button
+                            onClick={() => updateCompanyProfile({ introImage: undefined })}
+                            className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full"
+                          >
+                            <X size={12} />
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="w-40 h-24 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+                          <Image size={24} className="text-gray-400" />
+                        </div>
+                      )}
+                      <button
+                        onClick={() => introImageInputRef.current?.click()}
+                        className="px-4 py-2 text-sm font-medium text-[#8BC34A] border border-[#8BC34A] rounded-lg hover:bg-[#8BC34A]/10 transition-colors"
+                      >
+                        <Upload size={16} className="inline mr-2" />
+                        Upload Image
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* About Section */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">About Title</label>
+                    <input
+                      type="text"
+                      value={invoice.companyProfile?.aboutTitle || ''}
+                      onChange={(e) => updateCompanyProfile({ aboutTitle: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8BC34A] focus:border-transparent outline-none mb-3"
+                    />
+                    <label className="block text-sm font-medium text-gray-700 mb-1">About Text</label>
+                    <textarea
+                      value={invoice.companyProfile?.aboutText || ''}
+                      onChange={(e) => updateCompanyProfile({ aboutText: e.target.value })}
+                      rows={6}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8BC34A] focus:border-transparent outline-none resize-none"
+                    />
+                  </div>
+
+                  {/* Features */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Why Choose Us - Features</label>
+                    <div className="space-y-2">
+                      {(invoice.companyProfile?.features || []).map((feature, index) => (
+                        <div key={index} className="flex items-center gap-2">
+                          <span className="text-[#8BC34A]">•</span>
+                          <input
+                            type="text"
+                            value={feature}
+                            onChange={(e) => updateFeature(index, e.target.value)}
+                            className="flex-1 px-3 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-[#8BC34A] outline-none text-sm"
+                          />
+                          <button
+                            onClick={() => removeFeature(index)}
+                            className="p-1 text-gray-400 hover:text-red-500 rounded transition-colors"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      ))}
+                      <button
+                        onClick={addFeature}
+                        className="text-sm text-[#8BC34A] hover:text-[#7CB342] font-medium"
+                      >
+                        + Add Feature
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Past Projects */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <button
+                onClick={() => toggleSection('projects')}
+                className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <FolderOpen size={20} className="text-[#8BC34A]" />
+                  <h2 className="text-lg font-semibold text-gray-900">Past Projects</h2>
+                </div>
+                {activeSection === 'projects' ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+              </button>
+              {activeSection === 'projects' && (
+                <div className="px-6 pb-6 space-y-4">
+                  {(invoice.pastProjects || []).map((project) => (
+                    <div
+                      key={project.id}
+                      className={`border rounded-lg p-4 ${project.enabled ? 'border-[#8BC34A] bg-[#8BC34A]/5' : 'border-gray-200 bg-gray-50'}`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <input
+                          type="checkbox"
+                          checked={project.enabled}
+                          onChange={(e) => updateProject(project.id, { enabled: e.target.checked })}
+                          className="mt-1 w-5 h-5 rounded border-gray-300 text-[#8BC34A] focus:ring-[#8BC34A]"
+                        />
+                        <div className="flex-1 space-y-3">
+                          <div className="flex items-center gap-3">
+                            <input
+                              type="text"
+                              value={project.name}
+                              onChange={(e) => updateProject(project.id, { name: e.target.value })}
+                              className="flex-1 px-3 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8BC34A] focus:border-transparent outline-none text-sm font-medium"
+                              placeholder="Project name"
+                            />
+                            <button
+                              onClick={() => removeProject(project.id)}
+                              className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                          <textarea
+                            value={project.description}
+                            onChange={(e) => updateProject(project.id, { description: e.target.value })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8BC34A] focus:border-transparent outline-none text-sm resize-none"
+                            rows={2}
+                            placeholder="Project description"
+                          />
+                          {/* Project Images */}
+                          <div>
+                            <label className="block text-xs font-medium text-gray-500 mb-2">Project Images (max 3)</label>
+                            <div className="flex flex-wrap gap-2">
+                              {project.images.map((img) => (
+                                <div key={img.id} className="relative">
+                                  <img
+                                    src={img.data}
+                                    alt="Project"
+                                    className="w-20 h-16 object-cover border rounded"
+                                  />
+                                  <button
+                                    onClick={() => removeProjectImage(project.id, img.id)}
+                                    className="absolute -top-1 -right-1 p-0.5 bg-red-500 text-white rounded-full"
+                                  >
+                                    <X size={10} />
+                                  </button>
+                                </div>
+                              ))}
+                              {project.images.length < 3 && (
+                                <button
+                                  onClick={() => {
+                                    setSelectedProjectId(project.id);
+                                    projectImageInputRef.current?.click();
+                                  }}
+                                  className="w-20 h-16 border-2 border-dashed border-gray-300 rounded flex items-center justify-center hover:border-[#8BC34A] hover:text-[#8BC34A] transition-colors"
+                                >
+                                  <Plus size={16} />
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    onClick={addProject}
+                    className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-[#8BC34A] hover:text-[#8BC34A] transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Plus size={18} />
+                    Add Project
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* PDF Pages Configuration */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <button
+                onClick={() => toggleSection('pages')}
+                className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <FileText size={20} className="text-[#8BC34A]" />
+                  <h2 className="text-lg font-semibold text-gray-900">PDF Pages</h2>
+                </div>
+                {activeSection === 'pages' ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+              </button>
+              {activeSection === 'pages' && (
+                <div className="px-6 pb-6 space-y-2">
+                  <p className="text-sm text-gray-500 mb-4">Enable/disable pages and adjust their order in the PDF.</p>
+                  {sortedPDFPages.map((page, index) => (
+                    <div
+                      key={page.id}
+                      className={`flex items-center gap-3 p-3 border rounded-lg ${page.enabled ? 'border-[#8BC34A] bg-[#8BC34A]/5' : 'border-gray-200'}`}
+                    >
+                      <GripVertical size={16} className="text-gray-400" />
+                      <input
+                        type="checkbox"
+                        checked={page.enabled}
+                        onChange={(e) => updatePDFPage(page.id, { enabled: e.target.checked })}
+                        className="w-5 h-5 rounded border-gray-300 text-[#8BC34A] focus:ring-[#8BC34A]"
+                      />
+                      <span className="flex-1 text-sm font-medium text-gray-700">{page.name}</span>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => movePDFPage(page.id, 'up')}
+                          disabled={index === 0}
+                          className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                        >
+                          <ArrowUp size={16} />
+                        </button>
+                        <button
+                          onClick={() => movePDFPage(page.id, 'down')}
+                          disabled={index === sortedPDFPages.length - 1}
+                          className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                        >
+                          <ArrowDown size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
@@ -516,9 +999,7 @@ export function InvoiceEditor({ invoice, onChange, onSave, onBack, isNew }: Invo
                 <div className="px-6 pb-6 space-y-4">
                   <div className="grid grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Advance (%)
-                      </label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Advance (%)</label>
                       <input
                         type="number"
                         min="0"
@@ -531,9 +1012,7 @@ export function InvoiceEditor({ invoice, onChange, onSave, onBack, isNew }: Invo
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        On Delivery (%)
-                      </label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">On Delivery (%)</label>
                       <input
                         type="number"
                         min="0"
@@ -546,9 +1025,7 @@ export function InvoiceEditor({ invoice, onChange, onSave, onBack, isNew }: Invo
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        On Completion (%)
-                      </label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">On Completion (%)</label>
                       <input
                         type="number"
                         min="0"
@@ -631,6 +1108,12 @@ export function InvoiceEditor({ invoice, onChange, onSave, onBack, isNew }: Invo
                     {invoice.quotationItems.filter(i => i.enabled).length} / {invoice.quotationItems.length}
                   </span>
                 </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">PDF Pages</span>
+                  <span className="font-medium text-gray-900">
+                    {(invoice.pdfPages || []).filter(p => p.enabled).length} enabled
+                  </span>
+                </div>
 
                 <hr className="my-4" />
 
@@ -670,6 +1153,17 @@ export function InvoiceEditor({ invoice, onChange, onSave, onBack, isNew }: Invo
 
               <div className="mt-6 space-y-3">
                 <button
+                  onClick={handleCopyLink}
+                  className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                    copiedLink
+                      ? 'text-green-700 bg-green-100'
+                      : 'text-gray-700 bg-gray-100 hover:bg-gray-200'
+                  }`}
+                >
+                  <Link size={18} />
+                  {copiedLink ? 'Link Copied!' : 'Copy Share Link'}
+                </button>
+                <button
                   onClick={handlePreview}
                   className="w-full flex items-center justify-center gap-2 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                 >
@@ -699,9 +1193,7 @@ export function InvoiceEditor({ invoice, onChange, onSave, onBack, isNew }: Invo
                 onClick={() => setShowPreview(false)}
                 className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <X size={20} />
               </button>
             </div>
             <div className="flex-1 p-4">
