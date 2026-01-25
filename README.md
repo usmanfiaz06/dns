@@ -12,7 +12,7 @@ A simple, beautiful web-based DNS lookup tool that allows you to query DNS recor
 
 ## Live Demo
 
-🌐 **[Try it here](https://usmanfiaz06.github.io/dns/)**
+**[Try it here](https://usmanfiaz06.github.io/dns/)**
 
 ## Usage
 
