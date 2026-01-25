@@ -1,17 +1,49 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="QNS Padel Courts - Invoice Generator" />
-    <title>QNS Padel - Invoice Generator</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNS Lookup Tool</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DNS Lookup Tool</h1>
+            <p>Look up DNS records for any domain</p>
+        </header>
+
+        <main>
+            <div class="search-box">
+                <input type="text" id="domain-input" placeholder="Enter domain (e.g., google.com)" autocomplete="off">
+                <button id="lookup-btn">Lookup</button>
+            </div>
+
+            <div class="record-types">
+                <label><input type="checkbox" value="A" checked> A</label>
+                <label><input type="checkbox" value="AAAA" checked> AAAA</label>
+                <label><input type="checkbox" value="MX" checked> MX</label>
+                <label><input type="checkbox" value="NS" checked> NS</label>
+                <label><input type="checkbox" value="TXT" checked> TXT</label>
+                <label><input type="checkbox" value="CNAME"> CNAME</label>
+                <label><input type="checkbox" value="SOA"> SOA</label>
+            </div>
+
+            <div id="loading" class="loading hidden">
+                <div class="spinner"></div>
+                <p>Looking up DNS records...</p>
+            </div>
+
+            <div id="error" class="error hidden"></div>
+
+            <div id="results" class="results hidden"></div>
+        </main>
+
+        <footer>
+            <p>Powered by <a href="https://dns.google/resolve" target="_blank">Google DNS API</a></p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
 </html>
