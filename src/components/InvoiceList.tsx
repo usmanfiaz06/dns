@@ -2,6 +2,7 @@ import { FilePlus, FileText, Download, Copy, Trash2, Eye, Clock, Edit3, Link, Ch
 import { useState } from 'react';
 import type { Invoice } from '../types/invoice';
 import { generatePDF } from '../utils/pdfGenerator';
+import { useAuth } from '../context/AuthContext';
 
 interface InvoiceListProps {
   invoices: Invoice[];
@@ -34,8 +35,31 @@ function getTimeAgo(dateStr: string): string {
 }
 
 export default function InvoiceList({ invoices, onCreateNew, onEdit, onDuplicate, onDelete }: InvoiceListProps) {
+  const { companySettings } = useAuth();
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+
+  const handleDownload = (invoice: Invoice) => {
+    if (companySettings) {
+      const merged = {
+        ...invoice,
+        companyProfile: {
+          ...invoice.companyProfile,
+          logoData: companySettings.logoData || invoice.companyProfile?.logoData || '',
+          companyName: companySettings.name || invoice.companyProfile?.companyName || 'QNS',
+          tagline: companySettings.tagline || invoice.companyProfile?.tagline || 'Padel Courts',
+          byLine: companySettings.byLine || invoice.companyProfile?.byLine || '',
+          aboutTitle: companySettings.aboutTitle || invoice.companyProfile?.aboutTitle || '',
+          aboutText: companySettings.aboutText || invoice.companyProfile?.aboutText || '',
+          introImage: companySettings.introImage || invoice.companyProfile?.introImage || '',
+          features: companySettings.features?.length ? companySettings.features : invoice.companyProfile?.features || [],
+        },
+      };
+      generatePDF(merged);
+    } else {
+      generatePDF(invoice);
+    }
+  };
 
   const handleCopyLink = (invoice: Invoice) => {
     const link = `${window.location.origin}${window.location.pathname}#/view/${invoice.id}`;
@@ -158,7 +182,7 @@ export default function InvoiceList({ invoices, onCreateNew, onEdit, onDuplicate
                     {copiedId === invoice.id ? <Check size={16} className="text-green-500" /> : <Link size={16} />}
                   </button>
                   <button
-                    onClick={() => generatePDF(invoice)}
+                    onClick={() => handleDownload(invoice)}
                     className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
                     title="Download PDF"
                   >

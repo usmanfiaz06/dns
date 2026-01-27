@@ -25,7 +25,7 @@ export default function UserManagement() {
 
     const result = inviteUser(email);
     if (result.success) {
-      setSuccess(`Invitation sent to ${email}`);
+      setSuccess(`Invite created for ${email}. They can sign up with this email to join your team.`);
       setEmail('');
       setTimeout(() => setSuccess(''), 3000);
     } else {
@@ -51,7 +51,7 @@ export default function UserManagement() {
       {/* Invite Form */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-1">Invite a Team Member</h2>
-        <p className="text-sm text-gray-500 mb-5">They'll receive access to view and manage invoices</p>
+        <p className="text-sm text-gray-500 mb-5">Invite team members by email. They can sign up with the invited email to automatically join your team and access invoices.</p>
 
         <form onSubmit={handleInvite} className="flex gap-3">
           <div className="flex-1 relative">
