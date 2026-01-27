@@ -115,178 +115,181 @@ events = [
     ("Q1", None, None, None, None),  # Quarter marker
 
     ("EVENT 1: Annual Meeting 2026", "February 3", 300, "5-Star Hotel Ballroom", [
-        ("Venue Rental (5-star ballroom, full day)", "Full day", 1, 55000, "Ritz-Carlton / Four Seasons / Fairmont"),
-        ("Catering – Premium Lunch Buffet", "Per person", 300, 260, "Premium hotel buffet, 10+ items, live stations"),
+        ("Venue Rental (5-star ballroom, full day)", "Full day", 1, 58000, "Ritz-Carlton / Four Seasons / Fairmont"),
+        ("Catering – Premium Lunch Buffet", "Per person", 300, 270, "Premium hotel buffet, 10+ items, live stations"),
         ("Catering – 2x Coffee Breaks", "Per person", 300, 65, "Morning + afternoon break, premium selection"),
-        ("Stage & Branded Backdrop (8m x 5m)", "Package", 1, 22000, "Custom SERA branded, modular stage"),
+        ("Stage & Branded Backdrop (8m x 5m)", "Package", 1, 24000, "Custom SERA branded, modular stage"),
         ("LED Video Wall (P2.5, 5m x 3m)", "Rental", 1, 18000, "With dedicated operator"),
-        ("Professional Sound System (Line Array)", "Package", 1, 12000, "Concert-grade + 6 wireless mics"),
+        ("Professional Sound System (Line Array)", "Package", 1, 12000, "Concert-grade + 6 wireless mics + monitors"),
         ("Simultaneous Translation (AR/EN)", "Package", 1, 18000, "2 interpreters + booth + headsets for 300"),
-        ("Professional Photography (2 photographers)", "Full day", 1, 6000, "500+ edited high-res photos, 3-day delivery"),
-        ("Professional Videography (2 cameras)", "Full day", 1, 10000, "5-min highlight + full event recording, 4K"),
-        ("Registration System & Name Badges", "Package", 1, 5000, "Digital QR check-in + printed badges + app"),
-        ("Printed Materials (agenda, notepad, pen)", "Per person", 300, 40, "Premium branded stationery set"),
-        ("Professional MC (Bilingual AR/EN)", "Full event", 1, 8000, "Experienced corporate MC"),
-        ("Event Branding & Design", "Package", 1, 6000, "All materials design, backdrop, badges, agenda"),
+        ("Professional Photography (2 photographers)", "Full day", 1, 8000, "500+ edited high-res photos, 3-day delivery"),
+        ("Professional Videography (2 cameras)", "Full day", 1, 12000, "5-min highlight + full event recording, 4K"),
+        ("Registration System & Name Badges", "Package", 1, 6500, "Digital QR check-in + printed badges + app"),
+        ("Printed Materials (agenda, notepad, pen)", "Per person", 300, 45, "Premium branded stationery set"),
+        ("Professional MC (Bilingual AR/EN)", "Full event", 1, 10000, "Experienced corporate MC"),
+        ("Event Branding & Design", "Package", 1, 15000, "All materials design, backdrop, badges, agenda, social media kit"),
+        ("Welcome Lounge & VIP Hospitality", "Package", 1, 12000, "VIP reception area with premium refreshments"),
     ]),
 
     ("EVENT 2: Employee Appreciation Day", "March 2", 300, "5-Star Hotel – Evening Gala", [
-        ("Venue Rental (Gala table setup)", "Evening", 1, 50000, "Ballroom with round-table gala setup"),
-        ("Catering – Gala Dinner (3-course plated)", "Per person", 300, 320, "Premium plated service + welcome drinks"),
-        ("Live Band Entertainment", "Package", 1, 20000, "Professional band, 2.5-hour set"),
-        ("Stage, Gala Décor & Lighting Design", "Package", 1, 35000, "Premium gala theme, centerpieces, uplighting"),
-        ("Awards & Crystal Trophies", "Set of 12", 1, 12000, "12 crystal trophies + certificates + frames"),
-        ("Photography & Videography (Full team)", "Package", 1, 14000, "2 photo + 2 video, highlight reel"),
-        ("Employee Gift Boxes", "Per person", 300, 85, "Premium appreciation gift set"),
-        ("Professional MC", "Full event", 1, 8000, "Gala host"),
-        ("Event Branding & Design", "Package", 1, 5000, "Invitations, backdrop, table cards, menu cards"),
+        ("Venue Rental (Gala table setup)", "Evening", 1, 52000, "Ballroom with round-table gala setup"),
+        ("Catering – Gala Dinner (3-course plated)", "Per person", 300, 330, "Premium plated service + welcome drinks + dessert bar"),
+        ("Live Band Entertainment", "Package", 1, 22000, "Professional band, 2.5-hour set"),
+        ("Stage, Gala Décor & Lighting Design", "Package", 1, 35000, "Premium gala theme, centerpieces, uplighting, LED features"),
+        ("Awards & Crystal Trophies", "Set of 12", 1, 12000, "12 crystal trophies + certificates + frames + award video"),
+        ("Photography & Videography (Full team)", "Package", 1, 16000, "2 photo + 2 video, highlight reel + same-day preview"),
+        ("Employee Gift Boxes", "Per person", 300, 110, "Premium appreciation gift set with personalized item"),
+        ("Professional MC", "Full event", 1, 10000, "Gala host"),
+        ("Event Branding & Design", "Package", 1, 15000, "Invitations, backdrop, table cards, menu cards, signage, social media"),
     ]),
 
     ("EVENT 3: International Women's Day", "March 8", 150, "Boutique Venue – Ladies Only", [
-        ("Venue Rental (Ladies section)", "Half day", 1, 22000, "Elegant boutique venue or hotel ladies' space"),
-        ("Catering – Ladies' Lunch", "Per person", 150, 220, "Refined plated lunch service"),
-        ("Premium Floral Arrangements", "Package", 1, 12000, "Centerpieces + entrance + stage florals"),
-        ("Keynote Speaker + Panel (3 speakers)", "Package", 1, 15000, "Female industry leaders"),
-        ("Elegant Photo Booth", "Package", 1, 6000, "Premium backdrop, props, instant prints"),
-        ("Curated Gift Bags", "Per person", 150, 110, "Skincare, accessories, flowers"),
-        ("Photography (Female photographer)", "Half day", 1, 4000, "300+ edited photos"),
-        ("Event Branding & Design", "Package", 1, 4000, "Invitations, social media, signage"),
+        ("Venue Rental (Ladies section)", "Half day", 1, 24000, "Elegant boutique venue or hotel ladies' space"),
+        ("Catering – Ladies' Lunch", "Per person", 150, 230, "Refined plated lunch service + welcome drinks"),
+        ("Premium Floral Arrangements", "Package", 1, 12000, "Centerpieces + entrance + stage florals + individual stems"),
+        ("Keynote Speaker + Panel (3 speakers)", "Package", 1, 18000, "Female industry leaders"),
+        ("Elegant Photo Booth", "Package", 1, 8000, "Premium backdrop, props, instant prints, digital sharing"),
+        ("Curated Gift Bags", "Per person", 150, 135, "Skincare, accessories, flowers, personalized card"),
+        ("Photography (Female photographer)", "Half day", 1, 5000, "400+ edited photos"),
+        ("Event Branding & Design", "Package", 1, 14000, "Invitations, social media kit, signage, digital assets"),
     ]),
 
     ("EVENT 4: Saudi Flag Day", "March 11", 300, "SERA HQ", [
         ("Venue", "SERA HQ", 1, 0, "Internal – no rental cost"),
-        ("National Flag Display & Décor", "Package", 1, 8000, "Large flag (5m+), national colors throughout"),
-        ("Sound System Rental", "Rental", 1, 4000, "For national anthem + speeches"),
-        ("Commemorative Items (pins, badges, flags)", "Per person", 300, 30, "Custom SERA + flag branding"),
-        ("Light Refreshments", "Per person", 300, 40, "Arabic coffee (dallah), dates, Saudi sweets"),
-        ("Photography", "2 hours", 1, 3000, "Event documentation"),
-        ("Social Media Live Coverage", "Package", 1, 3000, "Real-time posts + stories"),
+        ("National Flag Display & Décor", "Package", 1, 12000, "Large flag (5m+), national colors throughout, entrance display"),
+        ("Sound System Rental", "Rental", 1, 5000, "For national anthem + speeches + ambient"),
+        ("Commemorative Items (pins, badges, flags)", "Per person", 300, 38, "Custom SERA + flag branding, premium quality"),
+        ("Light Refreshments", "Per person", 300, 50, "Arabic coffee (dallah), premium dates, Saudi sweets"),
+        ("Photography", "2 hours", 1, 3500, "Event documentation"),
+        ("Social Media Live Coverage", "Package", 1, 4500, "Real-time posts + stories + reels"),
+        ("Event Branding & Design", "Package", 1, 14000, "National day signage, displays, social media, digital assets"),
     ]),
 
     ("EVENT 5: Ramadan Iftar", "Mid-March", 300, "5-Star Hotel Ramadan Tent", [
-        ("Iftar Buffet (5-Star Hotel)", "Per person", 300, 420, "[NOTE] Ramadan premium pricing – 20-30% above regular"),
-        ("VIP Seating Upgrade (Senior Leadership)", "Per person", 40, 180, "[NOTE] Assumed 13% VIP guests – confirm with SERA"),
-        ("Traditional Entertainment (Oud + Singer)", "Package", 1, 12000, "Oud player + traditional vocalist"),
-        ("Ramadan Décor Enhancement", "Package", 1, 8000, "Lanterns, crescents, fabric draping, ambient lighting"),
-        ("Premium Ramadan Gift Boxes", "Per person", 300, 95, "Premium dates, tasbih, Ramadan book, oud"),
-        ("Photography & Videography", "Package", 1, 8000, "Evening iftar coverage + highlight"),
-        ("Event Branding & Design", "Package", 1, 4000, "Ramadan-themed invitations + signage"),
+        ("Iftar Buffet (5-Star Hotel)", "Per person", 300, 450, "[NOTE] Ramadan premium pricing – 20-30% above regular season"),
+        ("VIP Seating Upgrade (Senior Leadership)", "Per person", 40, 220, "[NOTE] Assumed 13% VIP guests – confirm with SERA"),
+        ("Traditional Entertainment (Oud + Singer)", "Package", 1, 15000, "Oud player + traditional vocalist + Tawashih"),
+        ("Ramadan Décor Enhancement", "Package", 1, 12000, "Lanterns, crescents, fabric draping, ambient lighting, entrance"),
+        ("Premium Ramadan Gift Boxes", "Per person", 300, 120, "Premium dates, tasbih, Ramadan book, oud, prayer rug"),
+        ("Photography & Videography", "Package", 1, 10000, "Evening iftar coverage + highlight reel"),
+        ("Event Branding & Design", "Package", 1, 14000, "Ramadan-themed invitations, signage, social media kit, digital assets"),
     ]),
 
     ("EVENT 6: Mother's Day", "March 21", 130, "Elegant Restaurant", [
-        ("Venue + Lunch (Private dining)", "Per person", 130, 240, "Private restaurant section"),
-        ("Individual Flower Gift", "Per person", 130, 60, "Wrapped bouquet per attendee"),
-        ("Special Gift for Mothers", "Per person", 65, 150, "[NOTE] Assumed 50% are mothers – adjust based on SERA data"),
-        ("Light Entertainment / Performance", "Package", 1, 7000, "Musical performance"),
-        ("Photography", "3 hours", 1, 3500, "Event coverage"),
-        ("Event Coordination Materials", "Package", 1, 2000, "Invitations, signage, cards"),
+        ("Venue + Lunch (Private dining)", "Per person", 130, 280, "Private restaurant section, premium setting"),
+        ("Individual Flower Bouquet", "Per person", 130, 75, "Premium wrapped bouquet per attendee"),
+        ("Special Gift for Mothers", "Per person", 65, 185, "[NOTE] Assumed 50% are mothers – adjust based on SERA data"),
+        ("Light Entertainment / Performance", "Package", 1, 10000, "Musical performance + singer"),
+        ("Photography", "3 hours", 1, 4500, "Event coverage"),
+        ("Event Branding & Design", "Package", 1, 14000, "Invitations, signage, cards, social media kit, digital assets"),
     ]),
 
     # ═══ Q2 ═══
     ("Q2", None, None, None, None),
 
     ("EVENT 7: Eid Al-Fitr Celebration", "Early April", 300, "5-Star Hotel – Grand Gala", [
-        ("Venue Rental (Grand Ballroom)", "Evening", 1, 55000, "Premium 5-star hotel"),
-        ("Catering – Eid Gala Dinner", "Per person", 300, 350, "Eid special menu + live cooking stations"),
-        ("Stage & Full Eid Décor (Gold/White theme)", "Package", 1, 40000, "Premium festive Eid decoration + entrance"),
-        ("Entertainment – Ardah + Live Music", "Package", 1, 28000, "Traditional Ardah troupe + modern band"),
-        ("LED Video Wall & Full AV Production", "Package", 1, 20000, "Full stage production, lighting design"),
-        ("Photography & Videography (Full team)", "Package", 1, 16000, "Complete coverage, same-day preview"),
-        ("Eid Employee Gift Boxes", "Per person", 300, 130, "Premium Eid gift box"),
-        ("Children's Corner", "Package", 1, 12000, "[NOTE] Optional – only if families invited. Confirm with SERA"),
-        ("Professional MC (Bilingual)", "Full event", 1, 10000, "Eid gala host"),
-        ("Event Branding & Design", "Package", 1, 6000, "Eid-themed invites, backdrop, social media"),
+        ("Venue Rental (Grand Ballroom)", "Evening", 1, 58000, "Premium 5-star hotel, premium setup"),
+        ("Catering – Eid Gala Dinner", "Per person", 300, 360, "Eid special menu + live cooking stations + dessert bar"),
+        ("Stage & Full Eid Décor (Gold/White theme)", "Package", 1, 42000, "Premium festive Eid decoration + entrance arch + lighting"),
+        ("Entertainment – Ardah + Live Music", "Package", 1, 30000, "Traditional Ardah troupe + modern band"),
+        ("LED Video Wall & Full AV Production", "Package", 1, 22000, "Full stage production, lighting design, effects"),
+        ("Photography & Videography (Full team)", "Package", 1, 18000, "Complete coverage, same-day preview, highlight reel"),
+        ("Eid Employee Gift Boxes", "Per person", 300, 155, "Premium Eid gift box with personalized item"),
+        ("Children's Corner", "Package", 1, 15000, "[NOTE] Optional – only if families invited. Confirm with SERA"),
+        ("Professional MC (Bilingual)", "Full event", 1, 12000, "Eid gala host"),
+        ("Event Branding & Design", "Package", 1, 16000, "Eid-themed invites, backdrop, social media kit, signage, digital assets"),
     ]),
 
     ("EVENT 8: Creativity & Innovation Day", "April 21", 200, "Conference Center", [
-        ("Venue Rental (Conference + Exhibition)", "Full day", 1, 30000, "Conference center or business hotel"),
-        ("Catering (Lunch + 2 Coffee Breaks)", "Per person", 200, 180, "Full-day premium package"),
-        ("Innovation Showcase Booths (10 depts)", "Per booth", 10, 5000, "Custom booth design + displays + lighting"),
-        ("Main Stage & Presentation Setup", "Package", 1, 15000, "Stage, LED screen, sound"),
-        ("Innovation Awards & Trophies", "Set of 7", 1, 8000, "7 innovation category crystal awards"),
-        ("Keynote Speaker (Innovation Expert)", "Fee", 1, 20000, "[NOTE] Industry expert – price varies by profile"),
-        ("Digital Voting / Interactive System", "Rental", 1, 6000, "Audience votes + live results display"),
-        ("Photography & Videography", "Package", 1, 10000, "Full day coverage + innovation stories"),
-        ("Event Branding & Design", "Package", 1, 5000, "Booth templates, signage, programs"),
+        ("Venue Rental (Conference + Exhibition)", "Full day", 1, 38000, "Conference center or business hotel with exhibition space"),
+        ("Catering (Lunch + 2 Coffee Breaks)", "Per person", 200, 200, "Full-day premium package"),
+        ("Innovation Showcase Booths (10 depts)", "Per booth", 10, 5500, "Custom booth design + displays + lighting + interactive"),
+        ("Main Stage & Presentation Setup", "Package", 1, 18000, "Stage, LED screen, sound, podium"),
+        ("Innovation Awards & Trophies", "Set of 7", 1, 10000, "7 innovation category crystal awards + certificates"),
+        ("Keynote Speaker (Innovation Expert)", "Fee", 1, 25000, "[NOTE] Industry expert – price varies by profile"),
+        ("Digital Voting / Interactive System", "Rental", 1, 8000, "Audience votes + live results display on screen"),
+        ("Photography & Videography", "Package", 1, 12000, "Full day coverage + innovation showcase stories"),
+        ("Event Branding & Design", "Package", 1, 15000, "Booth templates, signage, programs, badges, digital content"),
     ]),
 
     ("EVENT 9: International Tea Day", "May 21", 250, "SERA HQ", [
         ("Venue", "SERA HQ", 1, 0, "Internal – no cost"),
-        ("Professional Tea Stations (3 types)", "Package", 1, 15000, "Arabic, English high tea, Asian ceremony"),
-        ("Tea Snacks & Gourmet Pastries", "Per person", 250, 40, "Curated tea pairings"),
-        ("Tea-Themed Décor & Setup", "Package", 1, 6000, "Full theming of common area"),
-        ("Educational Materials & Displays", "Package", 1, 3000, "Tea culture info + branding"),
-        ("Photography", "2 hours", 1, 3000, "Event coverage"),
+        ("Professional Tea Stations (3 types)", "Package", 1, 20000, "Arabic, English high tea, Asian ceremony with experts"),
+        ("Tea Snacks & Gourmet Pastries", "Per person", 250, 50, "Curated tea pairings, premium pastries"),
+        ("Tea-Themed Décor & Setup", "Package", 1, 8000, "Full theming of common area"),
+        ("Educational Materials & Displays", "Package", 1, 4000, "Tea culture info + branding + takeaway samples"),
+        ("Photography", "2 hours", 1, 3500, "Event coverage"),
     ]),
 
     ("EVENT 10: Blood Donation Day", "June 14", 120, "SERA HQ", [
         ("Venue Setup", "SERA HQ", 1, 0, "Internal + Red Crescent coordination"),
-        ("Pre-event Awareness Campaign", "Package", 1, 7000, "Posters, emails, digital screens, social"),
-        ("Donor Refreshments", "Per donor", 120, 50, "Juice, snacks, recovery food"),
-        ("Donor Appreciation Gifts", "Per donor", 120, 45, "Branded thank-you gift"),
-        ("Certificates of Appreciation", "Per donor", 120, 20, "Premium branded certificates"),
-        ("Photography", "Full day", 1, 3000, "Documentation"),
+        ("Pre-event Awareness Campaign", "Package", 1, 10000, "Posters, emails, digital screens, social, internal comms"),
+        ("Donor Refreshments", "Per donor", 120, 60, "Juice, snacks, recovery food, premium options"),
+        ("Donor Appreciation Gifts", "Per donor", 120, 55, "Branded thank-you gift set"),
+        ("Certificates of Appreciation", "Per donor", 120, 25, "Premium branded certificates"),
+        ("Photography", "Full day", 1, 3500, "Documentation"),
         ("Red Crescent Coordination", "Partnership", 1, 0, "[NOTE] They provide equipment & staff – confirm partnership"),
     ]),
 
     ("EVENT 11: Father's Day", "June 15", 160, "Event Space / Restaurant", [
-        ("Venue + Lunch/Dinner", "Per person", 160, 220, "Private venue booking"),
-        ("Father's Day Gifts", "Per person", 80, 130, "[NOTE] Assumed 50% are fathers – adjust per actual"),
-        ("Team Activities / Entertainment", "Package", 1, 10000, "Team competitions, entertainment"),
-        ("Photography", "3 hours", 1, 3500, "Event coverage"),
-        ("Event Coordination Materials", "Package", 1, 2500, "Invitations, signage"),
+        ("Venue + Lunch/Dinner", "Per person", 160, 260, "Private premium venue booking"),
+        ("Father's Day Gifts", "Per person", 80, 160, "[NOTE] Assumed 50% are fathers – adjust per actual"),
+        ("Team Activities / Entertainment", "Package", 1, 15000, "Team competitions, entertainment, prizes"),
+        ("Photography", "3 hours", 1, 4500, "Event coverage"),
+        ("Event Branding & Design", "Package", 1, 14000, "Invitations, signage, décor, social media kit, digital assets"),
     ]),
 
     ("EVENT 12: Eid Al-Adha Celebration", "Mid-June", 300, "5-Star Hotel – Grand Gala", [
-        ("Venue Rental (Grand Ballroom)", "Evening", 1, 55000, "Premium 5-star hotel"),
-        ("Catering – Eid Al-Adha Gala Dinner", "Per person", 300, 350, "Traditional lamb feast + premium menu"),
-        ("Stage & Full Eid Décor (Arabian theme)", "Package", 1, 40000, "Traditional Arabian Eid Al-Adha theme"),
-        ("Entertainment – Ardah + Live Music", "Package", 1, 28000, "Traditional + modern acts"),
-        ("LED Video Wall & Full AV Production", "Package", 1, 20000, "Full production setup"),
-        ("Photography & Videography (Full team)", "Package", 1, 16000, "Complete coverage"),
-        ("Eid Employee Gift Boxes", "Per person", 300, 130, "Premium gift box"),
-        ("Professional MC", "Full event", 1, 10000, "Gala host"),
-        ("Event Branding & Design", "Package", 1, 6000, "Eid-themed materials"),
+        ("Venue Rental (Grand Ballroom)", "Evening", 1, 58000, "Premium 5-star hotel"),
+        ("Catering – Eid Al-Adha Gala Dinner", "Per person", 300, 360, "Traditional lamb feast + premium menu + live stations"),
+        ("Stage & Full Eid Décor (Arabian theme)", "Package", 1, 42000, "Traditional Arabian Eid Al-Adha theme + entrance"),
+        ("Entertainment – Ardah + Live Music", "Package", 1, 30000, "Traditional + modern acts"),
+        ("LED Video Wall & Full AV Production", "Package", 1, 22000, "Full production setup + lighting design"),
+        ("Photography & Videography (Full team)", "Package", 1, 18000, "Complete coverage + highlight reel"),
+        ("Eid Employee Gift Boxes", "Per person", 300, 155, "Premium gift box with personalized item"),
+        ("Professional MC", "Full event", 1, 12000, "Gala host"),
+        ("Event Branding & Design", "Package", 1, 16000, "Eid-themed invites, backdrop, social media kit, signage, digital assets"),
     ]),
 
     # ═══ Q3 ═══
     ("Q3", None, None, None, None),
 
     ("EVENT 13: Summer SERA (صيف سيرا)", "July 20", 500, "Entertainment Venue – Evening", [
-        ("Venue Rental (Entertainment complex)", "Evening", 1, 65000, "[NOTE] MUST be evening post-sunset – July heat exceeds 45°C"),
-        ("Catering – Food Festival Style", "Per person", 500, 140, "8+ themed food stations"),
-        ("Beverages & Refreshments Station", "Per person", 500, 35, "Water, fresh juices, soft drinks, ice cream"),
-        ("Main Stage Entertainment (Live show)", "Package", 1, 35000, "Headline act + band"),
-        ("Children's Entertainment Zone", "Package", 1, 25000, "Games, characters, face painting, bouncy castles"),
-        ("Game Booths & Activity Stations", "Per booth", 10, 4000, "10 interactive branded stations"),
-        ("Prizes, Raffle & Giveaways", "Package", 1, 20000, "Competition prizes + grand raffle"),
-        ("Summer-Themed Décor (Multi-zone)", "Package", 1, 25000, "Full venue theming"),
-        ("Outdoor Concert Sound & Lighting", "Package", 1, 28000, "Concert-grade outdoor production"),
-        ("Photography & Videography (Multi-zone)", "Package", 1, 18000, "3 photographers + 2 videographers"),
-        ("Family Gift Bags", "Per family", 200, 75, "Summer activity pack"),
+        ("Venue Rental (Entertainment complex)", "Evening", 1, 72000, "[NOTE] MUST be evening post-sunset – July heat exceeds 45°C"),
+        ("Catering – Food Festival Style", "Per person", 500, 145, "10+ themed food stations, live cooking"),
+        ("Beverages & Refreshments Station", "Per person", 500, 38, "Water, fresh juices, soft drinks, ice cream bar"),
+        ("Main Stage Entertainment (Live show)", "Package", 1, 38000, "Headline act + band + performer"),
+        ("Children's Entertainment Zone", "Package", 1, 28000, "Games, characters, face painting, bouncy castles, VR"),
+        ("Game Booths & Activity Stations", "Per booth", 10, 5000, "10 interactive branded stations with prizes"),
+        ("Prizes, Raffle & Giveaways", "Package", 1, 25000, "Competition prizes + grand raffle + spot prizes"),
+        ("Summer-Themed Décor (Multi-zone)", "Package", 1, 30000, "Full venue theming across all zones"),
+        ("Outdoor Concert Sound & Lighting", "Package", 1, 35000, "Concert-grade outdoor production + effects"),
+        ("Photography & Videography (Multi-zone)", "Package", 1, 22000, "3 photographers + 2 videographers + drone"),
+        ("Family Gift Bags", "Per family", 250, 90, "Summer activity pack with branded items"),
     ]),
 
     ("EVENT 14: World Alzheimer's Day", "September 21", 200, "SERA HQ", [
         ("Venue", "SERA HQ", 1, 0, "Internal"),
-        ("Awareness Materials & Booth Setup", "Package", 1, 7000, "Purple theme + interactive info booth"),
-        ("Expert Healthcare Speaker", "Fee", 1, 12000, "Neurologist or awareness specialist"),
-        ("Light Refreshments", "Per person", 200, 35, "Coffee, healthy snacks"),
-        ("Purple Ribbons & Awareness Items", "Per person", 200, 15, "Branded awareness items"),
-        ("Photography", "2 hours", 1, 3000, "Event coverage"),
+        ("Awareness Materials & Booth Setup", "Package", 1, 10000, "Purple theme + interactive info booth + displays"),
+        ("Expert Healthcare Speaker", "Fee", 1, 15000, "Neurologist or awareness specialist"),
+        ("Light Refreshments", "Per person", 200, 45, "Coffee, healthy snacks, fruits"),
+        ("Purple Ribbons & Awareness Items", "Per person", 200, 20, "Branded awareness items + informational booklet"),
+        ("Photography", "2 hours", 1, 3500, "Event coverage"),
     ]),
 
     ("EVENT 15: Saudi National Day (96th)", "September 23", 300, "Premium Venue – Evening", [
-        ("Venue Rental (Premium + outdoor area)", "Evening", 1, 60000, "[NOTE] Book 3-4 months ahead – extreme demand period"),
-        ("Catering – Saudi Traditional Feast", "Per person", 300, 300, "Traditional Saudi dishes + modern, coffee ceremony"),
-        ("Stage & Premium National Décor (Green)", "Package", 1, 45000, "Flags, national symbols, green theme throughout"),
-        ("Ardah Performance Troupe", "Package", 1, 22000, "Authentic Saudi traditional dance"),
-        ("Saudi Cultural Entertainment", "Package", 1, 18000, "Additional cultural acts + Saudi music"),
-        ("LED Video Wall & AV Production", "Package", 1, 22000, "National content, anthem, videos on LED"),
-        ("Photography & Videography (Full team)", "Package", 1, 18000, "Premium coverage"),
-        ("National Day Themed Gifts", "Per person", 300, 100, "Patriotic premium gift items"),
-        ("Green Lighting & Special Effects", "Package", 1, 15000, "Building/venue green wash + effects"),
-        ("Professional MC", "Full event", 1, 10000, "National Day host"),
-        ("Event Branding & Design", "Package", 1, 6000, "Invitations, signage, social media"),
+        ("Venue Rental (Premium + outdoor area)", "Evening", 1, 65000, "[NOTE] Book 3-4 months ahead – extreme demand period"),
+        ("Catering – Saudi Traditional Feast", "Per person", 300, 320, "Traditional Saudi dishes + modern, coffee ceremony, live stations"),
+        ("Stage & Premium National Décor (Green)", "Package", 1, 48000, "Flags, national symbols, green theme, immersive design"),
+        ("Ardah Performance Troupe", "Package", 1, 24000, "Authentic Saudi traditional dance + sword dance"),
+        ("Saudi Cultural Entertainment", "Package", 1, 18000, "Additional cultural acts + Saudi music + poet"),
+        ("LED Video Wall & AV Production", "Package", 1, 24000, "National content, anthem, videos on LED, special effects"),
+        ("Photography & Videography (Full team)", "Package", 1, 20000, "Premium coverage + drone + same-day preview"),
+        ("National Day Themed Gifts", "Per person", 300, 125, "Patriotic premium gift items with SERA branding"),
+        ("Green Lighting & Special Effects", "Package", 1, 20000, "Building/venue green wash + laser + effects"),
+        ("Professional MC", "Full event", 1, 12000, "National Day host"),
+        ("Event Branding & Design", "Package", 1, 16000, "Invitations, signage, social media kit, print, digital assets"),
+        ("Fireworks / Confetti Finale", "Package", 1, 15000, "[NOTE] Indoor confetti/CO2 if fireworks not permitted"),
     ]),
 
     # ═══ Q4 ═══
@@ -294,100 +297,116 @@ events = [
 
     ("EVENT 16: International Coffee Day", "October 1", 250, "SERA HQ", [
         ("Venue", "SERA HQ", 1, 0, "Internal"),
-        ("Professional Barista Station", "Package", 1, 10000, "Specialty coffee equipment + barista"),
-        ("Arabic Coffee Ceremony (Dallah)", "Package", 1, 6000, "Traditional service with premium dates"),
-        ("International Coffee + Pastries", "Per person", 250, 45, "Various coffees + gourmet pastries"),
-        ("Coffee-Themed Décor & Setup", "Package", 1, 5000, "Full theming"),
-        ("Photography", "2 hours", 1, 3000, "Event coverage"),
+        ("Professional Barista Station", "Package", 1, 14000, "Specialty coffee equipment + 2 baristas"),
+        ("Arabic Coffee Ceremony (Dallah)", "Package", 1, 8000, "Traditional service with premium dates + Saudiya coffee"),
+        ("International Coffee + Pastries", "Per person", 250, 55, "Various coffees + gourmet pastries + chocolate"),
+        ("Coffee-Themed Décor & Setup", "Package", 1, 7000, "Full theming + bean displays"),
+        ("Photography", "2 hours", 1, 3500, "Event coverage"),
     ]),
 
     ("EVENT 17: Cybersecurity Exhibition", "October TBD", 250, "SERA HQ / Conference", [
-        ("Venue Setup", "SERA HQ", 1, 8000, "Internal setup + additional infrastructure"),
-        ("Interactive Exhibition Booths", "Per booth", 6, 12000, "6 interactive cybersecurity demo stations"),
-        ("Cybersecurity Expert Speakers", "Fee", 2, 15000, "2 industry experts"),
-        ("Interactive Simulations & Demos", "Package", 1, 20000, "Phishing demos, password games, VR"),
-        ("Awareness Materials & Branded Giveaways", "Per person", 250, 50, "Secure USB, materials, guides"),
-        ("Catering (Full day)", "Per person", 250, 140, "Lunch + 2 premium coffee breaks"),
-        ("Photography & Videography", "Package", 1, 10000, "Full day coverage"),
-        ("Event Branding & Design", "Package", 1, 6000, "Booth designs, signage, materials"),
+        ("Venue Setup", "SERA HQ", 1, 12000, "Internal setup + additional infrastructure + networking"),
+        ("Interactive Exhibition Booths", "Per booth", 6, 14000, "6 interactive cybersecurity demo stations with screens"),
+        ("Cybersecurity Expert Speakers", "Fee", 2, 15000, "2 industry-leading experts"),
+        ("Interactive Simulations & Demos", "Package", 1, 22000, "Phishing demos, password games, VR, AI threats"),
+        ("Awareness Materials & Branded Giveaways", "Per person", 250, 60, "Secure USB, materials, guides, branded items"),
+        ("Catering (Full day)", "Per person", 250, 165, "Lunch + 2 premium coffee breaks"),
+        ("Photography & Videography", "Package", 1, 12000, "Full day coverage + exhibition walkthrough video"),
+        ("Event Branding & Design", "Package", 1, 15000, "Booth designs, signage, materials, badges, digital content"),
     ]),
 
     ("EVENT 18: World Mental Health Day", "October 10", 200, "SERA HQ", [
         ("Venue", "SERA HQ", 1, 0, "Internal"),
-        ("Wellness Expert / Psychologist", "Fee", 1, 15000, "Mental health keynote speaker"),
-        ("Stress Management Workshop", "Package", 1, 12000, "Interactive workshop + materials"),
-        ("Relaxation Zone Setup", "Package", 1, 8000, "Calm space, massage chairs, aromatherapy"),
-        ("Healthy Refreshments", "Per person", 200, 40, "Herbal teas, fruits, healthy snacks"),
-        ("Wellness Giveaways", "Per person", 200, 35, "Journals, essential oils, wellness kits"),
-        ("Photography", "Half day", 1, 3000, "Event coverage"),
+        ("Wellness Expert / Psychologist", "Fee", 1, 18000, "Mental health keynote speaker"),
+        ("Stress Management Workshop", "Package", 1, 15000, "Interactive workshop + materials + exercises"),
+        ("Relaxation Zone Setup", "Package", 1, 12000, "Calm space, massage chairs, aromatherapy, sound therapy"),
+        ("Healthy Refreshments", "Per person", 200, 50, "Herbal teas, fruits, healthy snacks, smoothies"),
+        ("Wellness Giveaways", "Per person", 200, 45, "Journals, essential oils, wellness kits, meditation app"),
+        ("Photography", "Half day", 1, 3500, "Event coverage"),
     ]),
 
     ("EVENT 19: Quality Day", "November 10", 180, "Business Hotel Conference", [
-        ("Venue (Conference room)", "Half day", 1, 20000, "Professional conference setting"),
-        ("Catering (Lunch + 1 break)", "Per person", 180, 120, "Half-day package"),
-        ("Quality Awards & Recognition", "Set of 7", 1, 7000, "7 quality awards + certificates"),
-        ("Stage & Presentation Setup", "Package", 1, 8000, "Stage, screen, sound, podium"),
-        ("Photography", "Half day", 1, 3000, "Event coverage"),
-        ("Event Branding & Design", "Package", 1, 3000, "Signage, certificates, backdrop"),
+        ("Venue (Conference room)", "Half day", 1, 25000, "Professional conference setting"),
+        ("Catering (Lunch + 1 break)", "Per person", 180, 145, "Half-day premium package"),
+        ("Quality Awards & Recognition", "Set of 7", 1, 10000, "7 quality awards + certificates + frames"),
+        ("Stage & Presentation Setup", "Package", 1, 10000, "Stage, screen, sound, podium, backdrop"),
+        ("Quality Expert Keynote Speaker", "Fee", 1, 12000, "Quality/excellence expert"),
+        ("Photography", "Half day", 1, 3500, "Event coverage"),
+        ("Event Branding & Design", "Package", 1, 14000, "Signage, certificates, backdrop, materials, social media, digital"),
     ]),
 
     ("EVENT 20: International Men's Day", "November 19", 200, "Event Space", [
-        ("Venue + Lunch/Dinner", "Per person", 200, 180, "Private event space"),
-        ("Team Activities & Competitions", "Package", 1, 15000, "Team-building, sports competitions"),
-        ("Recognition Gifts", "Per person", 200, 50, "Men's day gift"),
-        ("Photography", "3 hours", 1, 3500, "Event coverage"),
-        ("Event Coordination Materials", "Package", 1, 3000, "Invitations, signage"),
+        ("Venue + Lunch/Dinner", "Per person", 200, 210, "Private premium event space"),
+        ("Team Activities & Competitions", "Package", 1, 20000, "Team-building, sports competitions, prizes"),
+        ("Recognition Gifts", "Per person", 200, 65, "Men's day premium gift"),
+        ("Photography", "3 hours", 1, 4500, "Event coverage"),
+        ("Event Branding & Design", "Package", 1, 14000, "Invitations, signage, décor, social media kit, digital assets"),
     ]),
 
     ("EVENT 21: Universal Children's Day", "November 20", 200, "Family Entertainment Venue", [
-        ("Venue (Family-friendly)", "4 hours", 1, 25000, "Entertainment venue"),
-        ("Catering (Kids + Adults)", "Per person", 200, 100, "Kid-friendly + adult menu"),
-        ("Children's Professional Entertainment", "Package", 1, 20000, "Characters, clown, games, face paint, magic"),
-        ("Gifts for Children", "Per child", 100, 65, "Premium toys, activity kits"),
-        ("Photography", "4 hours", 1, 4000, "Family event coverage"),
-        ("Event Branding & Signage", "Package", 1, 3000, "Kid-friendly branded materials"),
+        ("Venue (Family-friendly)", "4 hours", 1, 30000, "Premium entertainment venue"),
+        ("Catering (Kids + Adults)", "Per person", 200, 120, "Kid-friendly + adult menu + dessert station"),
+        ("Children's Professional Entertainment", "Package", 1, 25000, "Characters, clown, games, face paint, magic, VR"),
+        ("Gifts for Children", "Per child", 100, 80, "Premium toys, activity kits, branded items"),
+        ("Photography & Videography", "Package", 1, 6000, "Family event coverage + fun video"),
+        ("Event Branding & Design", "Package", 1, 14000, "Kid-friendly branded materials, photo spots, social media, digital"),
     ]),
 
     ("EVENT 22: Volunteer Day", "December 5", 80, "Community Location", [
-        ("Transportation (Buses)", "Per bus", 2, 3000, "SERA HQ to community location + return"),
-        ("Branded Volunteer T-Shirts", "Per person", 80, 55, "SERA branded volunteer shirts"),
-        ("Activity Materials & Supplies", "Package", 1, 8000, "Supplies for volunteer work"),
-        ("Volunteer Lunch Boxes + Water", "Per person", 80, 60, "Premium boxed lunches"),
-        ("Photography & Videography", "Package", 1, 5000, "Documentation + CSR video"),
-        ("Appreciation Certificates & Medals", "Per person", 80, 20, "Volunteer recognition"),
+        ("Transportation (Buses)", "Per bus", 2, 3500, "SERA HQ to community location + return"),
+        ("Branded Volunteer T-Shirts + Caps", "Per person", 80, 70, "SERA branded volunteer kit"),
+        ("Activity Materials & Supplies", "Package", 1, 10000, "Supplies for volunteer work + tools"),
+        ("Volunteer Lunch Boxes + Water", "Per person", 80, 70, "Premium boxed lunches + snacks"),
+        ("Photography & Videography", "Package", 1, 7000, "Documentation + CSR highlight video"),
+        ("Appreciation Certificates & Medals", "Per person", 80, 25, "Premium volunteer recognition"),
     ]),
 
     ("EVENT 23: Anti-Corruption Day", "December 9", 200, "SERA HQ / Conference", [
         ("Venue", "SERA HQ", 1, 0, "Internal"),
-        ("Ethics Expert / Nazaha Speaker", "Fee", 1, 15000, "[NOTE] Price depends on speaker – Nazaha rep or ethics expert"),
-        ("Pledge Wall & Integrity Display", "Package", 1, 6000, "Interactive pledge wall + signing ceremony"),
-        ("Awareness Materials", "Per person", 200, 25, "Brochures, ethics guide booklets"),
-        ("Light Refreshments", "Per person", 200, 40, "Coffee, snacks"),
-        ("Photography", "Half day", 1, 3000, "Event coverage"),
+        ("Ethics Expert / Nazaha Speaker", "Fee", 1, 20000, "[NOTE] Price depends on speaker – Nazaha rep or ethics expert"),
+        ("Pledge Wall & Integrity Display", "Package", 1, 8000, "Interactive pledge wall + signing ceremony + LED display"),
+        ("Awareness Materials & Booklets", "Per person", 200, 30, "Brochures, ethics guide booklets, policy summary"),
+        ("Light Refreshments", "Per person", 200, 50, "Coffee, premium snacks"),
+        ("Photography", "Half day", 1, 3500, "Event coverage"),
+        ("Event Branding & Design", "Package", 1, 14000, "Signage, materials, social media kit, digital assets"),
     ]),
 
     ("EVENT 24: Arabic Language Day", "December 18", 200, "Cultural Venue", [
-        ("Venue (Cultural setting)", "3 hours", 1, 15000, "Cultural center or elegant hall"),
-        ("Poet / Arabic Author Guest", "Fee", 1, 12000, "Arabic literature figure"),
-        ("Live Calligraphy Workshop", "Package", 1, 8000, "Professional calligrapher + materials for 60"),
-        ("Arabic Poetry Reading / Recital", "Package", 1, 7000, "Professional recital performance"),
-        ("Traditional Arabic Refreshments", "Per person", 200, 50, "Arabic coffee, dates, premium sweets"),
-        ("Cultural Décor (Calligraphy art)", "Package", 1, 6000, "Arabic calligraphy displays + art"),
-        ("Photography", "3 hours", 1, 3500, "Event coverage"),
-        ("Event Branding & Design", "Package", 1, 3000, "Arabic-themed invitations, signage"),
+        ("Venue (Cultural setting)", "3 hours", 1, 20000, "Cultural center or elegant hall"),
+        ("Poet / Arabic Author Guest", "Fee", 1, 15000, "Arabic literature figure + book signing"),
+        ("Live Calligraphy Workshop", "Package", 1, 10000, "Professional calligrapher + materials for 80"),
+        ("Arabic Poetry Reading / Recital", "Package", 1, 9000, "Professional recital performance + music"),
+        ("Traditional Arabic Refreshments", "Per person", 200, 60, "Arabic coffee, dates, premium sweets, luqaimat"),
+        ("Cultural Décor (Calligraphy art)", "Package", 1, 8000, "Arabic calligraphy displays + art + manuscripts"),
+        ("Photography", "3 hours", 1, 4500, "Event coverage"),
+        ("Event Branding & Design", "Package", 1, 14000, "Arabic-themed invitations, signage, social media kit, digital assets"),
     ]),
 
     ("EVENT 25: Year-End Celebration", "Late December", 300, "5-Star Hotel – Premium Gala", [
-        ("Venue Rental (Premium Gala setup)", "Evening", 1, 65000, "[NOTE] Book 3 months ahead – December peak season"),
-        ("Catering – Premium Gala Dinner", "Per person", 300, 380, "Live cooking stations, international premium menu"),
-        ("Stage & Premium Year-End Décor", "Package", 1, 45000, "Elegant theme + year-end branding + lighting design"),
-        ("Premium Entertainment (Band + Acts)", "Package", 1, 35000, "High-quality headline entertainment"),
-        ("LED Video Wall & Full AV Production", "Package", 1, 25000, "Year-review video playback + full production"),
-        ("Annual Awards Ceremony Package", "Package", 1, 15000, "15 trophies, recognition displays, awards video"),
-        ("Photography & Videography (Full team)", "Package", 1, 18000, "Complete professional coverage"),
-        ("Year-End Premium Gifts", "Per person", 300, 150, "Premium thank-you gift box"),
-        ("Professional MC (Premium)", "Full event", 1, 12000, "High-profile gala host"),
-        ("Event Branding & Design", "Package", 1, 7000, "Invitations, backdrop, table cards, menus, signage"),
+        ("Venue Rental (Premium Gala setup)", "Evening", 1, 70000, "[NOTE] Book 3 months ahead – December peak season"),
+        ("Catering – Premium Gala Dinner", "Per person", 300, 395, "Live cooking stations, international premium menu + dessert bar"),
+        ("Stage & Premium Year-End Décor", "Package", 1, 48000, "Elegant theme + year-end branding + immersive lighting design"),
+        ("Premium Entertainment (Band + Acts)", "Package", 1, 38000, "High-quality headline entertainment + performer"),
+        ("LED Video Wall & Full AV Production", "Package", 1, 26000, "Year-review video playback + full production + effects"),
+        ("Annual Awards Ceremony Package", "Package", 1, 20000, "15 trophies, recognition displays, awards video, frames"),
+        ("Photography & Videography (Full team)", "Package", 1, 22000, "Complete professional coverage + same-day preview"),
+        ("Year-End Premium Gifts", "Per person", 300, 185, "Premium thank-you gift box with personalized item"),
+        ("Professional MC (Premium)", "Full event", 1, 15000, "High-profile gala host"),
+        ("Event Branding & Design", "Package", 1, 18000, "Invitations, backdrop, table cards, menus, signage, social media, video"),
+    ]),
+
+    # ═══ NEWSLETTERS (52 weekly issues) ═══
+    ("NEWSLETTERS", None, None, None, None),
+
+    ("ANNUAL: 52 Weekly Internal Newsletters", "Full Year 2026", 52, "Digital + Print Distribution", [
+        ("Newsletter Content Writing (Arabic)", "Per issue", 52, 2500, "Professional Arabic content writer, research, interviews"),
+        ("Newsletter Content Writing (English)", "Per issue", 52, 2000, "English version / bilingual adaptation"),
+        ("Graphic Design & Layout", "Per issue", 52, 2200, "Custom branded template, infographics, illustrations"),
+        ("Photography for Newsletter Content", "Per month", 12, 3000, "Monthly photoshoot for newsletter imagery"),
+        ("Editorial Management & Review", "Per month", 12, 4500, "Editor-in-chief, editorial calendar, quality control"),
+        ("Digital Distribution Platform", "Per month", 12, 1500, "Email platform, analytics, distribution management"),
+        ("Print Production (Limited VIP copies)", "Per issue", 52, 800, "[NOTE] 50 printed copies per issue for VIP/leadership distribution"),
+        ("Annual Newsletter Strategy & Planning", "Package", 1, 15000, "Content strategy, editorial calendar, themes alignment"),
     ]),
 ]
 
@@ -397,13 +416,13 @@ event_subtotal_rows = []
 quarter_labels = {}
 current_quarter = None
 q_start_rows = {}
-q_event_subtotals = {"Q1": [], "Q2": [], "Q3": [], "Q4": []}
+q_event_subtotals = {"Q1": [], "Q2": [], "Q3": [], "Q4": [], "NEWSLETTERS": []}
 
 for event_data in events:
     name = event_data[0]
 
     # Quarter marker
-    if name in ("Q1", "Q2", "Q3", "Q4"):
+    if name in ("Q1", "Q2", "Q3", "Q4", "NEWSLETTERS"):
         current_quarter = name
         r += 1
         add_title(ws3, r, f"{name} EVENTS", 6)
@@ -491,13 +510,15 @@ r += 1
 add_title(ws3, r, "QUARTERLY & ANNUAL TOTALS", 6); r += 1
 
 quarter_total_rows = {}
-for q_name in ["Q1", "Q2", "Q3", "Q4"]:
-    ws3.cell(row=r, column=1, value=f"{q_name} TOTAL").font = total_font
+for q_name in ["Q1", "Q2", "Q3", "Q4", "NEWSLETTERS"]:
+    label = f"{q_name} TOTAL" if q_name != "NEWSLETTERS" else "52 WEEKLY NEWSLETTERS TOTAL"
+    ws3.cell(row=r, column=1, value=label).font = total_font
     formula_parts = [f"E{row}" for row in q_event_subtotals[q_name]]
     ws3.cell(row=r, column=5).value = f"={'+'.join(formula_parts)}"
     ws3.cell(row=r, column=5).font = total_font
     ws3.cell(row=r, column=5).number_format = sar_format
-    ws3.cell(row=r, column=6, value=f"{len(q_event_subtotals[q_name])} events").font = normal_font
+    count_label = f"{len(q_event_subtotals[q_name])} events" if q_name != "NEWSLETTERS" else "52 issues / year"
+    ws3.cell(row=r, column=6, value=count_label).font = normal_font
     for c in range(1, 7):
         ws3.cell(row=r, column=c).fill = PatternFill(start_color='52B788', end_color='52B788', fill_type='solid')
         ws3.cell(row=r, column=c).font = Font(name='Arial', size=11, bold=True, color='FFFFFF')
@@ -507,8 +528,8 @@ for q_name in ["Q1", "Q2", "Q3", "Q4"]:
 
 # Events Grand Total
 r += 1
-ws3.cell(row=r, column=1, value="ALL EVENTS SUBTOTAL (Excl. Sports)").font = grand_font
-events_total_formula = f"=E{quarter_total_rows['Q1']}+E{quarter_total_rows['Q2']}+E{quarter_total_rows['Q3']}+E{quarter_total_rows['Q4']}"
+ws3.cell(row=r, column=1, value="ALL EVENTS + NEWSLETTERS SUBTOTAL (Excl. Sports)").font = grand_font
+events_total_formula = f"=E{quarter_total_rows['Q1']}+E{quarter_total_rows['Q2']}+E{quarter_total_rows['Q3']}+E{quarter_total_rows['Q4']}+E{quarter_total_rows['NEWSLETTERS']}"
 ws3.cell(row=r, column=5).value = events_total_formula
 ws3.cell(row=r, column=5).font = grand_font
 ws3.cell(row=r, column=5).number_format = sar_format
