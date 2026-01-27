@@ -2,93 +2,107 @@ import { useState, useCallback } from 'react';
 import type { Invoice } from './types/invoice';
 import { createNewInvoice } from './types/invoice';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { InvoiceList } from './components/InvoiceList';
-import { InvoiceEditor } from './components/InvoiceEditor';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import LoginPage from './components/LoginPage';
+import SignupPage from './components/SignupPage';
+import Layout, { type Route } from './components/Layout';
+import Dashboard from './components/Dashboard';
+import InvoiceList from './components/InvoiceList';
+import InvoiceWizard from './components/InvoiceWizard';
+import CompanySettings from './components/CompanySettings';
+import UserManagement from './components/UserManagement';
+import { v4 as uuidv4 } from 'uuid';
 
-type View = 'list' | 'editor';
-
-function App() {
-  const [invoices, setInvoices] = useLocalStorage<Invoice[]>('qns-invoices', []);
-  const [currentView, setCurrentView] = useState<View>('list');
+function AppContent() {
+  const { isAuthenticated, currentUser } = useAuth();
+  const [authView, setAuthView] = useState<'login' | 'signup'>('login');
+  const [currentRoute, setCurrentRoute] = useState<Route>('dashboard');
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const [isNewInvoice, setIsNewInvoice] = useState(false);
 
+  // Per-user invoice storage key
+  const storageKey = currentUser ? `qns-invoices-${currentUser.companyId}` : 'qns-invoices';
+  const [invoices, setInvoices] = useLocalStorage<Invoice[]>(storageKey, []);
+
   const handleCreateNew = useCallback(() => {
-    const newInvoice = createNewInvoice();
-    setCurrentInvoice(newInvoice);
+    const invoice = createNewInvoice();
+    setCurrentInvoice(invoice);
     setIsNewInvoice(true);
-    setCurrentView('editor');
+    setCurrentRoute('new-invoice');
   }, []);
 
   const handleEdit = useCallback((invoice: Invoice) => {
-    setCurrentInvoice(invoice);
+    setCurrentInvoice({ ...invoice });
     setIsNewInvoice(false);
-    setCurrentView('editor');
+    setCurrentRoute('edit-invoice');
   }, []);
 
   const handleDuplicate = useCallback((invoice: Invoice) => {
     const duplicated: Invoice = {
       ...JSON.parse(JSON.stringify(invoice)),
-      id: crypto.randomUUID(),
+      id: uuidv4(),
       clientName: `${invoice.clientName} (Copy)`,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      modifiedAt: new Date().toISOString(),
     };
-    setCurrentInvoice(duplicated);
-    setIsNewInvoice(true);
-    setCurrentView('editor');
-  }, []);
+    setInvoices(prev => [...prev, duplicated]);
+  }, [setInvoices]);
 
   const handleDelete = useCallback((id: string) => {
-    if (window.confirm('Are you sure you want to delete this invoice?')) {
-      setInvoices(prev => prev.filter(inv => inv.id !== id));
-    }
+    setInvoices(prev => prev.filter(inv => inv.id !== id));
   }, [setInvoices]);
 
   const handleSave = useCallback(() => {
     if (!currentInvoice) return;
+    const now = new Date().toISOString();
+    const updated = { ...currentInvoice, modifiedAt: now };
 
-    setInvoices(prev => {
-      const exists = prev.find(inv => inv.id === currentInvoice.id);
-      if (exists) {
-        return prev.map(inv =>
-          inv.id === currentInvoice.id
-            ? { ...currentInvoice, updatedAt: new Date().toISOString() }
-            : inv
-        );
-      } else {
-        return [...prev, currentInvoice];
-      }
-    });
+    if (isNewInvoice) {
+      updated.createdAt = now;
+      setInvoices(prev => [...prev, updated]);
+    } else {
+      setInvoices(prev => prev.map(inv => inv.id === updated.id ? updated : inv));
+    }
 
-    setCurrentView('list');
     setCurrentInvoice(null);
     setIsNewInvoice(false);
-  }, [currentInvoice, setInvoices]);
+    setCurrentRoute('invoices');
+  }, [currentInvoice, isNewInvoice, setInvoices]);
 
   const handleBack = useCallback(() => {
-    const hasChanges = currentInvoice && isNewInvoice;
-    if (hasChanges) {
-      const confirmed = window.confirm('You have unsaved changes. Are you sure you want to go back?');
-      if (!confirmed) return;
-    }
-    setCurrentView('list');
     setCurrentInvoice(null);
     setIsNewInvoice(false);
-  }, [currentInvoice, isNewInvoice]);
-
-  const handleInvoiceChange = useCallback((updatedInvoice: Invoice) => {
-    setCurrentInvoice(updatedInvoice);
+    setCurrentRoute('invoices');
   }, []);
 
-  // Sort invoices by updated date (most recent first)
-  const sortedInvoices = [...invoices].sort(
-    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-  );
+  const handleInvoiceChange = useCallback((invoice: Invoice) => {
+    setCurrentInvoice(invoice);
+  }, []);
 
-  if (currentView === 'editor' && currentInvoice) {
+  const handleNavigate = useCallback((route: Route) => {
+    if (route === 'new-invoice') {
+      handleCreateNew();
+    } else {
+      setCurrentRoute(route);
+      if (route !== 'edit-invoice') {
+        setCurrentInvoice(null);
+        setIsNewInvoice(false);
+      }
+    }
+  }, [handleCreateNew]);
+
+  // Auth screens (no layout)
+  if (!isAuthenticated) {
+    if (authView === 'signup') {
+      return <SignupPage onSwitchToLogin={() => setAuthView('login')} />;
+    }
+    return <LoginPage onSwitchToSignup={() => setAuthView('signup')} />;
+  }
+
+  // Invoice wizard (full screen, no sidebar)
+  if ((currentRoute === 'new-invoice' || currentRoute === 'edit-invoice') && currentInvoice) {
     return (
-      <InvoiceEditor
+      <InvoiceWizard
         invoice={currentInvoice}
         onChange={handleInvoiceChange}
         onSave={handleSave}
@@ -98,15 +112,35 @@ function App() {
     );
   }
 
+  // Dashboard layout with sidebar
   return (
-    <InvoiceList
-      invoices={sortedInvoices}
-      onCreateNew={handleCreateNew}
-      onEdit={handleEdit}
-      onDuplicate={handleDuplicate}
-      onDelete={handleDelete}
-    />
+    <Layout currentRoute={currentRoute} onNavigate={handleNavigate}>
+      {currentRoute === 'dashboard' && (
+        <Dashboard
+          invoices={invoices}
+          onCreateNew={handleCreateNew}
+          onEditInvoice={handleEdit}
+        />
+      )}
+      {currentRoute === 'invoices' && (
+        <InvoiceList
+          invoices={invoices}
+          onCreateNew={handleCreateNew}
+          onEdit={handleEdit}
+          onDuplicate={handleDuplicate}
+          onDelete={handleDelete}
+        />
+      )}
+      {currentRoute === 'settings' && <CompanySettings />}
+      {currentRoute === 'users' && <UserManagement />}
+    </Layout>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
+}

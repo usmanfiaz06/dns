@@ -83,6 +83,7 @@ export interface Invoice {
   completionDays: number;
   createdAt: string;
   updatedAt: string;
+  modifiedAt?: string;
   // New fields
   pastProjects: PastProject[];
   companyProfile: CompanyProfile;
