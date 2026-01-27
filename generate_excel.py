@@ -131,7 +131,18 @@ events = [
         ("Welcome Lounge & VIP Hospitality", "Package", 1, 12000, "VIP reception area with premium refreshments"),
     ]),
 
-    ("EVENT 2: Employee Appreciation Day", "March 2", 300, "5-Star Hotel – Evening Gala", [
+    ("EVENT 2: Founding Day (يوم التأسيس)", "February 22", 300, "SERA HQ", [
+        ("Venue", "SERA HQ", 1, 0, "Internal – no rental cost"),
+        ("National Décor & Heritage Displays", "Package", 1, 14000, "Founding Day theme, heritage artifacts, timeline display"),
+        ("Sound System Rental", "Rental", 1, 5000, "For national anthem + speeches + ambient"),
+        ("Commemorative Items (badges, pins, flags)", "Per person", 300, 42, "Custom SERA + Founding Day branding"),
+        ("Light Refreshments (Traditional Saudi)", "Per person", 300, 55, "Arabic coffee, dates, Saudi heritage sweets"),
+        ("Photography", "3 hours", 1, 4000, "Event documentation"),
+        ("Social Media Live Coverage", "Package", 1, 4500, "Real-time posts + stories + reels"),
+        ("Event Branding & Design", "Package", 1, 14000, "Heritage-themed signage, displays, social media kit"),
+    ]),
+
+    ("EVENT 3: Employee Appreciation Day", "March 2", 300, "5-Star Hotel – Evening Gala", [
         ("Venue Rental (Gala table setup)", "Evening", 1, 52000, "Ballroom with round-table gala setup"),
         ("Catering – Gala Dinner (3-course plated)", "Per person", 300, 330, "Premium plated service + welcome drinks + dessert bar"),
         ("Live Band Entertainment", "Package", 1, 22000, "Professional band, 2.5-hour set"),
@@ -143,7 +154,7 @@ events = [
         ("Event Branding & Design", "Package", 1, 15000, "Invitations, backdrop, table cards, menu cards, signage, social media"),
     ]),
 
-    ("EVENT 3: International Women's Day", "March 8", 150, "Boutique Venue – Ladies Only", [
+    ("EVENT 4: International Women's Day", "March 8", 150, "Boutique Venue – Ladies Only", [
         ("Venue Rental (Ladies section)", "Half day", 1, 24000, "Elegant boutique venue or hotel ladies' space"),
         ("Catering – Ladies' Lunch", "Per person", 150, 230, "Refined plated lunch service + welcome drinks"),
         ("Premium Floral Arrangements", "Package", 1, 12000, "Centerpieces + entrance + stage florals + individual stems"),
@@ -154,7 +165,7 @@ events = [
         ("Event Branding & Design", "Package", 1, 14000, "Invitations, social media kit, signage, digital assets"),
     ]),
 
-    ("EVENT 4: Saudi Flag Day", "March 11", 300, "SERA HQ", [
+    ("EVENT 5: Saudi Flag Day", "March 11", 300, "SERA HQ", [
         ("Venue", "SERA HQ", 1, 0, "Internal – no rental cost"),
         ("National Flag Display & Décor", "Package", 1, 12000, "Large flag (5m+), national colors throughout, entrance display"),
         ("Sound System Rental", "Rental", 1, 5000, "For national anthem + speeches + ambient"),
@@ -165,7 +176,7 @@ events = [
         ("Event Branding & Design", "Package", 1, 14000, "National day signage, displays, social media, digital assets"),
     ]),
 
-    ("EVENT 5: Ramadan Iftar", "Mid-March", 300, "5-Star Hotel Ramadan Tent", [
+    ("EVENT 6: Ramadan Iftar", "Mid-March", 300, "5-Star Hotel Ramadan Tent", [
         ("Iftar Buffet (5-Star Hotel)", "Per person", 300, 450, "[NOTE] Ramadan premium pricing – 20-30% above regular season"),
         ("VIP Seating Upgrade (Senior Leadership)", "Per person", 40, 220, "[NOTE] Assumed 13% VIP guests – confirm with SERA"),
         ("Traditional Entertainment (Oud + Singer)", "Package", 1, 15000, "Oud player + traditional vocalist + Tawashih"),
@@ -175,7 +186,7 @@ events = [
         ("Event Branding & Design", "Package", 1, 14000, "Ramadan-themed invitations, signage, social media kit, digital assets"),
     ]),
 
-    ("EVENT 6: Mother's Day", "March 21", 130, "Elegant Restaurant", [
+    ("EVENT 7: Mother's Day", "March 21", 130, "Elegant Restaurant", [
         ("Venue + Lunch (Private dining)", "Per person", 130, 280, "Private restaurant section, premium setting"),
         ("Individual Flower Bouquet", "Per person", 130, 75, "Premium wrapped bouquet per attendee"),
         ("Special Gift for Mothers", "Per person", 65, 185, "[NOTE] Assumed 50% are mothers – adjust based on SERA data"),
@@ -184,10 +195,30 @@ events = [
         ("Event Branding & Design", "Package", 1, 14000, "Invitations, signage, cards, social media kit, digital assets"),
     ]),
 
+    ("EVENT 8: Saudi Green Initiative (المبادرة الخضراء)", "March 27", 250, "SERA HQ", [
+        ("Venue", "SERA HQ", 1, 0, "Internal – no rental cost"),
+        ("Green Initiative Exhibition Booths", "Package", 1, 15000, "Interactive sustainability displays, SERA green projects"),
+        ("Environmental Expert Speaker", "Fee", 1, 15000, "Sustainability / clean energy expert"),
+        ("Awareness Materials & Eco Giveaways", "Per person", 250, 32, "Eco-friendly branded items, seed kits, reusable bags"),
+        ("Light Refreshments (Organic/Healthy)", "Per person", 250, 45, "Organic options, minimal-waste serving"),
+        ("Photography", "2 hours", 1, 3500, "Event documentation"),
+        ("Event Branding & Design", "Package", 1, 14000, "Green-themed signage, displays, social media kit"),
+    ]),
+
+    ("EVENT 9: Ehsan Philanthropy Campaign (حملة إحسان)", "March", 200, "SERA HQ", [
+        ("Venue", "SERA HQ", 1, 0, "Internal – no rental cost"),
+        ("Campaign Materials & Setup", "Package", 1, 10000, "Ehsan platform displays, donation stations, banners"),
+        ("Awareness Display & Interactive Booth", "Package", 1, 8000, "Ehsan success stories, impact display, QR donation"),
+        ("Ehsan-Branded Giveaways", "Per person", 200, 35, "Branded awareness items, charity wristbands"),
+        ("Light Refreshments", "Per person", 200, 40, "Coffee, snacks, sweets"),
+        ("Photography", "2 hours", 1, 3000, "Event documentation"),
+        ("Event Branding & Design", "Package", 1, 14000, "Campaign signage, displays, social media kit"),
+    ]),
+
     # ═══ Q2 ═══
     ("Q2", None, None, None, None),
 
-    ("EVENT 7: Eid Al-Fitr Celebration", "Early April", 300, "5-Star Hotel – Grand Gala", [
+    ("EVENT 10: Eid Al-Fitr Celebration", "Early April", 300, "5-Star Hotel – Grand Gala", [
         ("Venue Rental (Grand Ballroom)", "Evening", 1, 58000, "Premium 5-star hotel, premium setup"),
         ("Catering – Eid Gala Dinner", "Per person", 300, 360, "Eid special menu + live cooking stations + dessert bar"),
         ("Stage & Full Eid Décor (Gold/White theme)", "Package", 1, 42000, "Premium festive Eid decoration + entrance arch + lighting"),
@@ -200,7 +231,7 @@ events = [
         ("Event Branding & Design", "Package", 1, 16000, "Eid-themed invites, backdrop, social media kit, signage, digital assets"),
     ]),
 
-    ("EVENT 8: Creativity & Innovation Day", "April 21", 200, "Conference Center", [
+    ("EVENT 11: Creativity & Innovation Day", "April 21", 200, "Conference Center", [
         ("Venue Rental (Conference + Exhibition)", "Full day", 1, 38000, "Conference center or business hotel with exhibition space"),
         ("Catering (Lunch + 2 Coffee Breaks)", "Per person", 200, 200, "Full-day premium package"),
         ("Innovation Showcase Booths (10 depts)", "Per booth", 10, 5500, "Custom booth design + displays + lighting + interactive"),
@@ -212,7 +243,7 @@ events = [
         ("Event Branding & Design", "Package", 1, 15000, "Booth templates, signage, programs, badges, digital content"),
     ]),
 
-    ("EVENT 9: International Tea Day", "May 21", 250, "SERA HQ", [
+    ("EVENT 12: International Tea Day", "May 21", 250, "SERA HQ", [
         ("Venue", "SERA HQ", 1, 0, "Internal – no cost"),
         ("Professional Tea Stations (3 types)", "Package", 1, 20000, "Arabic, English high tea, Asian ceremony with experts"),
         ("Tea Snacks & Gourmet Pastries", "Per person", 250, 50, "Curated tea pairings, premium pastries"),
@@ -221,7 +252,28 @@ events = [
         ("Photography", "2 hours", 1, 3500, "Event coverage"),
     ]),
 
-    ("EVENT 10: Blood Donation Day", "June 14", 120, "SERA HQ", [
+    ("EVENT 13: Joy Clothing Drive (كسوة فرح)", "May", 200, "SERA HQ", [
+        ("Venue", "SERA HQ", 1, 0, "Internal – no rental cost"),
+        ("Collection Booths & Sorting Setup", "Package", 1, 8000, "Collection points, sorting tables, storage boxes"),
+        ("Awareness Campaign Materials", "Package", 1, 8000, "Posters, emails, digital screens, internal comms"),
+        ("Volunteer Coordination", "Package", 1, 5000, "Volunteer management, logistics, distribution plan"),
+        ("Sorting & Distribution Supplies", "Package", 1, 6000, "Bags, labels, transport boxes, cleaning supplies"),
+        ("Photography & Videography", "Package", 1, 5000, "CSR documentation + highlight video"),
+        ("Event Branding & Design", "Package", 1, 12000, "Campaign signage, volunteer badges, social media kit"),
+    ]),
+
+    ("EVENT 14: World No Tobacco Day (اليوم العالمي لمكافحة التدخين)", "May 31", 200, "SERA HQ", [
+        ("Venue", "SERA HQ", 1, 0, "Internal – no rental cost"),
+        ("Health Expert Speaker", "Fee", 1, 12000, "Pulmonologist or smoking cessation specialist"),
+        ("Awareness Materials & Displays", "Package", 1, 10000, "Health impact displays, lung models, interactive demos"),
+        ("Nicotine Dependency Assessment Station", "Package", 1, 8000, "CO breath test, health screening station"),
+        ("Light Healthy Refreshments", "Per person", 200, 40, "Healthy snacks, fruits, juices, herbal teas"),
+        ("Awareness Giveaways", "Per person", 200, 28, "Anti-smoking wristbands, stress balls, info booklets"),
+        ("Photography", "2 hours", 1, 3000, "Event documentation"),
+        ("Event Branding & Design", "Package", 1, 14000, "Health-themed signage, displays, social media kit"),
+    ]),
+
+    ("EVENT 15: Blood Donation Day", "June 14", 120, "SERA HQ", [
         ("Venue Setup", "SERA HQ", 1, 0, "Internal + Red Crescent coordination"),
         ("Pre-event Awareness Campaign", "Package", 1, 10000, "Posters, emails, digital screens, social, internal comms"),
         ("Donor Refreshments", "Per donor", 120, 60, "Juice, snacks, recovery food, premium options"),
@@ -231,7 +283,7 @@ events = [
         ("Red Crescent Coordination", "Partnership", 1, 0, "[NOTE] They provide equipment & staff – confirm partnership"),
     ]),
 
-    ("EVENT 11: Father's Day", "June 15", 160, "Event Space / Restaurant", [
+    ("EVENT 16: Father's Day", "June 15", 160, "Event Space / Restaurant", [
         ("Venue + Lunch/Dinner", "Per person", 160, 260, "Private premium venue booking"),
         ("Father's Day Gifts", "Per person", 80, 160, "[NOTE] Assumed 50% are fathers – adjust per actual"),
         ("Team Activities / Entertainment", "Package", 1, 15000, "Team competitions, entertainment, prizes"),
@@ -239,7 +291,7 @@ events = [
         ("Event Branding & Design", "Package", 1, 14000, "Invitations, signage, décor, social media kit, digital assets"),
     ]),
 
-    ("EVENT 12: Eid Al-Adha Celebration", "Mid-June", 300, "5-Star Hotel – Grand Gala", [
+    ("EVENT 17: Eid Al-Adha Celebration", "Mid-June", 300, "5-Star Hotel – Grand Gala", [
         ("Venue Rental (Grand Ballroom)", "Evening", 1, 58000, "Premium 5-star hotel"),
         ("Catering – Eid Al-Adha Gala Dinner", "Per person", 300, 360, "Traditional lamb feast + premium menu + live stations"),
         ("Stage & Full Eid Décor (Arabian theme)", "Package", 1, 42000, "Traditional Arabian Eid Al-Adha theme + entrance"),
@@ -254,7 +306,7 @@ events = [
     # ═══ Q3 ═══
     ("Q3", None, None, None, None),
 
-    ("EVENT 13: Summer SERA (صيف سيرا)", "July 20", 500, "Entertainment Venue – Evening", [
+    ("EVENT 18: Summer SERA (صيف سيرا)", "July 20", 500, "Entertainment Venue – Evening", [
         ("Venue Rental (Entertainment complex)", "Evening", 1, 72000, "[NOTE] MUST be evening post-sunset – July heat exceeds 45°C"),
         ("Catering – Food Festival Style", "Per person", 500, 145, "10+ themed food stations, live cooking"),
         ("Beverages & Refreshments Station", "Per person", 500, 38, "Water, fresh juices, soft drinks, ice cream bar"),
@@ -268,7 +320,38 @@ events = [
         ("Family Gift Bags", "Per family", 250, 90, "Summer activity pack with branded items"),
     ]),
 
-    ("EVENT 14: World Alzheimer's Day", "September 21", 200, "SERA HQ", [
+    ("EVENT 19: SERA Winter (شتوية سيرا)", "August 19", 300, "Indoor Entertainment Venue", [
+        ("Venue Rental (Indoor entertainment complex)", "Evening", 1, 38000, "Air-conditioned indoor venue – August heat"),
+        ("Catering – Food Stations", "Per person", 300, 160, "Themed food stations, live cooking, dessert bar"),
+        ("Winter-Themed Décor & Setup", "Package", 1, 18000, "Winter wonderland theme, snow effects, ambient lighting"),
+        ("Entertainment Program", "Package", 1, 20000, "Live performance, games, competitions"),
+        ("Photo Booth (Winter Theme)", "Package", 1, 8000, "Themed backdrop, props, instant prints"),
+        ("Photography & Videography", "Package", 1, 12000, "Full coverage + highlight reel"),
+        ("Event Branding & Design", "Package", 1, 14000, "Winter-themed invitations, signage, social media kit"),
+    ]),
+
+    ("EVENT 20: World First Aid Day (اليوم العالمي للإسعافات الأولية)", "September 13", 200, "SERA HQ", [
+        ("Venue", "SERA HQ", 1, 0, "Internal – no rental cost"),
+        ("First Aid Training Workshop", "Package", 1, 15000, "Certified trainer, CPR + first aid techniques"),
+        ("CPR Mannequins & Training Equipment", "Rental", 1, 8000, "Professional training dummies + AED trainers"),
+        ("First Aid Kits (Giveaway)", "Per person", 200, 45, "Branded personal first aid kits"),
+        ("Expert Paramedic Speaker", "Fee", 1, 10000, "Emergency medicine specialist"),
+        ("Light Refreshments", "Per person", 200, 40, "Coffee, snacks, water"),
+        ("Photography", "2 hours", 1, 3000, "Event documentation"),
+        ("Event Branding & Design", "Package", 1, 14000, "Health-themed signage, certificates, social media kit"),
+    ]),
+
+    ("EVENT 21: تزود Skills Development (تزوّد)", "September", 200, "Conference / Training Venue", [
+        ("Venue Rental (Conference / training room)", "Full day", 1, 25000, "Professional training environment"),
+        ("Expert Trainers (2 sessions)", "Fee", 2, 15000, "Industry experts for skills development"),
+        ("Training Materials & Workbooks", "Per person", 200, 50, "Branded workbooks, handouts, tools"),
+        ("Catering (Lunch + Coffee Break)", "Per person", 200, 150, "Full-day premium catering package"),
+        ("Completion Certificates", "Per person", 200, 25, "Premium branded certificates"),
+        ("Photography", "Full day", 1, 3500, "Event documentation"),
+        ("Event Branding & Design", "Package", 1, 14000, "Program signage, materials, certificates, social media kit"),
+    ]),
+
+    ("EVENT 22: World Alzheimer's Day", "September 21", 200, "SERA HQ", [
         ("Venue", "SERA HQ", 1, 0, "Internal"),
         ("Awareness Materials & Booth Setup", "Package", 1, 10000, "Purple theme + interactive info booth + displays"),
         ("Expert Healthcare Speaker", "Fee", 1, 15000, "Neurologist or awareness specialist"),
@@ -277,7 +360,17 @@ events = [
         ("Photography", "2 hours", 1, 3500, "Event coverage"),
     ]),
 
-    ("EVENT 15: Saudi National Day (96th)", "September 23", 300, "Premium Venue – Evening", [
+    ("EVENT 23: وش دورنا – What's Our Role (وش دورنا)", "September", 200, "SERA HQ", [
+        ("Venue", "SERA HQ", 1, 0, "Internal – no rental cost"),
+        ("Workshop Facilitation", "Package", 1, 15000, "Professional facilitator, interactive sessions"),
+        ("Interactive Materials & Displays", "Package", 1, 10000, "Role clarity exercises, team activities, displays"),
+        ("Light Refreshments", "Per person", 200, 45, "Coffee, snacks, lunch boxes"),
+        ("Awareness Materials", "Per person", 200, 28, "Branded booklets, role guides, takeaways"),
+        ("Photography", "2 hours", 1, 3000, "Event documentation"),
+        ("Event Branding & Design", "Package", 1, 14000, "Workshop signage, materials, social media kit"),
+    ]),
+
+    ("EVENT 24: Saudi National Day (96th)", "September 23", 300, "Premium Venue – Evening", [
         ("Venue Rental (Premium + outdoor area)", "Evening", 1, 65000, "[NOTE] Book 3-4 months ahead – extreme demand period"),
         ("Catering – Saudi Traditional Feast", "Per person", 300, 320, "Traditional Saudi dishes + modern, coffee ceremony, live stations"),
         ("Stage & Premium National Décor (Green)", "Package", 1, 48000, "Flags, national symbols, green theme, immersive design"),
@@ -292,10 +385,21 @@ events = [
         ("Fireworks / Confetti Finale", "Package", 1, 15000, "[NOTE] Indoor confetti/CO2 if fireworks not permitted"),
     ]),
 
+    ("EVENT 25: Environment Week (أسبوع البيئة)", "Q3 TBD", 250, "SERA HQ", [
+        ("Venue", "SERA HQ", 1, 0, "Internal – no rental cost"),
+        ("Environment Exhibition & Booths (5 days)", "Package", 1, 20000, "Sustainability displays, recycling demos, green projects"),
+        ("Expert Speakers (3 sessions)", "Fee", 3, 8000, "Environment & sustainability experts across the week"),
+        ("Awareness Materials & Eco Giveaways", "Per person", 250, 30, "Eco-friendly items, seed kits, reusable products"),
+        ("Green Activities & Workshops", "Package", 1, 15000, "Tree planting, upcycling workshop, waste reduction demos"),
+        ("Light Refreshments (5 days)", "Per person", 250, 40, "Daily healthy refreshments, minimal-waste serving"),
+        ("Photography (Full week)", "Package", 1, 10000, "Daily coverage + week highlight reel"),
+        ("Event Branding & Design", "Package", 1, 14000, "Environment-themed signage, booth designs, social media kit"),
+    ]),
+
     # ═══ Q4 ═══
     ("Q4", None, None, None, None),
 
-    ("EVENT 16: International Coffee Day", "October 1", 250, "SERA HQ", [
+    ("EVENT 26: International Coffee Day", "October 1", 250, "SERA HQ", [
         ("Venue", "SERA HQ", 1, 0, "Internal"),
         ("Professional Barista Station", "Package", 1, 14000, "Specialty coffee equipment + 2 baristas"),
         ("Arabic Coffee Ceremony (Dallah)", "Package", 1, 8000, "Traditional service with premium dates + Saudiya coffee"),
@@ -304,7 +408,18 @@ events = [
         ("Photography", "2 hours", 1, 3500, "Event coverage"),
     ]),
 
-    ("EVENT 17: Cybersecurity Exhibition", "October TBD", 250, "SERA HQ / Conference", [
+    ("EVENT 27: Breast Cancer Awareness Day (اليوم العالمي لسرطان الثدي)", "October", 200, "SERA HQ", [
+        ("Venue", "SERA HQ", 1, 0, "Internal – no rental cost"),
+        ("Pink Décor & Awareness Displays", "Package", 1, 12000, "Pink ribbon theme, survivor stories, info panels"),
+        ("Healthcare Expert Speaker", "Fee", 1, 12000, "Oncologist or breast cancer awareness specialist"),
+        ("Screening Awareness Materials", "Per person", 200, 25, "Self-exam guides, awareness booklets, info cards"),
+        ("Pink Ribbons & Awareness Items", "Per person", 200, 30, "Pink ribbon pins, branded awareness items"),
+        ("Light Refreshments", "Per person", 200, 40, "Coffee, healthy snacks, pink-themed treats"),
+        ("Photography", "2 hours", 1, 3000, "Event documentation"),
+        ("Event Branding & Design", "Package", 1, 14000, "Pink-themed signage, displays, social media kit"),
+    ]),
+
+    ("EVENT 28: Cybersecurity Exhibition", "October TBD", 250, "SERA HQ / Conference", [
         ("Venue Setup", "SERA HQ", 1, 12000, "Internal setup + additional infrastructure + networking"),
         ("Interactive Exhibition Booths", "Per booth", 6, 14000, "6 interactive cybersecurity demo stations with screens"),
         ("Cybersecurity Expert Speakers", "Fee", 2, 15000, "2 industry-leading experts"),
@@ -315,7 +430,7 @@ events = [
         ("Event Branding & Design", "Package", 1, 15000, "Booth designs, signage, materials, badges, digital content"),
     ]),
 
-    ("EVENT 18: World Mental Health Day", "October 10", 200, "SERA HQ", [
+    ("EVENT 29: World Mental Health Day", "October 10", 200, "SERA HQ", [
         ("Venue", "SERA HQ", 1, 0, "Internal"),
         ("Wellness Expert / Psychologist", "Fee", 1, 18000, "Mental health keynote speaker"),
         ("Stress Management Workshop", "Package", 1, 15000, "Interactive workshop + materials + exercises"),
@@ -325,7 +440,18 @@ events = [
         ("Photography", "Half day", 1, 3500, "Event coverage"),
     ]),
 
-    ("EVENT 19: Quality Day", "November 10", 180, "Business Hotel Conference", [
+    ("EVENT 30: World Savings Day (اليوم العالمي للادخار)", "October 31", 200, "SERA HQ", [
+        ("Venue", "SERA HQ", 1, 0, "Internal – no rental cost"),
+        ("Financial Expert Speaker", "Fee", 1, 12000, "Financial planning / savings specialist"),
+        ("Awareness Materials & Displays", "Package", 1, 8000, "Savings tips displays, financial literacy info panels"),
+        ("Financial Literacy Booklets", "Per person", 200, 25, "Branded savings guides, budget planners"),
+        ("Light Refreshments", "Per person", 200, 40, "Coffee, snacks"),
+        ("Savings Pledge Wall", "Package", 1, 5000, "Interactive pledge wall + goal-setting station"),
+        ("Photography", "2 hours", 1, 3000, "Event documentation"),
+        ("Event Branding & Design", "Package", 1, 14000, "Financial-themed signage, materials, social media kit"),
+    ]),
+
+    ("EVENT 31: Quality Day", "November 10", 180, "Business Hotel Conference", [
         ("Venue (Conference room)", "Half day", 1, 25000, "Professional conference setting"),
         ("Catering (Lunch + 1 break)", "Per person", 180, 145, "Half-day premium package"),
         ("Quality Awards & Recognition", "Set of 7", 1, 10000, "7 quality awards + certificates + frames"),
@@ -335,7 +461,29 @@ events = [
         ("Event Branding & Design", "Package", 1, 14000, "Signage, certificates, backdrop, materials, social media, digital"),
     ]),
 
-    ("EVENT 20: International Men's Day", "November 19", 200, "Event Space", [
+    ("EVENT 32: Flu Vaccination Campaign (حملة التطعيم ضد الإنفلونزا)", "November", 250, "SERA HQ", [
+        ("Venue", "SERA HQ", 1, 0, "Internal – no rental cost"),
+        ("Pre-Campaign Awareness Materials", "Package", 1, 8000, "Posters, emails, digital screens, internal comms"),
+        ("Medical Staff & Coordination", "Package", 1, 12000, "[NOTE] Nurses + logistics – coordinate with health provider"),
+        ("Vaccination Station Setup & Supplies", "Package", 1, 10000, "Medical setup, privacy screens, waiting area"),
+        ("Post-Vaccination Refreshments", "Per person", 250, 30, "Juice, snacks, recovery food"),
+        ("Appreciation Items", "Per person", 250, 25, "Thank-you gifts for participants"),
+        ("Photography", "Full day", 1, 3000, "Health campaign documentation"),
+        ("Event Branding & Design", "Package", 1, 12000, "Health-themed signage, awareness displays, social media kit"),
+    ]),
+
+    ("EVENT 33: World Diabetes Day (اليوم العالمي للسكري)", "November 14", 200, "SERA HQ", [
+        ("Venue", "SERA HQ", 1, 0, "Internal – no rental cost"),
+        ("Health Expert Speaker", "Fee", 1, 12000, "Endocrinologist or diabetes specialist"),
+        ("Diabetes Screening Station", "Package", 1, 10000, "Blood sugar testing, health risk assessment"),
+        ("Awareness Materials & Displays", "Per person", 200, 25, "Diabetes info booklets, diet guides, health cards"),
+        ("Healthy Refreshments", "Per person", 200, 45, "Sugar-free options, fruits, healthy snacks"),
+        ("Blue Circle Awareness Items", "Per person", 200, 30, "Blue circle pins, branded awareness items"),
+        ("Photography", "2 hours", 1, 3000, "Event documentation"),
+        ("Event Branding & Design", "Package", 1, 14000, "Blue-themed signage, health displays, social media kit"),
+    ]),
+
+    ("EVENT 34: International Men's Day", "November 19", 200, "Event Space", [
         ("Venue + Lunch/Dinner", "Per person", 200, 210, "Private premium event space"),
         ("Team Activities & Competitions", "Package", 1, 20000, "Team-building, sports competitions, prizes"),
         ("Recognition Gifts", "Per person", 200, 65, "Men's day premium gift"),
@@ -343,7 +491,7 @@ events = [
         ("Event Branding & Design", "Package", 1, 14000, "Invitations, signage, décor, social media kit, digital assets"),
     ]),
 
-    ("EVENT 21: Universal Children's Day", "November 20", 200, "Family Entertainment Venue", [
+    ("EVENT 35: Universal Children's Day", "November 20", 200, "Family Entertainment Venue", [
         ("Venue (Family-friendly)", "4 hours", 1, 30000, "Premium entertainment venue"),
         ("Catering (Kids + Adults)", "Per person", 200, 120, "Kid-friendly + adult menu + dessert station"),
         ("Children's Professional Entertainment", "Package", 1, 25000, "Characters, clown, games, face paint, magic, VR"),
@@ -352,7 +500,7 @@ events = [
         ("Event Branding & Design", "Package", 1, 14000, "Kid-friendly branded materials, photo spots, social media, digital"),
     ]),
 
-    ("EVENT 22: Volunteer Day", "December 5", 80, "Community Location", [
+    ("EVENT 36: Volunteer Day", "December 5", 80, "Community Location", [
         ("Transportation (Buses)", "Per bus", 2, 3500, "SERA HQ to community location + return"),
         ("Branded Volunteer T-Shirts + Caps", "Per person", 80, 70, "SERA branded volunteer kit"),
         ("Activity Materials & Supplies", "Package", 1, 10000, "Supplies for volunteer work + tools"),
@@ -361,7 +509,7 @@ events = [
         ("Appreciation Certificates & Medals", "Per person", 80, 25, "Premium volunteer recognition"),
     ]),
 
-    ("EVENT 23: Anti-Corruption Day", "December 9", 200, "SERA HQ / Conference", [
+    ("EVENT 37: Anti-Corruption Day", "December 9", 200, "SERA HQ / Conference", [
         ("Venue", "SERA HQ", 1, 0, "Internal"),
         ("Ethics Expert / Nazaha Speaker", "Fee", 1, 20000, "[NOTE] Price depends on speaker – Nazaha rep or ethics expert"),
         ("Pledge Wall & Integrity Display", "Package", 1, 8000, "Interactive pledge wall + signing ceremony + LED display"),
@@ -371,7 +519,29 @@ events = [
         ("Event Branding & Design", "Package", 1, 14000, "Signage, materials, social media kit, digital assets"),
     ]),
 
-    ("EVENT 24: Arabic Language Day", "December 18", 200, "Cultural Venue", [
+    ("EVENT 38: Transformation Activities (أنشطة ومبادرات التحول)", "Q4 TBD", 200, "SERA HQ", [
+        ("Venue", "SERA HQ", 1, 0, "Internal – no rental cost"),
+        ("Transformation Office Booth Setup", "Package", 1, 15000, "Interactive displays, digital transformation showcases"),
+        ("Expert Speakers / Panels", "Fee", 2, 12000, "Transformation & digital innovation experts"),
+        ("Interactive Workshops", "Package", 1, 12000, "Hands-on transformation activities, design thinking"),
+        ("Awareness & Promotional Materials", "Per person", 200, 30, "Branded booklets, digital roadmap guides"),
+        ("Light Refreshments", "Per person", 200, 45, "Coffee, snacks, lunch boxes"),
+        ("Photography & Videography", "Package", 1, 8000, "Event documentation + highlight video"),
+        ("Event Branding & Design", "Package", 1, 14000, "Transformation-themed signage, materials, social media kit"),
+    ]),
+
+    ("EVENT 39: Ideal Office Competition (المكتب المثالي)", "Q4 TBD", 200, "SERA HQ", [
+        ("Venue", "SERA HQ", 1, 0, "Internal – no rental cost"),
+        ("Evaluation Program Setup", "Package", 1, 10000, "Criteria framework, scoring system, inspections"),
+        ("Award Trophies & Certificates", "Set", 1, 12000, "Best office trophies + runner-up + certificates"),
+        ("Inspection & Judging Panel", "Package", 1, 8000, "External judges, evaluation sheets, site visits"),
+        ("Ceremony Setup (Mini stage)", "Package", 1, 10000, "Award stage, backdrop, audio, podium"),
+        ("Light Refreshments", "Per person", 200, 40, "Coffee, snacks for ceremony"),
+        ("Photography", "Half day", 1, 3500, "Award ceremony documentation"),
+        ("Event Branding & Design", "Package", 1, 14000, "Competition signage, certificates, social media kit"),
+    ]),
+
+    ("EVENT 40: Arabic Language Day", "December 18", 200, "Cultural Venue", [
         ("Venue (Cultural setting)", "3 hours", 1, 20000, "Cultural center or elegant hall"),
         ("Poet / Arabic Author Guest", "Fee", 1, 15000, "Arabic literature figure + book signing"),
         ("Live Calligraphy Workshop", "Package", 1, 10000, "Professional calligrapher + materials for 80"),
@@ -382,7 +552,7 @@ events = [
         ("Event Branding & Design", "Package", 1, 14000, "Arabic-themed invitations, signage, social media kit, digital assets"),
     ]),
 
-    ("EVENT 25: Year-End Celebration", "Late December", 300, "5-Star Hotel – Premium Gala", [
+    ("EVENT 41: Year-End Celebration", "Late December", 300, "5-Star Hotel – Premium Gala", [
         ("Venue Rental (Premium Gala setup)", "Evening", 1, 70000, "[NOTE] Book 3 months ahead – December peak season"),
         ("Catering – Premium Gala Dinner", "Per person", 300, 395, "Live cooking stations, international premium menu + dessert bar"),
         ("Stage & Premium Year-End Décor", "Package", 1, 48000, "Elegant theme + year-end branding + immersive lighting design"),
@@ -766,8 +936,78 @@ ws4.cell(row=r4, column=5).number_format = sar_format
 style_subtotal_row(ws4, r4, 6)
 pd_total_row = r4
 
+r4 += 3
+
+# Walking Challenge & SERA Quarterly Friday
+ws4.merge_cells(start_row=r4, start_column=1, end_row=r4, end_column=6)
+ws4.cell(row=r4, column=1, value="WALKING CHALLENGE & SERA QUARTERLY FRIDAY (جمعة سيرا) | 150-200 Participants | Annual Challenge + 4 Quarterly Events").font = Font(name='Arial', size=11, bold=True, color='1B4332')
+ws4.cell(row=r4, column=1).fill = PatternFill(start_color='B7E4C7', end_color='B7E4C7', fill_type='solid')
+r4 += 1
+
+for ci, h in enumerate(headers, 1):
+    ws4.cell(row=r4, column=ci, value=h)
+style_header_row(ws4, r4, 6)
+r4 += 1
+
+walking_items = [
+    ("Fitness Tracking App / Platform License", "Annual", 1, 15000, "Step tracking, leaderboards, team challenges"),
+    ("Branded Sports Gear (T-shirts, bands)", "Per person", 200, 60, "Branded walking challenge kit"),
+    ("Challenge Management & Coordination", "Annual", 1, 8000, "Full challenge administration + results"),
+    ("Quarterly Walking Route Planning & Permits", "Per event", 4, 3000, "Route setup, permissions, marshals"),
+    ("Hydration Stations (Quarterly events)", "Per event", 4, 4000, "Water, isotonic drinks, fruits along route"),
+    ("First Aid Support (Quarterly events)", "Per event", 4, 3000, "On-route medical support – mandatory"),
+    ("Participant Kits (Quarterly events)", "Per person", 600, 40, "[NOTE] ~150 participants x 4 quarterly events"),
+    ("Photography (Quarterly events)", "Per event", 4, 3000, "Walking event coverage"),
+    ("Medals & Certificates (Quarterly)", "Per event", 4, 5000, "Top finishers medals + participation certificates"),
+    ("Annual Challenge Grand Prizes", "Package", 1, 15000, "Top 10 walkers prizes + team prizes"),
+    ("Social Media Coverage", "Package", 1, 3000, "Challenge updates, leaderboard posts, highlights"),
+    ("Friday Gathering Refreshments (Quarterly)", "Per event", 4, 3500, "[NOTE] SERA Quarterly Friday gathering refreshments"),
+]
+
+wk_start = r4
+for idx, (desc, unit, qty, price, note) in enumerate(walking_items):
+    ws4.cell(row=r4, column=1, value=desc).font = normal_font
+    ws4.cell(row=r4, column=2, value=unit).font = normal_font
+    ws4.cell(row=r4, column=3, value=qty).font = normal_font
+    ws4.cell(row=r4, column=4, value=price).font = normal_font
+    ws4.cell(row=r4, column=4).number_format = sar_format
+    ws4.cell(row=r4, column=5).value = f"=C{r4}*D{r4}"
+    ws4.cell(row=r4, column=5).number_format = sar_format
+    ws4.cell(row=r4, column=6, value=note).font = note_font if "[NOTE]" in (note or "") else Font(name='Arial', size=9, color='666666')
+    for c in range(1, 7):
+        ws4.cell(row=r4, column=c).border = thin_border
+        if idx % 2 == 1:
+            ws4.cell(row=r4, column=c).fill = alt_fill
+    r4 += 1
+wk_end = r4 - 1
+
+ws4.cell(row=r4, column=1, value="Walking & Friday Events – Subtotal (Before Commission)").font = sub_font
+ws4.cell(row=r4, column=5).value = f"=SUM(E{wk_start}:E{wk_end})"
+ws4.cell(row=r4, column=5).font = sub_font
+ws4.cell(row=r4, column=5).number_format = sar_format
+for c in range(1, 7):
+    ws4.cell(row=r4, column=c).border = thin_border
+wk_subtotal_row = r4
+r4 += 1
+
+ws4.cell(row=r4, column=1, value="Agency Commission (15%)").font = sub_font
+ws4.cell(row=r4, column=5).value = f"=E{wk_subtotal_row}*0.15"
+ws4.cell(row=r4, column=5).font = sub_font
+ws4.cell(row=r4, column=5).number_format = sar_format
+for c in range(1, 7):
+    ws4.cell(row=r4, column=c).border = thin_border
+wk_commission_row = r4
+r4 += 1
+
+ws4.cell(row=r4, column=1, value="▶ WALKING & FRIDAY EVENTS – TOTAL").font = total_font
+ws4.cell(row=r4, column=5).value = f"=E{wk_subtotal_row}+E{wk_commission_row}"
+ws4.cell(row=r4, column=5).font = total_font
+ws4.cell(row=r4, column=5).number_format = sar_format
+style_subtotal_row(ws4, r4, 6)
+wk_total_row = r4
+
 # Now fill the sports grand total (row 2)
-ws4.cell(row=2, column=5).value = f"=E{fb_total_row}+E{pd_total_row}"
+ws4.cell(row=2, column=5).value = f"=E{fb_total_row}+E{pd_total_row}+E{wk_total_row}"
 ws4.cell(row=2, column=5).number_format = sar_format
 
 
@@ -801,32 +1041,49 @@ r1 += 1
 
 cal_events = [
     (1, "Annual Meeting 2026", "الاجتماع السنوي", "February 3", "Q1", "Corporate Conference", 300, "Major"),
-    (2, "Employee Appreciation Day", "يوم تقدير الموظف", "March 2", "Q1", "Recognition Gala", 300, "Major"),
-    (3, "International Women's Day", "اليوم العالمي للمرأة", "March 8", "Q1", "Awareness/Celebration", 150, "Medium"),
-    (4, "Saudi Flag Day", "يوم العلم السعودي", "March 11", "Q1", "Patriotic Celebration", 300, "Light"),
-    (5, "Ramadan Iftar", "إفطار رمضان", "Mid-March", "Q1", "Corporate Iftar", 300, "Major"),
-    (6, "Mother's Day", "يوم الأم", "March 21", "Q1", "Appreciation Event", 130, "Medium"),
-    (7, "Eid Al-Fitr Celebration", "احتفال عيد الفطر", "Early April", "Q2", "Major Gala", 300, "Major"),
-    (8, "Creativity & Innovation Day", "يوم الإبداع والابتكار", "April 21", "Q2", "Professional Development", 200, "Medium"),
-    (9, "International Tea Day", "اليوم العالمي للشاي", "May 21", "Q2", "Social/Wellness", 250, "Light"),
-    (10, "Blood Donation Day", "يوم التبرع بالدم", "June 14", "Q2", "CSR/Health", 120, "Light"),
-    (11, "Father's Day", "يوم الأب", "June 15", "Q2", "Appreciation Event", 160, "Medium"),
-    (12, "Eid Al-Adha Celebration", "احتفال عيد الأضحى", "Mid-June", "Q2", "Major Gala", 300, "Major"),
-    (13, "Summer SERA (صيف سيرا)", "صيف سيرا", "July 20", "Q3", "Seasonal Family Event", 500, "Major"),
-    (14, "World Alzheimer's Day", "اليوم العالمي للزهايمر", "September 21", "Q3", "Health Awareness", 200, "Light"),
-    (15, "Saudi National Day (96th)", "اليوم الوطني السعودي", "September 23", "Q3", "National Celebration", 300, "Major"),
-    (16, "International Coffee Day", "اليوم العالمي للقهوة", "October 1", "Q4", "Social/Wellness", 250, "Light"),
-    (17, "Cybersecurity Exhibition", "معرض الأمن السيبراني", "October TBD", "Q4", "Professional/Awareness", 250, "Medium"),
-    (18, "World Mental Health Day", "اليوم العالمي للصحة النفسية", "October 10", "Q4", "Health Awareness", 200, "Light"),
-    (19, "Quality Day", "يوم الجودة", "November 10", "Q4", "Professional Development", 180, "Medium"),
-    (20, "International Men's Day", "اليوم العالمي للرجل", "November 19", "Q4", "Appreciation Event", 200, "Medium"),
-    (21, "Universal Children's Day", "اليوم العالمي للطفل", "November 20", "Q4", "CSR/Family", 200, "Medium"),
-    (22, "Volunteer Day", "يوم التطوع", "December 5", "Q4", "CSR Activity", 80, "Light"),
-    (23, "Anti-Corruption Day", "اليوم العالمي لمكافحة الفساد", "December 9", "Q4", "Awareness", 200, "Light"),
-    (24, "Arabic Language Day", "اليوم العالمي للغة العربية", "December 18", "Q4", "Cultural Celebration", 200, "Medium"),
-    (25, "Year-End Celebration", "حفل نهاية العام", "Late December", "Q4", "Major Gala", 300, "Major"),
+    (2, "Founding Day", "يوم التأسيس", "February 22", "Q1", "National Celebration", 300, "Light"),
+    (3, "Employee Appreciation Day", "يوم تقدير الموظف", "March 2", "Q1", "Recognition Gala", 300, "Major"),
+    (4, "International Women's Day", "اليوم العالمي للمرأة", "March 8", "Q1", "Awareness/Celebration", 150, "Medium"),
+    (5, "Saudi Flag Day", "يوم العلم السعودي", "March 11", "Q1", "Patriotic Celebration", 300, "Light"),
+    (6, "Ramadan Iftar", "إفطار رمضان", "Mid-March", "Q1", "Corporate Iftar", 300, "Major"),
+    (7, "Mother's Day", "يوم الأم", "March 21", "Q1", "Appreciation Event", 130, "Medium"),
+    (8, "Saudi Green Initiative", "المبادرة الخضراء السعودية", "March 27", "Q1", "Sustainability Awareness", 250, "Light"),
+    (9, "Ehsan Philanthropy Campaign", "حملة إحسان", "March", "Q1", "CSR/Charity", 200, "Light"),
+    (10, "Eid Al-Fitr Celebration", "احتفال عيد الفطر", "Early April", "Q2", "Major Gala", 300, "Major"),
+    (11, "Creativity & Innovation Day", "يوم الإبداع والابتكار", "April 21", "Q2", "Professional Development", 200, "Medium"),
+    (12, "International Tea Day", "اليوم العالمي للشاي", "May 21", "Q2", "Social/Wellness", 250, "Light"),
+    (13, "Joy Clothing Drive", "كسوة فرح", "May", "Q2", "CSR/Charity", 200, "Light"),
+    (14, "World No Tobacco Day", "اليوم العالمي لمكافحة التدخين", "May 31", "Q2", "Health Awareness", 200, "Light"),
+    (15, "Blood Donation Day", "يوم التبرع بالدم", "June 14", "Q2", "CSR/Health", 120, "Light"),
+    (16, "Father's Day", "يوم الأب", "June 15", "Q2", "Appreciation Event", 160, "Medium"),
+    (17, "Eid Al-Adha Celebration", "احتفال عيد الأضحى", "Mid-June", "Q2", "Major Gala", 300, "Major"),
+    (18, "Summer SERA (صيف سيرا)", "صيف سيرا", "July 20", "Q3", "Seasonal Family Event", 500, "Major"),
+    (19, "SERA Winter (شتوية سيرا)", "شتوية سيرا", "August 19", "Q3", "Seasonal Indoor Event", 300, "Medium"),
+    (20, "World First Aid Day", "اليوم العالمي للإسعافات الأولية", "September 13", "Q3", "Health Awareness", 200, "Light"),
+    (21, "تزود Skills Development", "تزوّد", "September", "Q3", "Professional Development", 200, "Medium"),
+    (22, "World Alzheimer's Day", "اليوم العالمي للزهايمر", "September 21", "Q3", "Health Awareness", 200, "Light"),
+    (23, "وش دورنا – What's Our Role", "وش دورنا", "September", "Q3", "Internal Engagement", 200, "Light"),
+    (24, "Saudi National Day (96th)", "اليوم الوطني السعودي", "September 23", "Q3", "National Celebration", 300, "Major"),
+    (25, "Environment Week", "أسبوع البيئة", "Q3 TBD", "Q3", "Sustainability Awareness", 250, "Medium"),
+    (26, "International Coffee Day", "اليوم العالمي للقهوة", "October 1", "Q4", "Social/Wellness", 250, "Light"),
+    (27, "Breast Cancer Awareness Day", "اليوم العالمي لسرطان الثدي", "October", "Q4", "Health Awareness", 200, "Light"),
+    (28, "Cybersecurity Exhibition", "معرض الأمن السيبراني", "October TBD", "Q4", "Professional/Awareness", 250, "Medium"),
+    (29, "World Mental Health Day", "اليوم العالمي للصحة النفسية", "October 10", "Q4", "Health Awareness", 200, "Light"),
+    (30, "World Savings Day", "اليوم العالمي للادخار", "October 31", "Q4", "Financial Awareness", 200, "Light"),
+    (31, "Quality Day", "يوم الجودة", "November 10", "Q4", "Professional Development", 180, "Medium"),
+    (32, "Flu Vaccination Campaign", "حملة التطعيم ضد الإنفلونزا", "November", "Q4", "Health Campaign", 250, "Light"),
+    (33, "World Diabetes Day", "اليوم العالمي للسكري", "November 14", "Q4", "Health Awareness", 200, "Light"),
+    (34, "International Men's Day", "اليوم العالمي للرجل", "November 19", "Q4", "Appreciation Event", 200, "Medium"),
+    (35, "Universal Children's Day", "اليوم العالمي للطفل", "November 20", "Q4", "CSR/Family", 200, "Medium"),
+    (36, "Volunteer Day", "يوم التطوع", "December 5", "Q4", "CSR Activity", 80, "Light"),
+    (37, "Anti-Corruption Day", "اليوم العالمي لمكافحة الفساد", "December 9", "Q4", "Awareness", 200, "Light"),
+    (38, "Transformation Activities", "أنشطة ومبادرات التحول", "Q4 TBD", "Q4", "Digital Transformation", 200, "Medium"),
+    (39, "Ideal Office Competition", "المكتب المثالي", "Q4 TBD", "Q4", "Internal Competition", 200, "Light"),
+    (40, "Arabic Language Day", "اليوم العالمي للغة العربية", "December 18", "Q4", "Cultural Celebration", 200, "Medium"),
+    (41, "Year-End Celebration", "حفل نهاية العام", "Late December", "Q4", "Major Gala", 300, "Major"),
     ("S1", "Football Tournament", "بطولة كرة القدم", "TBD (3 weekends)", "Sports", "Sports Competition", 150, "Major"),
     ("S2", "Padel Tournament", "بطولة البادل", "TBD (2 weekends)", "Sports", "Sports Competition", 20, "Medium"),
+    ("S3", "Walking Challenge & SERA Friday", "تحدي المشي + جمعة سيرا", "Quarterly + Annual", "Sports", "Sports/Wellness", 200, "Medium"),
 ]
 
 for idx, ev in enumerate(cal_events):
@@ -854,7 +1111,7 @@ style_header_row(ws1, r1, 4)
 r1 += 1
 
 # Linked formulas to Financial Proposal
-for q, count in [("Q1", 6), ("Q2", 6), ("Q3", 3), ("Q4", 10)]:
+for q, count in [("Q1", 9), ("Q2", 8), ("Q3", 8), ("Q4", 16)]:
     ws1.cell(row=r1, column=1, value=f"{q} Events").font = sub_font
     ws1.cell(row=r1, column=2, value=count).font = normal_font
     ws1.cell(row=r1, column=3).value = f"='Financial Proposal'!E{quarter_total_rows[q]}"
@@ -868,7 +1125,7 @@ for q, count in [("Q1", 6), ("Q2", 6), ("Q3", 3), ("Q4", 10)]:
 
 # Sports total
 ws1.cell(row=r1, column=1, value="Sports Events").font = sub_font
-ws1.cell(row=r1, column=2, value=2).font = normal_font
+ws1.cell(row=r1, column=2, value=3).font = normal_font
 ws1.cell(row=r1, column=3).value = f"='Sports Budget'!E2"
 ws1.cell(row=r1, column=3).font = sub_font
 ws1.cell(row=r1, column=3).number_format = sar_format
@@ -930,30 +1187,46 @@ r2 += 1
 
 tech_data = [
     (1, "Annual Meeting 2026", "Feb 3", "5-Star Hotel Ballroom (Ritz-Carlton / Four Seasons)", "Stage 8m×5m, branded backdrop, podium with SERA logo", "LED Wall P2.5 5m×3m, Line-array sound, 6 wireless mics, live streaming", "Simultaneous AR/EN translation, Prof. MC, Registration QR system, Photography (2), Videography (2), Printed materials"),
-    (2, "Employee Appreciation Day", "Mar 2", "5-Star Hotel – Gala round-table setup", "Gala stage, premium décor, uplighting, award pedestals", "Full AV, spotlight for awards, background music system", "12 crystal trophies, Live band (2.5hr), Gift boxes, Prof. MC, Full photo/video team"),
-    (3, "International Women's Day", "Mar 8", "Boutique venue or hotel ladies' section", "Elegant feminine décor, premium floral arrangements", "Projector, wireless mic, ambient music", "Female keynote + panel (3 speakers), Photo booth, Curated gift bags, Female photographer"),
-    (4, "Saudi Flag Day", "Mar 11", "SERA HQ – Lobby & outdoor", "Large Saudi flag (5m+), national green/white theme", "Portable sound for anthem + speeches", "Flag ceremony, Commemorative items, Social media live coverage"),
-    (5, "Ramadan Iftar", "Mid-Mar", "5-Star Hotel Ramadan Tent", "Traditional Ramadan décor: lanterns, crescents, VIP majlis", "Ambient lighting, background system", "Premium Iftar buffet, Oud player, Ramadan gift boxes, Prayer area arrangement"),
-    (6, "Mother's Day", "Mar 21", "Elegant restaurant private section", "Floral-themed décor, photo area", "Basic sound for music/announcements", "Flower gifts, Special mother gifts, Entertainment, Photography"),
-    (7, "Eid Al-Fitr Celebration", "Early Apr", "5-Star Hotel Grand Ballroom", "Festive Eid gold/white, large stage, entrance arch", "Full production: LED wall, concert sound, lighting design", "Ardah troupe + live music, Eid gifts, Children's corner (optional), Prof. MC"),
-    (8, "Creativity & Innovation Day", "Apr 21", "Conference Center", "Main stage + 10 department innovation booths", "Conference AV, booth displays, digital voting", "Keynote speaker, Innovation competition, 7 awards, Interactive voting"),
-    (9, "International Tea Day", "May 21", "SERA HQ Common Areas", "Tea-themed décor, 3 service stations", "Background music", "Arabic/English/Asian tea stations, Gourmet pairings, Tea culture displays"),
-    (10, "Blood Donation Day", "Jun 14", "SERA HQ – Medical setup area", "Awareness materials, registration area, recovery zone", "Digital screens with awareness content", "Red Crescent partnership, Pre-event campaign, Donor gifts & certificates"),
-    (11, "Father's Day", "Jun 15", "Restaurant / Event space", "Celebration décor, activity zone", "Sound system", "Gifts for fathers (50% assumed), Team-building activities"),
-    (12, "Eid Al-Adha Celebration", "Mid-Jun", "5-Star Hotel Grand Ballroom", "Traditional Arabian Eid theme, large stage", "Full production: LED, concert sound, lighting", "Ardah + live music, Lamb-focused feast, Eid gifts, Prof. MC"),
-    (13, "Summer SERA (صيف سيرا)", "Jul 20", "Entertainment venue – EVENING ONLY (45°C heat)", "Multi-zone: main stage, kids zone, food area, games", "Concert-grade outdoor sound & lighting", "Headline entertainment, Kids zone, 10 game booths, Food festival, Raffle, Family gifts"),
-    (14, "World Alzheimer's Day", "Sep 21", "SERA HQ", "Purple awareness theme, info booth", "Presentation setup", "Healthcare expert speaker, Purple ribbons, Awareness displays"),
-    (15, "Saudi National Day (96th)", "Sep 23", "Premium venue with outdoor option", "Premium green national décor, flags, national symbols", "Full AV production, LED national content, green effects", "Ardah troupe, Cultural acts, National gifts, Green lighting effects. BOOK 3-4 MONTHS AHEAD"),
-    (16, "International Coffee Day", "Oct 1", "SERA HQ Common Areas", "Coffee-themed décor, 3 stations", "Background music", "Professional barista, Arabic dallah ceremony, Coffee culture displays"),
-    (17, "Cybersecurity Exhibition", "Oct TBD", "SERA HQ / Conference Center", "6 interactive exhibition booths, demo stations", "Full conference AV, booth monitors, demo equipment", "6 interactive demos, 2 expert speakers, Phishing simulations, Branded giveaways"),
-    (18, "World Mental Health Day", "Oct 10", "SERA HQ", "Wellness décor, relaxation zone", "Presentation setup, ambient music", "Psychologist speaker, Stress workshop, Relaxation zone (massage chairs), Wellness kits"),
-    (19, "Quality Day", "Nov 10", "Business Hotel Conference Room", "Award stage, quality showcase display", "Conference AV: screen, sound, podium", "7 quality awards, Best practices presentations, Expert speaker"),
-    (20, "International Men's Day", "Nov 19", "Event space", "Celebration décor, activity area", "Sound system", "Team competitions, Recognition gifts"),
-    (21, "Universal Children's Day", "Nov 20", "Family entertainment venue", "Colorful child-friendly décor, safe play areas", "Sound for entertainment", "Professional children's entertainers, Game stations, Gifts for kids"),
-    (22, "Volunteer Day", "Dec 5", "Community location", "Branded volunteer banner/signage", "None needed", "2 buses transport, Volunteer T-shirts, Activity supplies, Lunch boxes"),
-    (23, "Anti-Corruption Day", "Dec 9", "SERA HQ", "Integrity pledge wall, information displays", "Presentation AV", "Ethics expert/Nazaha speaker, Pledge signing, Awareness brochures"),
-    (24, "Arabic Language Day", "Dec 18", "Cultural venue", "Arabic calligraphy displays, poetry corner", "Presentation + ambient Arabic music", "Poet guest, Calligraphy workshop, Poetry recital, Cultural program"),
-    (25, "Year-End Celebration", "Late Dec", "5-Star Hotel – Premium Gala", "Premium stage, LED lighting design, luxury tables", "Full gala: LED wall, concert sound, designer lighting", "Premium band + acts, 15 annual awards, Year-review video, Premium gifts, Prof. MC. BOOK 3 MONTHS AHEAD"),
+    (2, "Founding Day", "Feb 22", "SERA HQ – Internal", "Heritage displays, Founding Day national theme", "Sound for anthem + speeches", "Heritage displays, commemorative items, social media live coverage"),
+    (3, "Employee Appreciation Day", "Mar 2", "5-Star Hotel – Gala round-table setup", "Gala stage, premium décor, uplighting, award pedestals", "Full AV, spotlight for awards, background music system", "12 crystal trophies, Live band (2.5hr), Gift boxes, Prof. MC, Full photo/video team"),
+    (4, "International Women's Day", "Mar 8", "Boutique venue or hotel ladies' section", "Elegant feminine décor, premium floral arrangements", "Projector, wireless mic, ambient music", "Female keynote + panel (3 speakers), Photo booth, Curated gift bags, Female photographer"),
+    (5, "Saudi Flag Day", "Mar 11", "SERA HQ – Lobby & outdoor", "Large Saudi flag (5m+), national green/white theme", "Portable sound for anthem + speeches", "Flag ceremony, Commemorative items, Social media live coverage"),
+    (6, "Ramadan Iftar", "Mid-Mar", "5-Star Hotel Ramadan Tent", "Traditional Ramadan décor: lanterns, crescents, VIP majlis", "Ambient lighting, background system", "Premium Iftar buffet, Oud player, Ramadan gift boxes, Prayer area arrangement"),
+    (7, "Mother's Day", "Mar 21", "Elegant restaurant private section", "Floral-themed décor, photo area", "Basic sound for music/announcements", "Flower gifts, Special mother gifts, Entertainment, Photography"),
+    (8, "Saudi Green Initiative", "Mar 27", "SERA HQ – Exhibition area", "Green/sustainability themed booths, eco displays", "Presentation setup, ambient music", "Environmental expert, Green exhibits, Eco giveaways, Sustainability displays"),
+    (9, "Ehsan Philanthropy Campaign", "March", "SERA HQ – Lobby area", "Ehsan platform displays, donation stations", "Basic presentation setup", "Campaign awareness booth, QR donation stations, Impact stories display"),
+    (10, "Eid Al-Fitr Celebration", "Early Apr", "5-Star Hotel Grand Ballroom", "Festive Eid gold/white, large stage, entrance arch", "Full production: LED wall, concert sound, lighting design", "Ardah troupe + live music, Eid gifts, Children's corner (optional), Prof. MC"),
+    (11, "Creativity & Innovation Day", "Apr 21", "Conference Center", "Main stage + 10 department innovation booths", "Conference AV, booth displays, digital voting", "Keynote speaker, Innovation competition, 7 awards, Interactive voting"),
+    (12, "International Tea Day", "May 21", "SERA HQ Common Areas", "Tea-themed décor, 3 service stations", "Background music", "Arabic/English/Asian tea stations, Gourmet pairings, Tea culture displays"),
+    (13, "Joy Clothing Drive", "May", "SERA HQ – Collection area", "Collection booths, sorting stations, CSR banners", "None needed", "Collection points, volunteer coordination, sorting & distribution logistics"),
+    (14, "World No Tobacco Day", "May 31", "SERA HQ – Health zone", "Anti-smoking displays, health info panels", "Presentation setup", "Health expert speaker, CO breath test station, Awareness materials"),
+    (15, "Blood Donation Day", "Jun 14", "SERA HQ – Medical setup area", "Awareness materials, registration area, recovery zone", "Digital screens with awareness content", "Red Crescent partnership, Pre-event campaign, Donor gifts & certificates"),
+    (16, "Father's Day", "Jun 15", "Restaurant / Event space", "Celebration décor, activity zone", "Sound system", "Gifts for fathers (50% assumed), Team-building activities"),
+    (17, "Eid Al-Adha Celebration", "Mid-Jun", "5-Star Hotel Grand Ballroom", "Traditional Arabian Eid theme, large stage", "Full production: LED, concert sound, lighting", "Ardah + live music, Lamb-focused feast, Eid gifts, Prof. MC"),
+    (18, "Summer SERA (صيف سيرا)", "Jul 20", "Entertainment venue – EVENING ONLY (45°C heat)", "Multi-zone: main stage, kids zone, food area, games", "Concert-grade outdoor sound & lighting", "Headline entertainment, Kids zone, 10 game booths, Food festival, Raffle, Family gifts"),
+    (19, "SERA Winter (شتوية سيرا)", "Aug 19", "Indoor entertainment venue (air-conditioned)", "Winter wonderland theme, snow effects, ambient lighting", "Full AV, music, effects", "Entertainment program, Food stations, Photo booth, Winter-themed activities"),
+    (20, "World First Aid Day", "Sep 13", "SERA HQ – Training area", "First aid training layout, demo stations", "Presentation setup", "CPR training workshop, First aid kits, Paramedic expert, Certification"),
+    (21, "تزود Skills Development", "Sep", "Conference / Training Venue", "Professional training setup, workshop layout", "Conference AV, projector, mics", "Expert trainers (2 sessions), Training materials, Certificates, Full-day program"),
+    (22, "World Alzheimer's Day", "Sep 21", "SERA HQ", "Purple awareness theme, info booth", "Presentation setup", "Healthcare expert speaker, Purple ribbons, Awareness displays"),
+    (23, "وش دورنا – What's Our Role", "Sep", "SERA HQ – Meeting area", "Interactive workshop layout, role displays", "Basic AV for presentations", "Professional facilitator, Interactive exercises, Role guides, Team activities"),
+    (24, "Saudi National Day (96th)", "Sep 23", "Premium venue with outdoor option", "Premium green national décor, flags, national symbols", "Full AV production, LED national content, green effects", "Ardah troupe, Cultural acts, National gifts, Green lighting effects. BOOK 3-4 MONTHS AHEAD"),
+    (25, "Environment Week", "Q3 TBD", "SERA HQ – Exhibition area (5 days)", "Green/eco displays, sustainability booths, plant features", "Daily presentation setup", "5-day program, Expert speakers, Tree planting, Eco workshops, Green activities"),
+    (26, "International Coffee Day", "Oct 1", "SERA HQ Common Areas", "Coffee-themed décor, 3 stations", "Background music", "Professional barista, Arabic dallah ceremony, Coffee culture displays"),
+    (27, "Breast Cancer Awareness Day", "Oct", "SERA HQ – Health zone", "Pink ribbon theme, awareness panels, info displays", "Presentation setup", "Healthcare expert, Screening info, Pink awareness items, Health materials"),
+    (28, "Cybersecurity Exhibition", "Oct TBD", "SERA HQ / Conference Center", "6 interactive exhibition booths, demo stations", "Full conference AV, booth monitors, demo equipment", "6 interactive demos, 2 expert speakers, Phishing simulations, Branded giveaways"),
+    (29, "World Mental Health Day", "Oct 10", "SERA HQ", "Wellness décor, relaxation zone", "Presentation setup, ambient music", "Psychologist speaker, Stress workshop, Relaxation zone (massage chairs), Wellness kits"),
+    (30, "World Savings Day", "Oct 31", "SERA HQ – Meeting area", "Financial literacy displays, pledge wall", "Presentation setup", "Financial expert, Savings guides, Budget planners, Pledge wall activity"),
+    (31, "Quality Day", "Nov 10", "Business Hotel Conference Room", "Award stage, quality showcase display", "Conference AV: screen, sound, podium", "7 quality awards, Best practices presentations, Expert speaker"),
+    (32, "Flu Vaccination Campaign", "Nov", "SERA HQ – Medical area", "Health campaign setup, vaccination stations", "Digital awareness screens", "Medical staff, Vaccination logistics, Pre-campaign awareness, Participant gifts"),
+    (33, "World Diabetes Day", "Nov 14", "SERA HQ – Health zone", "Blue circle theme, diabetes awareness panels", "Presentation setup", "Endocrinologist speaker, Blood sugar screening, Health materials, Blue awareness items"),
+    (34, "International Men's Day", "Nov 19", "Event space", "Celebration décor, activity area", "Sound system", "Team competitions, Recognition gifts"),
+    (35, "Universal Children's Day", "Nov 20", "Family entertainment venue", "Colorful child-friendly décor, safe play areas", "Sound for entertainment", "Professional children's entertainers, Game stations, Gifts for kids"),
+    (36, "Volunteer Day", "Dec 5", "Community location", "Branded volunteer banner/signage", "None needed", "2 buses transport, Volunteer T-shirts, Activity supplies, Lunch boxes"),
+    (37, "Anti-Corruption Day", "Dec 9", "SERA HQ", "Integrity pledge wall, information displays", "Presentation AV", "Ethics expert/Nazaha speaker, Pledge signing, Awareness brochures"),
+    (38, "Transformation Activities", "Q4 TBD", "SERA HQ – Exhibition area", "Digital transformation displays, innovation showcases", "Full AV, interactive screens", "Expert panels, Transformation workshops, Design thinking activities"),
+    (39, "Ideal Office Competition", "Q4 TBD", "SERA HQ – All offices", "Competition banners, evaluation signage", "Basic AV for ceremony", "Evaluation program, Judging panel, Award ceremony, Trophies"),
+    (40, "Arabic Language Day", "Dec 18", "Cultural venue", "Arabic calligraphy displays, poetry corner", "Presentation + ambient Arabic music", "Poet guest, Calligraphy workshop, Poetry recital, Cultural program"),
+    (41, "Year-End Celebration", "Late Dec", "5-Star Hotel – Premium Gala", "Premium stage, LED lighting design, luxury tables", "Full gala: LED wall, concert sound, designer lighting", "Premium band + acts, 15 annual awards, Year-review video, Premium gifts, Prof. MC. BOOK 3 MONTHS AHEAD"),
 ]
 
 for idx, row_data in enumerate(tech_data):
