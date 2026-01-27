@@ -142,24 +142,24 @@ const categories = [
     name: "LED SCREENS & MEDIA",
     icon: "🖥",
     items: [
-      ["Center LED Screen", "High-brightness LED screen, installation & operation", "10m × 4m (40 sqm)", "400 / sqm", 16000],
-      ["Side LED Screens", "Supporting LED screens (left & right)", "2 × (3m × 4m) = 24 sqm", "400 / sqm", 9600],
-      ["Media Server", "Playback server, redundancy & tech support", "1", "Lump Sum", 6000],
+      ["Center LED Screen", "High-brightness LED screen, installation & operation", "10m × 4m (40 sqm)", "450 / sqm", 18000],
+      ["Side LED Screens", "Supporting LED screens (left & right)", "2 × (3m × 4m) = 24 sqm", "450 / sqm", 10800],
+      ["Media Server", "Playback server, redundancy & tech support", "1", "Lump Sum", 6500],
     ],
   },
   {
     name: "STAGE & FLOORING",
     icon: "🎭",
     items: [
-      ["Main Stage Structure", "Heavy-duty modular stage", "16m × 4m × 1.1m", "180 / sqm", 11520],
-      ["Stage Carpet", "Premium carpet finish", "Lump Sum", "—", 4000],
+      ["Main Stage Structure", "Heavy-duty modular stage", "16m × 4m × 1.1m", "200 / sqm", 12800],
+      ["Stage Carpet", "Premium carpet finish", "Lump Sum", "—", 4500],
     ],
   },
   {
     name: "SOUND SYSTEM",
     icon: "🔊",
     items: [
-      ["Line Array System", "Full PA system with tuning & operation", "—", "Lump Sum", 15000],
+      ["Line Array System", "Full PA system with tuning & operation", "—", "Lump Sum", 16500],
       ["Subwoofers", "Low-frequency reinforcement", "6", "Included", null],
       ["High Speakers", "Main speakers", "12", "Included", null],
       ["Stage Monitors", "Speaker foldback", "4", "Included", null],
@@ -170,38 +170,38 @@ const categories = [
     name: "LIGHTING SYSTEM",
     icon: "💡",
     items: [
-      ["Truss Structure", "T-Truss with rigging", "2", "Included", 8000],
-      ["Stage & Ambient Lights", "Stage wash + city colors", "6", "Included", 5000],
+      ["Truss Structure", "T-Truss with rigging", "2", "Included", 8500],
+      ["Stage & Ambient Lights", "Stage wash + city colors", "6", "Included", 5500],
     ],
   },
   {
     name: "VIP HOSPITALITY",
     icon: "🥂",
     items: [
-      ["Guest Hospitality", "VIP catering, service coordination", "—", "Lump Sum", 8000],
+      ["Guest Hospitality", "VIP catering, service coordination", "—", "Lump Sum", 9000],
     ],
   },
   {
     name: "PHOTO & MEDIA",
     icon: "📸",
     items: [
-      ["Branded Photo Wall", "Logo wall with lighting & carpet", "6m × 2.4m", "Lump Sum", 9500],
-      ["Instant Photography", "Photographer, editor & instant prints", "50 prints", "Lump Sum", 4000],
+      ["Branded Photo Wall", "Logo wall with lighting & carpet", "6m × 2.4m", "Lump Sum", 10500],
+      ["Instant Photography", "Photographer, editor & instant prints", "50 prints", "Lump Sum", 4500],
     ],
   },
   {
     name: "FURNITURE & SEATING",
     icon: "🪑",
     items: [
-      ["VIP Sofas", "Premium sofas", "50 units", "200 / unit", 10000],
-      ["Balcony Hospitality Tables", "High tables with service", "20 tables", "1,000 / table", 20000],
+      ["VIP Sofas", "Premium sofas", "50 units", "220 / unit", 11000],
+      ["Balcony Hospitality Tables", "High tables with service", "20 tables", "1,050 / table", 21000],
     ],
   },
   {
     name: "EVENT STAFFING",
     icon: "👥",
     items: [
-      ["Ushers", "Professional guest management staff", "10", "450 / person", 4500],
+      ["Ushers", "Professional guest management staff", "10", "500 / person", 5000],
     ],
   },
   {
@@ -282,8 +282,8 @@ categories.forEach((cat) => {
 ws.getRow(rowNum).height = 6;
 rowNum++;
 
-// Subtotal line
-const subtotal = 150213 - 19593; // 130,620
+// Subtotal line  (items sum = 146,100)
+const subtotal = 146100;
 ws.mergeCells(`A${rowNum}:E${rowNum}`);
 const subCell = ws.getCell(`A${rowNum}`);
 subCell.value = "SUBTOTAL";
@@ -316,7 +316,7 @@ styleCell(commCell, {
   border: thinBorder(),
 });
 const commValCell = ws.getCell(`F${rowNum}`);
-commValCell.value = 19593;
+commValCell.value = 18900;
 commValCell.numFmt = '#,##0';
 styleCell(commValCell, {
   font: { name: "Calibri", size: 11, bold: false, color: { argb: "FF424242" } },
@@ -345,7 +345,7 @@ styleCell(totalLabelCell, {
   border: medBorder(darkNavy),
 });
 const totalValCell = ws.getCell(`F${rowNum}`);
-totalValCell.value = 150213;
+totalValCell.value = 165000;
 totalValCell.numFmt = '"SAR " #,##0';
 styleCell(totalValCell, {
   font: { name: "Calibri", size: 14, bold: true, color: { argb: gold } },
