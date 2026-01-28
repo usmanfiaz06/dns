@@ -92,8 +92,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = useCallback((email: string, password: string) => {
+    const trimmedEmail = email.trim().toLowerCase();
     const users = getUsers();
-    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    const user = users.find(u => u.email === trimmedEmail);
     if (!user) return { success: false, error: 'No account found with this email' };
     if (user.password !== password) return { success: false, error: 'Incorrect password' };
 
@@ -104,7 +105,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Mark invite as accepted
     const invites = getInvites();
-    const invite = invites.find(i => i.email.toLowerCase() === email.toLowerCase() && i.status === 'pending');
+    const invite = invites.find(i => i.email === trimmedEmail && i.status === 'pending');
     if (invite) {
       invite.status = 'accepted';
       saveInvites(invites);
@@ -114,20 +115,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [refreshTeam]);
 
   const signup = useCallback((name: string, email: string, password: string) => {
+    const trimmedEmail = email.trim().toLowerCase();
     const users = getUsers();
-    if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
+    if (users.find(u => u.email === trimmedEmail)) {
       return { success: false, error: 'An account with this email already exists' };
     }
 
     // Check if invited
     const invites = getInvites();
-    const invite = invites.find(i => i.email.toLowerCase() === email.toLowerCase() && i.status === 'pending');
+    const invite = invites.find(i => i.email === trimmedEmail && i.status === 'pending');
 
     const companyId = invite ? invite.companyId : uuidv4();
     const user: User = {
       id: uuidv4(),
       name,
-      email: email.toLowerCase(),
+      email: trimmedEmail,
       password,
       role: invite ? 'member' : 'owner',
       companyId,
