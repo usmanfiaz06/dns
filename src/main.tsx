@@ -14,7 +14,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ padding: 40, fontFamily: 'monospace' }}>
+        <div style={{ padding: 40, fontFamily: 'monospace', maxWidth: 800, margin: '0 auto' }}>
           <h1 style={{ color: 'red' }}>Something went wrong</h1>
           <pre style={{ whiteSpace: 'pre-wrap', background: '#f5f5f5', padding: 16, borderRadius: 8 }}>
             {this.state.error}
@@ -26,10 +26,20 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
   }
 }
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
-  </StrictMode>,
-)
+try {
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    </StrictMode>,
+  )
+} catch (e) {
+  const root = document.getElementById('root');
+  if (root) {
+    root.innerHTML = `<div style="padding:40px;font-family:monospace;max-width:800px;margin:0 auto">
+      <h1 style="color:red">Failed to start app</h1>
+      <pre style="white-space:pre-wrap;background:#f5f5f5;padding:16px;border-radius:8px">${e instanceof Error ? e.message + '\n' + e.stack : String(e)}</pre>
+    </div>`;
+  }
+}

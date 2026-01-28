@@ -16,6 +16,16 @@
         Loading...
       </div>
     </div>
+    <script>
+      window.onerror = function(msg, url, line, col, err) {
+        var r = document.getElementById('root');
+        if (r) r.innerHTML = '<div style="padding:40px;font-family:monospace;max-width:800px;margin:0 auto"><h1 style="color:red">App Error</h1><pre style="white-space:pre-wrap;background:#f5f5f5;padding:16px;border-radius:8px">' + msg + '\n' + (url||'') + ':' + (line||'') + (err && err.stack ? '\n\n' + err.stack : '') + '</pre></div>';
+      };
+      window.onunhandledrejection = function(e) {
+        var r = document.getElementById('root');
+        if (r) r.innerHTML = '<div style="padding:40px;font-family:monospace;max-width:800px;margin:0 auto"><h1 style="color:red">App Error</h1><pre style="white-space:pre-wrap;background:#f5f5f5;padding:16px;border-radius:8px">' + (e.reason || 'Unknown error') + '</pre></div>';
+      };
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
