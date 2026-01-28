@@ -1,8 +1,8 @@
-import { LayoutDashboard, FilePlus, FileText, Users, Settings, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, FilePlus, FileText, Users, Settings, LogOut, ChevronLeft, ChevronRight, Presentation } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 
-export type Route = 'dashboard' | 'invoices' | 'new-invoice' | 'edit-invoice' | 'users' | 'settings';
+export type Route = 'dashboard' | 'invoices' | 'new-invoice' | 'edit-invoice' | 'users' | 'settings' | 'presentation';
 
 interface LayoutProps {
   currentRoute: Route;
@@ -15,6 +15,7 @@ const navItems: { route: Route; label: string; icon: typeof LayoutDashboard }[] 
   { route: 'new-invoice', label: 'New Invoice', icon: FilePlus },
   { route: 'invoices', label: 'Invoices', icon: FileText },
   { route: 'users', label: 'Team', icon: Users },
+  { route: 'presentation', label: 'Presentation', icon: Presentation },
   { route: 'settings', label: 'Settings', icon: Settings },
 ];
 
