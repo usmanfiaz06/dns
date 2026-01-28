@@ -1,10 +1,11 @@
-import { FileText, FilePlus, TrendingUp, Eye, Clock } from 'lucide-react';
+import { FileText, FilePlus, TrendingUp, Eye, Clock, Copy } from 'lucide-react';
 import type { Invoice } from '../types/invoice';
 
 interface DashboardProps {
   invoices: Invoice[];
   onCreateNew: () => void;
   onEditInvoice: (invoice: Invoice) => void;
+  onDuplicate: (invoice: Invoice) => void;
 }
 
 function formatCurrency(amount: number): string {
@@ -25,7 +26,7 @@ function getTimeAgo(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
 }
 
-export default function Dashboard({ invoices, onCreateNew, onEditInvoice }: DashboardProps) {
+export default function Dashboard({ invoices, onCreateNew, onEditInvoice, onDuplicate }: DashboardProps) {
   const totalRevenue = invoices.reduce((sum, inv) => sum + inv.subTotal * inv.numberOfCourts, 0);
   const totalViews = invoices.reduce((sum, inv) => sum + (inv.shareLinks?.[0]?.views?.length || 0), 0);
   const recentInvoices = [...invoices]
@@ -122,26 +123,32 @@ export default function Dashboard({ invoices, onCreateNew, onEditInvoice }: Dash
         ) : (
           <div className="divide-y divide-gray-50">
             {recentInvoices.map(invoice => (
-              <button
+              <div
                 key={invoice.id}
-                onClick={() => onEditInvoice(invoice)}
-                className="w-full flex items-center gap-4 px-6 py-4 hover:bg-gray-50 transition-colors text-left"
+                className="w-full flex items-center gap-4 px-6 py-4 hover:bg-gray-50 transition-colors"
               >
-                <div className="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center shrink-0 cursor-pointer" onClick={() => onEditInvoice(invoice)}>
                   <FileText size={18} className="text-green-600" />
                 </div>
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0 cursor-pointer" onClick={() => onEditInvoice(invoice)}>
                   <p className="font-medium text-gray-900 truncate">{invoice.clientName || 'Untitled'}</p>
                   <p className="text-sm text-gray-500 truncate">{invoice.description} · {invoice.numberOfCourts} court{invoice.numberOfCourts > 1 ? 's' : ''}</p>
                 </div>
-                <div className="text-right shrink-0">
+                <div className="text-right shrink-0 cursor-pointer" onClick={() => onEditInvoice(invoice)}>
                   <p className="font-medium text-gray-900">{formatCurrency(invoice.subTotal * invoice.numberOfCourts)}</p>
                   <p className="text-xs text-gray-400 flex items-center gap-1 justify-end">
                     <Clock size={12} />
                     {getTimeAgo(invoice.modifiedAt || invoice.createdAt)}
                   </p>
                 </div>
-              </button>
+                <button
+                  onClick={() => onDuplicate(invoice)}
+                  className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all shrink-0"
+                  title="Duplicate"
+                >
+                  <Copy size={16} />
+                </button>
+              </div>
             ))}
           </div>
         )}

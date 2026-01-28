@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import {
   ArrowLeft, ArrowRight, Save, Download, Eye,
   Plus, Trash2, ChevronUp, ChevronDown, Upload, X, Check, Link
@@ -36,6 +36,8 @@ export default function InvoiceWizard({ invoice, onChange, onSave, onBack, isNew
   const [showPreview, setShowPreview] = useState(false);
   const [previewUrl, setPreviewUrl] = useState('');
   const [copied, setCopied] = useState(false);
+  const [livePreviewUrl, setLivePreviewUrl] = useState('');
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const currentStepIndex = STEPS.findIndex(s => s.id === currentStep);
 
@@ -75,7 +77,7 @@ export default function InvoiceWizard({ invoice, onChange, onSave, onBack, isNew
     });
   };
 
-  const applyCompanySettings = (inv: Invoice): Invoice => {
+  const applyCompanySettings = useCallback((inv: Invoice): Invoice => {
     if (!companySettings) return inv;
     return {
       ...inv,
@@ -92,7 +94,23 @@ export default function InvoiceWizard({ invoice, onChange, onSave, onBack, isNew
         features: companySettings.features?.length ? companySettings.features : inv.companyProfile?.features || [],
       },
     };
-  };
+  }, [companySettings]);
+
+  // Live PDF preview - debounced update
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      try {
+        const url = previewPDF(applyCompanySettings(invoice));
+        setLivePreviewUrl(url);
+      } catch {
+        // ignore preview errors
+      }
+    }, 800);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [invoice, applyCompanySettings]);
 
   const handleImageUpload = (callback: (data: string) => void) => {
     const input = document.createElement('input');
@@ -109,7 +127,7 @@ export default function InvoiceWizard({ invoice, onChange, onSave, onBack, isNew
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50">
+    <div className="h-full flex flex-col bg-gray-50">
       {/* Top Bar */}
       <div className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
@@ -193,17 +211,39 @@ export default function InvoiceWizard({ invoice, onChange, onSave, onBack, isNew
         </div>
       </div>
 
-      {/* Step Content */}
-      <div className="flex-1 overflow-auto p-6 lg:p-8">
-        <div className="max-w-3xl mx-auto">
-          {currentStep === 'cover' && <CoverStep invoice={invoice} update={update} companySettings={companySettings} />}
-          {currentStep === 'basic' && <BasicInfoStep invoice={invoice} update={update} />}
-          {currentStep === 'projects' && <ProjectsStep invoice={invoice} update={update} onImageUpload={handleImageUpload} />}
-          {currentStep === 'quotation' && <QuotationStep invoice={invoice} update={update} />}
-          {currentStep === 'pricing' && <PricingStep invoice={invoice} update={update} />}
-          {currentStep === 'terms' && <TermsStep invoice={invoice} update={update} />}
-          {currentStep === 'pages' && <PagesStep invoice={invoice} update={update} />}
-          {currentStep === 'review' && <ReviewStep invoice={invoice} onPreview={handlePreview} onExport={handleExport} onSave={onSave} />}
+      {/* Content: Editor + Preview */}
+      <div className="flex-1 flex min-h-0">
+        {/* Left: Step Content */}
+        <div className="flex-1 overflow-auto p-6 lg:p-8">
+          <div className="max-w-2xl">
+            {currentStep === 'cover' && <CoverStep invoice={invoice} update={update} companySettings={companySettings} />}
+            {currentStep === 'basic' && <BasicInfoStep invoice={invoice} update={update} />}
+            {currentStep === 'projects' && <ProjectsStep invoice={invoice} update={update} onImageUpload={handleImageUpload} />}
+            {currentStep === 'quotation' && <QuotationStep invoice={invoice} update={update} />}
+            {currentStep === 'pricing' && <PricingStep invoice={invoice} update={update} />}
+            {currentStep === 'terms' && <TermsStep invoice={invoice} update={update} />}
+            {currentStep === 'pages' && <PagesStep invoice={invoice} update={update} />}
+            {currentStep === 'review' && <ReviewStep invoice={invoice} onPreview={handlePreview} onExport={handleExport} onSave={onSave} />}
+          </div>
+        </div>
+
+        {/* Right: Live PDF Preview */}
+        <div className="hidden lg:flex w-[420px] border-l border-gray-200 bg-gray-100 flex-col shrink-0">
+          <div className="px-4 py-3 bg-white border-b border-gray-200 flex items-center justify-between">
+            <span className="text-sm font-medium text-gray-700">Live Preview</span>
+            <button onClick={handlePreview} className="text-xs text-green-600 hover:text-green-700 font-medium">
+              Full Screen
+            </button>
+          </div>
+          <div className="flex-1 p-3">
+            {livePreviewUrl ? (
+              <iframe src={livePreviewUrl} className="w-full h-full rounded-lg border border-gray-200 bg-white shadow-sm" title="Live Preview" />
+            ) : (
+              <div className="w-full h-full rounded-lg border border-gray-200 bg-white flex items-center justify-center text-gray-400 text-sm">
+                Generating preview...
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
