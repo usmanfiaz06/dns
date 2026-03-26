@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import type { Invoice } from './types/invoice';
 import { createNewInvoice, defaultCompanyProfile } from './types/invoice';
-import { useLocalStorage } from './hooks/useLocalStorage';
+import { useFirestoreInvoices, getInvoiceById } from './hooks/useFirestoreInvoices';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import LoginPage from './components/LoginPage';
 import SignupPage from './components/SignupPage';
@@ -15,16 +15,17 @@ import SharedInvoiceView from './components/SharedInvoiceView';
 import { v4 as uuidv4 } from 'uuid';
 
 function AppContent() {
-  const { isAuthenticated, currentUser, companySettings } = useAuth();
+  const { isAuthenticated, isLoading: authLoading, currentUser, companySettings } = useAuth();
   const [authView, setAuthView] = useState<'login' | 'signup'>('login');
   const [currentRoute, setCurrentRoute] = useState<Route>('dashboard');
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const [isNewInvoice, setIsNewInvoice] = useState(false);
   const [sharedInvoiceId, setSharedInvoiceId] = useState<string | null>(null);
+  const [sharedInvoice, setSharedInvoice] = useState<Invoice | null>(null);
+  const [loadingShared, setLoadingShared] = useState(false);
 
-  // Per-user invoice storage key
-  const storageKey = currentUser ? `qns-invoices-${currentUser.companyId}` : 'qns-invoices';
-  const [invoices, setInvoices] = useLocalStorage<Invoice[]>(storageKey, []);
+  // Firestore invoices
+  const { invoices, loading: invoicesLoading, saveInvoice, deleteInvoice } = useFirestoreInvoices(currentUser?.companyId);
 
   // Handle hash-based routing for shared links
   useEffect(() => {
@@ -35,12 +36,24 @@ function AppContent() {
         setSharedInvoiceId(match[1]);
       } else {
         setSharedInvoiceId(null);
+        setSharedInvoice(null);
       }
     };
     handleHash();
     window.addEventListener('hashchange', handleHash);
     return () => window.removeEventListener('hashchange', handleHash);
   }, []);
+
+  // Fetch shared invoice from Firestore
+  useEffect(() => {
+    if (sharedInvoiceId) {
+      setLoadingShared(true);
+      getInvoiceById(sharedInvoiceId).then((invoice) => {
+        setSharedInvoice(invoice);
+        setLoadingShared(false);
+      });
+    }
+  }, [sharedInvoiceId]);
 
   const handleCreateNew = useCallback(() => {
     const invoice = createNewInvoice();
@@ -55,7 +68,7 @@ function AppContent() {
     setCurrentRoute('edit-invoice');
   }, []);
 
-  const handleDuplicate = useCallback((invoice: Invoice) => {
+  const handleDuplicate = useCallback(async (invoice: Invoice) => {
     const duplicated: Invoice = {
       ...JSON.parse(JSON.stringify(invoice)),
       id: uuidv4(),
@@ -63,14 +76,14 @@ function AppContent() {
       createdAt: new Date().toISOString(),
       modifiedAt: new Date().toISOString(),
     };
-    setInvoices(prev => [...prev, duplicated]);
-  }, [setInvoices]);
+    await saveInvoice(duplicated);
+  }, [saveInvoice]);
 
-  const handleDelete = useCallback((id: string) => {
-    setInvoices(prev => prev.filter(inv => inv.id !== id));
-  }, [setInvoices]);
+  const handleDelete = useCallback(async (id: string) => {
+    await deleteInvoice(id);
+  }, [deleteInvoice]);
 
-  const handleSave = useCallback(() => {
+  const handleSave = useCallback(async () => {
     if (!currentInvoice) return;
     const now = new Date().toISOString();
     const updated = { ...currentInvoice, modifiedAt: now };
@@ -93,15 +106,14 @@ function AppContent() {
 
     if (isNewInvoice) {
       updated.createdAt = now;
-      setInvoices(prev => [...prev, updated]);
-    } else {
-      setInvoices(prev => prev.map(inv => inv.id === updated.id ? updated : inv));
     }
+
+    await saveInvoice(updated);
 
     setCurrentInvoice(null);
     setIsNewInvoice(false);
     setCurrentRoute('invoices');
-  }, [currentInvoice, isNewInvoice, setInvoices, companySettings]);
+  }, [currentInvoice, isNewInvoice, saveInvoice, companySettings]);
 
   const handleBack = useCallback(() => {
     setCurrentInvoice(null);
@@ -127,9 +139,29 @@ function AppContent() {
 
   // Shared invoice view (public, no auth needed)
   if (sharedInvoiceId) {
-    // Search all localStorage keys for the invoice
-    const invoice = findInvoiceById(sharedInvoiceId);
-    return <SharedInvoiceView invoice={invoice} onClose={() => { window.location.hash = ''; setSharedInvoiceId(null); }} />;
+    if (loadingShared) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="text-center">
+            <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading invoice...</p>
+          </div>
+        </div>
+      );
+    }
+    return <SharedInvoiceView invoice={sharedInvoice} onClose={() => { window.location.hash = ''; setSharedInvoiceId(null); }} />;
+  }
+
+  // Loading state
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
   }
 
   // Auth screens (no layout)
@@ -157,6 +189,7 @@ function AppContent() {
           onCreateNew={handleCreateNew}
           onEditInvoice={handleEdit}
           onDuplicate={handleDuplicate}
+          loading={invoicesLoading}
         />
       ) : currentRoute === 'invoices' ? (
         <InvoiceList
@@ -165,6 +198,7 @@ function AppContent() {
           onEdit={handleEdit}
           onDuplicate={handleDuplicate}
           onDelete={handleDelete}
+          loading={invoicesLoading}
         />
       ) : currentRoute === 'settings' ? (
         <CompanySettings />
@@ -173,23 +207,6 @@ function AppContent() {
       ) : null}
     </Layout>
   );
-}
-
-// Search all localStorage for an invoice by ID
-function findInvoiceById(id: string): Invoice | null {
-  try {
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key && key.startsWith('qns-invoices')) {
-        const invoices: Invoice[] = JSON.parse(localStorage.getItem(key) || '[]');
-        const found = invoices.find(inv => inv.id === id);
-        if (found) return found;
-      }
-    }
-  } catch {
-    // ignore
-  }
-  return null;
 }
 
 export default function App() {

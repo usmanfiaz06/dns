@@ -14,7 +14,7 @@ export default function LoginPage({ onSwitchToSignup }: LoginPageProps) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
@@ -25,7 +25,7 @@ export default function LoginPage({ onSwitchToSignup }: LoginPageProps) {
       return;
     }
 
-    const result = login(email, password);
+    const result = await login(email, password);
     if (!result.success) {
       setError(result.error || 'Login failed');
     }
