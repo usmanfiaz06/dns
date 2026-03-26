@@ -3,8 +3,8 @@ import {
   ArrowLeft, ArrowRight, Save, Download, Eye,
   Plus, Trash2, ChevronUp, ChevronDown, Upload, X, Check, Link
 } from 'lucide-react';
-import type { Invoice, QuotationItem, AddOn, PastProject, ProjectImage } from '../types/invoice';
-import { defaultCompanyProfile } from '../types/invoice';
+import type { Invoice, QuotationItem, AddOn, PastProject, ProjectImage, ROIExpense } from '../types/invoice';
+import { defaultCompanyProfile, defaultROIConfig } from '../types/invoice';
 import { useAuth } from '../context/AuthContext';
 import { generatePDF, previewPDF } from '../utils/pdfGenerator';
 import { v4 as uuidv4 } from 'uuid';
@@ -24,6 +24,7 @@ const STEPS = [
   { id: 'quotation', label: 'Quotation Items', shortLabel: 'Items' },
   { id: 'pricing', label: 'Pricing & Add-ons', shortLabel: 'Pricing' },
   { id: 'terms', label: 'Terms & Payment', shortLabel: 'Terms' },
+  { id: 'roi', label: 'ROI Breakdown', shortLabel: 'ROI' },
   { id: 'pages', label: 'PDF Pages', shortLabel: 'Pages' },
   { id: 'review', label: 'Review & Export', shortLabel: 'Review' },
 ] as const;
@@ -222,6 +223,7 @@ export default function InvoiceWizard({ invoice, onChange, onSave, onBack, isNew
             {currentStep === 'quotation' && <QuotationStep invoice={invoice} update={update} />}
             {currentStep === 'pricing' && <PricingStep invoice={invoice} update={update} />}
             {currentStep === 'terms' && <TermsStep invoice={invoice} update={update} />}
+            {currentStep === 'roi' && <ROIStep invoice={invoice} update={update} />}
             {currentStep === 'pages' && <PagesStep invoice={invoice} update={update} />}
             {currentStep === 'review' && <ReviewStep invoice={invoice} onPreview={handlePreview} onExport={handleExport} onSave={onSave} />}
           </div>
@@ -821,6 +823,249 @@ function TermsStep({ invoice, update }: { invoice: Invoice; update: (p: Partial<
           </button>
         </div>
       </SectionCard>
+    </>
+  );
+}
+
+/* ---- ROI Step ---- */
+function ROIStep({ invoice, update }: { invoice: Invoice; update: (p: Partial<Invoice>) => void }) {
+  const roi = invoice.roiConfig || defaultROIConfig;
+
+  const updateROI = (partial: Partial<typeof roi>) => {
+    update({ roiConfig: { ...roi, ...partial } });
+  };
+
+  const updateExpense = (id: string, partial: Partial<ROIExpense>) => {
+    const updated = roi.expenses.map(e => e.id === id ? { ...e, ...partial } : e);
+    updateROI({ expenses: updated });
+  };
+
+  const addExpense = () => {
+    updateROI({
+      expenses: [...roi.expenses, { id: uuidv4(), name: '', amount: 0 }]
+    });
+  };
+
+  const removeExpense = (id: string) => {
+    updateROI({ expenses: roi.expenses.filter(e => e.id !== id) });
+  };
+
+  // Calculations
+  const courts = invoice.numberOfCourts;
+  const dailyRevenue = roi.hourlyRate * roi.dailyBookingHours * courts;
+  const monthlyRevenue = dailyRevenue * roi.daysPerMonth;
+  const totalExpenses = roi.expenses.reduce((sum, e) => sum + e.amount, 0);
+  const monthlyProfit = monthlyRevenue - totalExpenses;
+  const annualProfit = monthlyProfit * 12;
+
+  // Investment = invoice total or manual
+  const baseCost = invoice.subTotal * courts;
+  const taxAmount = invoice.includeTax ? baseCost * (invoice.taxPercentage / 100) : 0;
+  const civilWork = invoice.includeCivilWork ? invoice.civilWorkMaxPrice : 0;
+  const addOnTotal = invoice.addOns.filter(a => a.enabled).reduce((sum, a) => sum + a.price, 0);
+  const autoInvestment = baseCost + taxAmount + civilWork + addOnTotal;
+  const investment = roi.manualInvestment ? roi.investmentAmount : autoInvestment;
+
+  const monthsToBreakeven = monthlyProfit > 0 ? Math.ceil(investment / monthlyProfit) : 0;
+  const annualROIPercent = investment > 0 ? ((annualProfit / investment) * 100) : 0;
+
+  // Monthly breakdown for 12 months
+  const months = Array.from({ length: 12 }, (_, i) => {
+    const month = i + 1;
+    const cumulativeProfit = monthlyProfit * month;
+    const remainingInvestment = investment - cumulativeProfit;
+    return {
+      month,
+      revenue: monthlyRevenue,
+      expenses: totalExpenses,
+      profit: monthlyProfit,
+      cumulative: cumulativeProfit,
+      remaining: Math.max(0, remainingInvestment),
+      recovered: Math.min(100, (cumulativeProfit / investment) * 100),
+    };
+  });
+
+  return (
+    <>
+      <SectionCard title="ROI Calculator" description="Show your clients the return on their investment with a dynamic monthly breakdown.">
+        <div className="space-y-6">
+          {/* Revenue Inputs */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">Revenue Settings</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <InputField
+                label={`Hourly Rate / Court (PKR)`}
+                value={roi.hourlyRate}
+                onChange={v => updateROI({ hourlyRate: parseInt(v) || 0 })}
+                type="number"
+              />
+              <InputField
+                label="Booking Hours / Day"
+                value={roi.dailyBookingHours}
+                onChange={v => updateROI({ dailyBookingHours: parseInt(v) || 0 })}
+                type="number"
+              />
+              <InputField
+                label="Days / Month"
+                value={roi.daysPerMonth}
+                onChange={v => updateROI({ daysPerMonth: parseInt(v) || 0 })}
+                type="number"
+              />
+            </div>
+          </div>
+
+          {/* Revenue Preview */}
+          <div className="bg-green-50 border border-green-100 rounded-xl p-4">
+            <div className="grid grid-cols-3 gap-4 text-center">
+              <div>
+                <p className="text-xs text-gray-500 mb-1">Daily Revenue</p>
+                <p className="font-bold text-green-700">PKR {dailyRevenue.toLocaleString()}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 mb-1">Monthly Revenue</p>
+                <p className="font-bold text-green-700">PKR {monthlyRevenue.toLocaleString()}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 mb-1">Courts</p>
+                <p className="font-bold text-green-700">{courts}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Monthly Expenses */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">Monthly Expenses</h3>
+            <div className="space-y-2">
+              {roi.expenses.map(expense => (
+                <div key={expense.id} className="flex items-center gap-3">
+                  <input
+                    value={expense.name}
+                    onChange={e => updateExpense(expense.id, { name: e.target.value })}
+                    className="flex-1 px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Expense name"
+                  />
+                  <div className="flex items-center gap-1">
+                    <span className="text-xs text-gray-400">PKR</span>
+                    <input
+                      type="number"
+                      value={expense.amount}
+                      onChange={e => updateExpense(expense.id, { amount: parseInt(e.target.value) || 0 })}
+                      className="w-32 px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                  </div>
+                  <button onClick={() => removeExpense(expense.id)} className="text-gray-400 hover:text-red-500">
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              ))}
+              <button
+                onClick={addExpense}
+                className="text-sm text-green-600 hover:text-green-700 font-medium flex items-center gap-1"
+              >
+                <Plus size={14} /> Add Expense
+              </button>
+            </div>
+          </div>
+
+          {/* Investment Override */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">Total Investment</h3>
+            <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
+              <label className="flex items-center gap-2 cursor-pointer text-sm">
+                <input
+                  type="checkbox"
+                  checked={roi.manualInvestment}
+                  onChange={e => updateROI({ manualInvestment: e.target.checked })}
+                  className="w-4 h-4 text-green-500 rounded focus:ring-green-500"
+                />
+                Override auto-calculated investment
+              </label>
+            </div>
+            {roi.manualInvestment ? (
+              <div className="mt-3">
+                <InputField
+                  label="Investment Amount (PKR)"
+                  value={roi.investmentAmount}
+                  onChange={v => updateROI({ investmentAmount: parseInt(v) || 0 })}
+                  type="number"
+                />
+              </div>
+            ) : (
+              <p className="mt-2 text-sm text-gray-500">
+                Auto-calculated from invoice total: <span className="font-semibold text-gray-900">PKR {autoInvestment.toLocaleString()}</span>
+              </p>
+            )}
+          </div>
+        </div>
+      </SectionCard>
+
+      {/* ROI Summary */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">ROI Summary</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="bg-green-50 rounded-xl p-4 text-center">
+            <p className="text-xs text-gray-500 mb-1">Monthly Profit</p>
+            <p className={`font-bold text-lg ${monthlyProfit >= 0 ? 'text-green-700' : 'text-red-600'}`}>
+              PKR {monthlyProfit.toLocaleString()}
+            </p>
+          </div>
+          <div className="bg-blue-50 rounded-xl p-4 text-center">
+            <p className="text-xs text-gray-500 mb-1">Annual Profit</p>
+            <p className="font-bold text-lg text-blue-700">PKR {annualProfit.toLocaleString()}</p>
+          </div>
+          <div className="bg-purple-50 rounded-xl p-4 text-center">
+            <p className="text-xs text-gray-500 mb-1">Breakeven</p>
+            <p className="font-bold text-lg text-purple-700">
+              {monthsToBreakeven > 0 ? `${monthsToBreakeven} months` : 'N/A'}
+            </p>
+          </div>
+          <div className="bg-amber-50 rounded-xl p-4 text-center">
+            <p className="text-xs text-gray-500 mb-1">Annual ROI</p>
+            <p className="font-bold text-lg text-amber-700">{annualROIPercent.toFixed(1)}%</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Monthly Breakdown Table */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Monthly Breakdown</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-200">
+                <th className="text-left py-2 px-3 text-gray-500 font-medium">Month</th>
+                <th className="text-right py-2 px-3 text-gray-500 font-medium">Revenue</th>
+                <th className="text-right py-2 px-3 text-gray-500 font-medium">Expenses</th>
+                <th className="text-right py-2 px-3 text-gray-500 font-medium">Profit</th>
+                <th className="text-right py-2 px-3 text-gray-500 font-medium">Cumulative</th>
+                <th className="text-right py-2 px-3 text-gray-500 font-medium">Recovery</th>
+              </tr>
+            </thead>
+            <tbody>
+              {months.map(m => (
+                <tr key={m.month} className={`border-b border-gray-100 ${m.cumulative >= investment ? 'bg-green-50' : ''}`}>
+                  <td className="py-2.5 px-3 font-medium text-gray-900">Month {m.month}</td>
+                  <td className="py-2.5 px-3 text-right text-gray-700">PKR {m.revenue.toLocaleString()}</td>
+                  <td className="py-2.5 px-3 text-right text-red-600">PKR {m.expenses.toLocaleString()}</td>
+                  <td className="py-2.5 px-3 text-right font-medium text-green-700">PKR {m.profit.toLocaleString()}</td>
+                  <td className="py-2.5 px-3 text-right text-gray-700">PKR {m.cumulative.toLocaleString()}</td>
+                  <td className="py-2.5 px-3 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <div className="w-16 bg-gray-200 rounded-full h-1.5">
+                        <div
+                          className={`h-1.5 rounded-full ${m.recovered >= 100 ? 'bg-green-500' : 'bg-blue-500'}`}
+                          style={{ width: `${Math.min(100, m.recovered)}%` }}
+                        />
+                      </div>
+                      <span className="text-xs font-medium text-gray-600 w-10 text-right">{m.recovered.toFixed(0)}%</span>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </>
   );
 }

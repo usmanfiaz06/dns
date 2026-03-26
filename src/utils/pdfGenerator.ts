@@ -1,7 +1,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import type { Invoice, CompanyProfile } from '../types/invoice';
-import { defaultCompanyProfile, defaultPDFPages } from '../types/invoice';
+import { defaultCompanyProfile, defaultPDFPages, defaultROIConfig } from '../types/invoice';
 
 const QNS_GREEN_RGB = [139, 195, 74] as const;
 const TEXT_DARK = '#1a1a1a';
@@ -552,6 +552,178 @@ const drawTermsPage = (doc: jsPDF, invoice: Invoice, startY?: number) => {
   }
 };
 
+/* ============ ROI BREAKDOWN PAGE ============ */
+const drawROIPage = (doc: jsPDF, invoice: Invoice) => {
+  const profile = invoice.companyProfile || defaultCompanyProfile;
+  drawHeader(doc, profile);
+
+  const pageWidth = doc.internal.pageSize.width;
+  const roi = invoice.roiConfig || defaultROIConfig;
+  const courts = invoice.numberOfCourts;
+  let y = 50;
+
+  // Title
+  doc.setFontSize(20);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(TEXT_DARK);
+  doc.text('RETURN ON INVESTMENT', pageWidth / 2, y, { align: 'center' });
+
+  y += 8;
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(TEXT_GRAY);
+  doc.text('Monthly Breakdown Analysis', pageWidth / 2, y, { align: 'center' });
+
+  y += 15;
+
+  // Revenue assumptions box
+  doc.setFillColor(250, 252, 248);
+  doc.roundedRect(15, y, pageWidth - 30, 28, 3, 3, 'F');
+
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(TEXT_DARK);
+  doc.text('Revenue Assumptions', 22, y + 8);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(TEXT_GRAY);
+  const dailyRevenue = roi.hourlyRate * roi.dailyBookingHours * courts;
+  const monthlyRevenue = dailyRevenue * roi.daysPerMonth;
+  doc.text(`Hourly Rate: PKR ${roi.hourlyRate.toLocaleString()} × ${roi.dailyBookingHours} hrs/day × ${courts} court${courts > 1 ? 's' : ''} = PKR ${dailyRevenue.toLocaleString()}/day`, 22, y + 16);
+  doc.text(`Monthly Revenue (${roi.daysPerMonth} days): PKR ${monthlyRevenue.toLocaleString()}`, 22, y + 23);
+
+  y += 35;
+
+  // Expenses
+  const totalExpenses = roi.expenses.reduce((sum, e) => sum + e.amount, 0);
+
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(TEXT_DARK);
+  doc.text('Monthly Expenses', 22, y);
+  y += 7;
+
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(TEXT_GRAY);
+  roi.expenses.forEach(exp => {
+    doc.text(`• ${exp.name}: PKR ${exp.amount.toLocaleString()}`, 25, y);
+    y += 6;
+  });
+
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(TEXT_DARK);
+  doc.text(`Total Expenses: PKR ${totalExpenses.toLocaleString()}`, 25, y);
+
+  y += 12;
+
+  // Net Profit highlight
+  const monthlyProfit = monthlyRevenue - totalExpenses;
+  const annualProfit = monthlyProfit * 12;
+
+  doc.setFillColor(...QNS_GREEN_RGB);
+  doc.roundedRect(15, y, pageWidth - 30, 14, 3, 3, 'F');
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(255, 255, 255);
+  doc.text(`Monthly Net Profit: PKR ${monthlyProfit.toLocaleString()}`, pageWidth / 2, y + 9, { align: 'center' });
+
+  y += 22;
+
+  // Investment and breakeven
+  const baseCost = invoice.subTotal * courts;
+  const taxAmount = invoice.includeTax ? baseCost * (invoice.taxPercentage / 100) : 0;
+  const civilWork = invoice.includeCivilWork ? invoice.civilWorkMaxPrice : 0;
+  const addOnTotal = invoice.addOns.filter(a => a.enabled).reduce((sum, a) => sum + a.price, 0);
+  const autoInvestment = baseCost + taxAmount + civilWork + addOnTotal;
+  const investment = roi.manualInvestment ? roi.investmentAmount : autoInvestment;
+  const monthsToBreakeven = monthlyProfit > 0 ? Math.ceil(investment / monthlyProfit) : 0;
+  const annualROI = investment > 0 ? ((annualProfit / investment) * 100) : 0;
+
+  doc.setFillColor(250, 252, 248);
+  doc.roundedRect(15, y, (pageWidth - 35) / 3, 20, 3, 3, 'F');
+  doc.roundedRect(20 + (pageWidth - 35) / 3, y, (pageWidth - 35) / 3, 20, 3, 3, 'F');
+  doc.roundedRect(25 + 2 * (pageWidth - 35) / 3, y, (pageWidth - 35) / 3, 20, 3, 3, 'F');
+
+  doc.setFontSize(7);
+  doc.setTextColor(TEXT_GRAY);
+  doc.setFont('helvetica', 'normal');
+  doc.text('Total Investment', 15 + (pageWidth - 35) / 6, y + 6, { align: 'center' });
+  doc.text('Breakeven Period', 20 + (pageWidth - 35) / 2, y + 6, { align: 'center' });
+  doc.text('Annual ROI', 25 + 5 * (pageWidth - 35) / 6, y + 6, { align: 'center' });
+
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(TEXT_DARK);
+  doc.text(`PKR ${investment.toLocaleString()}`, 15 + (pageWidth - 35) / 6, y + 15, { align: 'center' });
+  doc.text(monthsToBreakeven > 0 ? `${monthsToBreakeven} Months` : 'N/A', 20 + (pageWidth - 35) / 2, y + 15, { align: 'center' });
+  doc.text(`${annualROI.toFixed(1)}%`, 25 + 5 * (pageWidth - 35) / 6, y + 15, { align: 'center' });
+
+  y += 28;
+
+  // Monthly breakdown table
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(TEXT_DARK);
+  doc.text('12-Month Projection', 22, y);
+  y += 5;
+
+  const tableData = Array.from({ length: 12 }, (_, i) => {
+    const month = i + 1;
+    const cumProfit = monthlyProfit * month;
+    const recovered = investment > 0 ? Math.min(100, (cumProfit / investment) * 100) : 100;
+    return [
+      `Month ${month}`,
+      `PKR ${monthlyRevenue.toLocaleString()}`,
+      `PKR ${totalExpenses.toLocaleString()}`,
+      `PKR ${monthlyProfit.toLocaleString()}`,
+      `PKR ${cumProfit.toLocaleString()}`,
+      `${recovered.toFixed(0)}%`
+    ];
+  });
+
+  autoTable(doc, {
+    startY: y,
+    head: [['Month', 'Revenue', 'Expenses', 'Net Profit', 'Cumulative', 'Recovery']],
+    body: tableData,
+    theme: 'grid',
+    styles: {
+      fontSize: 7.5,
+      cellPadding: 2.5,
+      textColor: [26, 26, 26],
+      lineColor: [220, 220, 220],
+      lineWidth: 0.2,
+    },
+    headStyles: {
+      fillColor: [...DARK_BG],
+      textColor: [255, 255, 255],
+      fontStyle: 'bold',
+      fontSize: 7.5,
+    },
+    columnStyles: {
+      0: { fontStyle: 'bold', cellWidth: 22 },
+      1: { halign: 'right' },
+      2: { halign: 'right', textColor: [220, 50, 50] },
+      3: { halign: 'right', textColor: [34, 139, 34], fontStyle: 'bold' },
+      4: { halign: 'right' },
+      5: { halign: 'right', fontStyle: 'bold' },
+    },
+    alternateRowStyles: {
+      fillColor: [250, 252, 248]
+    },
+    didParseCell: (data) => {
+      // Highlight row where breakeven is reached
+      if (data.section === 'body') {
+        const rowMonth = data.row.index + 1;
+        if (monthlyProfit > 0 && rowMonth === monthsToBreakeven) {
+          data.cell.styles.fillColor = [139, 195, 74];
+          data.cell.styles.textColor = [255, 255, 255];
+          data.cell.styles.fontStyle = 'bold';
+        }
+      }
+    }
+  });
+};
+
 /* ============ MAIN GENERATOR ============ */
 const generatePDFDocument = (invoice: Invoice): jsPDF => {
   const doc = new jsPDF({
@@ -600,6 +772,9 @@ const generatePDFDocument = (invoice: Invoice): jsPDF => {
       case 'terms':
         drawTermsPage(doc, invoice, quotationEndY);
         quotationEndY = undefined;
+        break;
+      case 'roi':
+        drawROIPage(doc, invoice);
         break;
     }
   });
