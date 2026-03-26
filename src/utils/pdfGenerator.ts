@@ -165,50 +165,76 @@ const drawIntroPage = (doc: jsPDF, invoice: Invoice) => {
   const pageWidth = doc.internal.pageSize.width;
   let y = 50;
 
-  doc.setFontSize(20);
+  // Section title with accent
+  doc.setFillColor(245, 247, 250);
+  doc.roundedRect(20, y - 8, pageWidth - 40, 18, 3, 3, 'F');
+  doc.setFillColor(...QNS_GREEN_RGB);
+  doc.rect(20, y - 8, 4, 18, 'F');
+
+  doc.setFontSize(16);
   doc.setFont('helvetica', 'bold');
-  doc.setTextColor(TEXT_DARK);
-  doc.text(profile.aboutTitle || 'About QNS Padel Courts', 20, y);
+  doc.setTextColor(...DARK_BG);
+  doc.text(profile.aboutTitle || 'About QNS Padel Courts', 30, y + 3);
 
-  y += 15;
+  y += 20;
 
-  // Intro image
+  // Intro image with rounded border effect
   if (profile.introImage) {
     try {
       doc.addImage(profile.introImage, 'JPEG', 20, y, pageWidth - 40, 55);
+      // Add subtle border
+      doc.setDrawColor(220, 220, 220);
+      doc.setLineWidth(0.5);
+      doc.roundedRect(20, y, pageWidth - 40, 55, 3, 3, 'S');
       y += 62;
     } catch {
       // skip
     }
   }
 
+  // About text with better typography
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
-  doc.setTextColor(TEXT_GRAY);
+  doc.setTextColor(80, 80, 80);
+  doc.setLineHeightFactor(1.5);
 
   const aboutText = profile.aboutText || defaultCompanyProfile.aboutText;
   const splitText = doc.splitTextToSize(aboutText, pageWidth - 40);
   doc.text(splitText, 20, y);
 
-  y += splitText.length * 5 + 20;
+  y += splitText.length * 5.5 + 18;
 
-  // Features section
-  doc.setFontSize(14);
+  // Features section with styled header
+  doc.setFillColor(...QNS_GREEN_RGB);
+  doc.roundedRect(20, y - 5, pageWidth - 40, 14, 3, 3, 'F');
+  doc.setFontSize(12);
   doc.setFont('helvetica', 'bold');
-  doc.setTextColor(TEXT_DARK);
-  doc.text('Why Choose Us?', 20, y);
-  y += 12;
+  doc.setTextColor(255, 255, 255);
+  doc.text('Why Choose Us?', 28, y + 4);
+  y += 18;
 
   const features = profile.features || defaultCompanyProfile.features;
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
 
-  features.forEach(feature => {
+  features.forEach((feature, index) => {
+    // Alternating background for readability
+    if (index % 2 === 0) {
+      doc.setFillColor(250, 252, 248);
+      doc.roundedRect(20, y - 5, pageWidth - 40, 12, 2, 2, 'F');
+    }
+
+    // Checkmark-style bullet
     doc.setFillColor(...QNS_GREEN_RGB);
-    doc.circle(25, y - 1.5, 1.8, 'F');
-    doc.setTextColor(TEXT_GRAY);
-    doc.text(feature, 32, y);
-    y += 10;
+    doc.circle(28, y, 2.5, 'F');
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(255, 255, 255);
+    doc.text('✓', 26.5, y + 1.5);
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(60, 60, 60);
+    doc.text(feature, 36, y + 1);
+    y += 12;
   });
 };
 
@@ -221,32 +247,42 @@ const drawSingleProjectPage = (doc: jsPDF, invoice: Invoice, project: Invoice['p
   const pageHeight = doc.internal.pageSize.height;
   let y = 50;
 
+  // Project header bar
+  doc.setFillColor(245, 247, 250);
+  doc.roundedRect(20, y - 8, pageWidth - 40, 24, 3, 3, 'F');
+
   // Project number badge
   doc.setFillColor(...QNS_GREEN_RGB);
-  doc.roundedRect(20, y - 5, 30, 10, 2, 2, 'F');
+  doc.roundedRect(25, y - 4, 28, 16, 3, 3, 'F');
   doc.setFontSize(8);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(255, 255, 255);
-  doc.text(`Project ${projectIndex + 1}`, 35, y + 2, { align: 'center' });
-
-  y += 15;
+  doc.text(`PROJECT`, 39, y + 1, { align: 'center' });
+  doc.setFontSize(10);
+  doc.text(`${projectIndex + 1}`, 39, y + 8, { align: 'center' });
 
   // Project name
-  doc.setFontSize(22);
+  doc.setFontSize(18);
   doc.setFont('helvetica', 'bold');
-  doc.setTextColor(TEXT_DARK);
-  doc.text(project.name || 'Untitled Project', 20, y);
+  doc.setTextColor(...DARK_BG);
+  doc.text(project.name || 'Untitled Project', 60, y + 5);
 
-  y += 10;
+  y += 26;
 
-  // Description
+  // Description with styled box
   if (project.description) {
-    doc.setFontSize(11);
+    doc.setFillColor(255, 255, 255);
+    doc.setDrawColor(230, 230, 230);
+    doc.setLineWidth(0.3);
+    const descLines = doc.splitTextToSize(project.description, pageWidth - 50);
+    const descHeight = descLines.length * 5 + 10;
+    doc.roundedRect(20, y - 2, pageWidth - 40, descHeight, 3, 3, 'FD');
+
+    doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
-    doc.setTextColor(TEXT_GRAY);
-    const descLines = doc.splitTextToSize(project.description, pageWidth - 40);
-    doc.text(descLines, 20, y);
-    y += descLines.length * 5.5 + 12;
+    doc.setTextColor(80, 80, 80);
+    doc.text(descLines, 25, y + 6);
+    y += descHeight + 8;
   }
 
   // Images - large format with smart collage layouts for 1-5 images
@@ -463,28 +499,42 @@ const drawQuotationPage = (doc: jsPDF, invoice: Invoice): number => {
   const tableData = enabledItems.map((item, index) => [
     (index + 1).toString(),
     item.name,
-    item.description.map(d => `• ${d}`).join('\n')
+    item.description.map(d => `  ▸  ${d}`).join('\n')
   ]);
 
   autoTable(doc, {
     startY: y,
-    head: [],
+    head: [['#', 'Component', 'Specifications']],
     body: tableData,
     theme: 'grid',
     styles: {
       fontSize: 9,
-      cellPadding: 4,
-      textColor: [26, 26, 26],
-      lineColor: [220, 220, 220],
+      cellPadding: { top: 4, right: 4, bottom: 4, left: 4 },
+      textColor: [50, 50, 50],
+      lineColor: [200, 210, 200],
       lineWidth: 0.3,
     },
+    headStyles: {
+      fillColor: [...DARK_BG],
+      textColor: [255, 255, 255],
+      fontStyle: 'bold',
+      fontSize: 9,
+      cellPadding: 4,
+    },
     columnStyles: {
-      0: { cellWidth: 12, halign: 'center', fontStyle: 'bold' },
-      1: { cellWidth: 35, fontStyle: 'bold' },
-      2: { cellWidth: 'auto' }
+      0: { cellWidth: 12, halign: 'center', fontStyle: 'bold', fillColor: [245, 247, 250] },
+      1: { cellWidth: 38, fontStyle: 'bold', textColor: [30, 35, 40] },
+      2: { cellWidth: 'auto', textColor: [70, 70, 70] }
     },
     alternateRowStyles: {
-      fillColor: [250, 252, 248]
+      fillColor: [252, 254, 252]
+    },
+    didParseCell: (data) => {
+      // Style the index column with green accent
+      if (data.section === 'body' && data.column.index === 0) {
+        data.cell.styles.textColor = [139, 195, 74];
+        data.cell.styles.fontStyle = 'bold';
+      }
     }
   });
 
@@ -494,112 +544,128 @@ const drawQuotationPage = (doc: jsPDF, invoice: Invoice): number => {
 /* ============ TERMS PAGE ============ */
 const drawTermsPage = (doc: jsPDF, invoice: Invoice, startY?: number) => {
   const profile = invoice.companyProfile || defaultCompanyProfile;
-  let y = startY || 50;
   const pageWidth = doc.internal.pageSize.width;
+  const pageHeight = doc.internal.pageSize.height;
 
-  if (!startY) {
-    drawHeader(doc, profile);
-    y = 50;
-  }
+  // Determine if we should continue on the same page or start fresh
+  // If startY is provided and is less than 70% of page (about 200mm), continue on same page
+  let y = startY || 50;
+  const shouldContinueOnSamePage = startY && startY < 200;
 
-  if (y > 200) {
+  if (!shouldContinueOnSamePage && startY) {
+    // Start a new page only if we're too far down
     doc.addPage();
     drawHeader(doc, profile);
     y = 50;
+  } else if (!startY) {
+    drawHeader(doc, profile);
+    y = 50;
   }
 
-  // Civil work
-  doc.setFontSize(12);
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(TEXT_DARK);
-  doc.text('CIVIL WORK:', 20, y);
+  // Helper function to draw styled section header
+  const drawSectionHeader = (title: string, yPos: number): number => {
+    doc.setFillColor(245, 247, 250);
+    doc.roundedRect(20, yPos - 5, pageWidth - 40, 12, 2, 2, 'F');
+    doc.setFillColor(...QNS_GREEN_RGB);
+    doc.rect(20, yPos - 5, 3, 12, 'F');
 
-  y += 8;
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(TEXT_GRAY);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...DARK_BG);
+    doc.text(title, 28, yPos + 3);
+    return yPos + 14;
+  };
+
+  // Helper function to draw styled bullet point
+  const drawBullet = (text: string, yPos: number, indent: number = 28): number => {
+    // Check if we need a new page
+    if (yPos > pageHeight - 25) {
+      doc.addPage();
+      drawHeader(doc, profile);
+      yPos = 50;
+    }
+
+    // Draw green bullet circle
+    doc.setFillColor(...QNS_GREEN_RGB);
+    doc.circle(indent, yPos - 1.2, 1.5, 'F');
+
+    doc.setFontSize(9.5);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(80, 80, 80);
+
+    const splitText = doc.splitTextToSize(text, pageWidth - indent - 25);
+    doc.text(splitText, indent + 6, yPos);
+    return yPos + (splitText.length * 5) + 2;
+  };
+
+  // Civil work section
+  y = drawSectionHeader('CIVIL WORK', y);
+  y += 4;
 
   if (invoice.includeCivilWork) {
-    doc.text(`• Civil work included: ${formatCurrency(invoice.civilWorkMinPrice)} - ${formatCurrency(invoice.civilWorkMaxPrice)}`, 25, y);
+    y = drawBullet(`Civil work included: ${formatCurrency(invoice.civilWorkMinPrice)} - ${formatCurrency(invoice.civilWorkMaxPrice)}`, y);
   } else {
-    doc.text(`• Civil work pricing: ${(invoice.civilWorkMinPrice / 1000).toFixed(0)}k - ${(invoice.civilWorkMaxPrice / 1000).toFixed(0)}k PKR`, 25, y);
+    y = drawBullet(`Civil work pricing: ${formatCurrency(invoice.civilWorkMinPrice)} - ${formatCurrency(invoice.civilWorkMaxPrice)} (not included in quotation)`, y);
   }
 
-  y += 15;
+  y += 8;
 
-  // Payment structure
-  doc.setFontSize(12);
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(TEXT_DARK);
-  doc.text('PAYMENT STRUCTURE:', 20, y);
+  // Payment structure section
+  y = drawSectionHeader('PAYMENT STRUCTURE', y);
+  y += 4;
+
+  y = drawBullet(`${invoice.paymentStructure.advance}% advance payment upon confirmation`, y);
+  y = drawBullet(`${invoice.paymentStructure.onDelivery}% at delivery of glass panels and turf`, y);
+  y = drawBullet(`${invoice.paymentStructure.onCompletion}% upon project completion`, y);
 
   y += 8;
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(TEXT_GRAY);
-  doc.text(`• ${invoice.paymentStructure.advance}% in advance`, 25, y);
-  y += 7;
-  doc.text(`• ${invoice.paymentStructure.onDelivery}% at delivery of glass and turf`, 25, y);
-  y += 7;
-  doc.text(`• ${invoice.paymentStructure.onCompletion}% upon completion`, 25, y);
 
-  y += 15;
-
-  // Add-ons
+  // Add-ons section
   const enabledAddOns = invoice.addOns.filter(a => a.enabled);
   if (enabledAddOns.length > 0) {
-    doc.setFontSize(12);
+    // Draw header with note
+    doc.setFillColor(245, 247, 250);
+    doc.roundedRect(20, y - 5, pageWidth - 40, 12, 2, 2, 'F');
+    doc.setFillColor(...QNS_GREEN_RGB);
+    doc.rect(20, y - 5, 3, 12, 'F');
+
+    doc.setFontSize(11);
     doc.setFont('helvetica', 'bold');
-    doc.setTextColor(TEXT_DARK);
-    doc.text('ADD-ONS', 20, y);
+    doc.setTextColor(...DARK_BG);
+    doc.text('ADD-ONS', 28, y + 3);
 
-    // Add "(Prices may vary)" in smaller italic text
-    doc.setFontSize(9);
+    // Prices may vary note
+    doc.setFontSize(8);
     doc.setFont('helvetica', 'italic');
-    doc.setTextColor(TEXT_GRAY);
-    doc.text('(Prices may vary)', 52, y);
+    doc.setTextColor(130, 130, 130);
+    doc.text('(Prices may vary)', 60, y + 3);
 
-    y += 8;
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(TEXT_GRAY);
+    y += 18;
 
     enabledAddOns.forEach(addon => {
-      doc.text(`• ${addon.name} (${addon.quantity}) ${formatCurrency(addon.price)}`, 25, y);
-      y += 7;
+      y = drawBullet(`${addon.name} (${addon.quantity}) — ${formatCurrency(addon.price)}`, y);
     });
 
     y += 8;
   }
 
-  // Terms
-  doc.setFontSize(12);
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(TEXT_DARK);
-  doc.text('TERMS & CONDITIONS:', 20, y);
-
-  y += 8;
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(TEXT_GRAY);
+  // Terms & Conditions section
+  y = drawSectionHeader('TERMS & CONDITIONS', y);
+  y += 4;
 
   invoice.termsAndConditions.forEach(term => {
-    if (y > 270) {
-      doc.addPage();
-      drawHeader(doc, profile);
-      y = 50;
-    }
-    const splitTerm = doc.splitTextToSize(`• ${term}`, pageWidth - 50);
-    doc.text(splitTerm, 25, y);
-    y += splitTerm.length * 5 + 3;
+    y = drawBullet(term, y);
   });
 
+  // Tax note if applicable
   if (invoice.includeTax) {
-    y += 5;
-    doc.setFontSize(10);
+    y += 8;
+    doc.setFillColor(230, 245, 230);
+    doc.roundedRect(20, y - 3, pageWidth - 40, 14, 3, 3, 'F');
+    doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
-    doc.setTextColor(TEXT_DARK);
-    doc.text(`Tax (${invoice.taxPercentage}%) is included in the total.`, 20, y);
+    doc.setTextColor(60, 120, 60);
+    doc.text(`Note: Tax (${invoice.taxPercentage}%) is included in the quoted price.`, 28, y + 5);
   }
 };
 
