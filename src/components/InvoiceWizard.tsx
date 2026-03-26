@@ -3,8 +3,8 @@ import {
   ArrowLeft, ArrowRight, Save, Download, Eye,
   Plus, Trash2, ChevronUp, ChevronDown, Upload, X, Check, Link
 } from 'lucide-react';
-import type { Invoice, QuotationItem, AddOn, PastProject, ProjectImage, ROIExpense } from '../types/invoice';
-import { defaultCompanyProfile, defaultROIConfig } from '../types/invoice';
+import type { Invoice, QuotationItem, AddOn, PastProject, ProjectImage, ROIExpense, SignatureConfig } from '../types/invoice';
+import { defaultCompanyProfile, defaultROIConfig, defaultSignatureConfig, defaultQuotationDescription } from '../types/invoice';
 import { useAuth } from '../context/AuthContext';
 import { generatePDF, previewPDF } from '../utils/pdfGenerator';
 import { v4 as uuidv4 } from 'uuid';
@@ -25,6 +25,7 @@ const STEPS = [
   { id: 'pricing', label: 'Pricing & Add-ons', shortLabel: 'Pricing' },
   { id: 'terms', label: 'Terms & Payment', shortLabel: 'Terms' },
   { id: 'roi', label: 'ROI Breakdown', shortLabel: 'ROI' },
+  { id: 'signature', label: 'Signature & Stamp', shortLabel: 'Signature' },
   { id: 'pages', label: 'PDF Pages', shortLabel: 'Pages' },
   { id: 'review', label: 'Review & Export', shortLabel: 'Review' },
 ] as const;
@@ -224,6 +225,7 @@ export default function InvoiceWizard({ invoice, onChange, onSave, onBack, isNew
             {currentStep === 'pricing' && <PricingStep invoice={invoice} update={update} />}
             {currentStep === 'terms' && <TermsStep invoice={invoice} update={update} />}
             {currentStep === 'roi' && <ROIStep invoice={invoice} update={update} />}
+            {currentStep === 'signature' && <SignatureStep invoice={invoice} update={update} onImageUpload={handleImageUpload} />}
             {currentStep === 'pages' && <PagesStep invoice={invoice} update={update} />}
             {currentStep === 'review' && <ReviewStep invoice={invoice} onPreview={handlePreview} onExport={handleExport} onSave={onSave} />}
           </div>
@@ -442,7 +444,7 @@ function ProjectsStep({ invoice, update, onImageUpload }: {
 
   const addProjectImage = (projIndex: number) => {
     const proj = projects[projIndex];
-    if (proj.images.length >= 3) return;
+    if (proj.images.length >= 5) return;
     onImageUpload((data) => {
       const updated = [...projects];
       updated[projIndex] = {
@@ -498,10 +500,10 @@ function ProjectsStep({ invoice, update, onImageUpload }: {
               </div>
               {/* Images */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Project Images (max 3)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Project Images (max 5)</label>
                 <div className="flex gap-3 flex-wrap">
                   {project.images.map((img: ProjectImage, imgIndex: number) => (
-                    <div key={img.id} className="relative w-28 h-28 rounded-xl overflow-hidden border border-gray-200 group">
+                    <div key={img.id} className="relative w-24 h-24 rounded-xl overflow-hidden border border-gray-200 group">
                       <img src={img.data} alt="" className="w-full h-full object-cover" />
                       <button
                         onClick={() => removeProjectImage(index, imgIndex)}
@@ -511,10 +513,10 @@ function ProjectsStep({ invoice, update, onImageUpload }: {
                       </button>
                     </div>
                   ))}
-                  {project.images.length < 3 && (
+                  {project.images.length < 5 && (
                     <button
                       onClick={() => addProjectImage(index)}
-                      className="w-28 h-28 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center text-gray-400 hover:border-green-400 hover:text-green-500 transition-colors"
+                      className="w-24 h-24 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center text-gray-400 hover:border-green-400 hover:text-green-500 transition-colors"
                     >
                       <Upload size={20} />
                       <span className="text-xs mt-1">Add</span>
@@ -1064,6 +1066,151 @@ function ROIStep({ invoice, update }: { invoice: Invoice; update: (p: Partial<In
               ))}
             </tbody>
           </table>
+        </div>
+      </div>
+    </>
+  );
+}
+
+/* ---- Signature Step ---- */
+function SignatureStep({ invoice, update, onImageUpload }: {
+  invoice: Invoice;
+  update: (p: Partial<Invoice>) => void;
+  onImageUpload: (callback: (data: string) => void) => void;
+}) {
+  const sig = invoice.signatureConfig || defaultSignatureConfig;
+
+  const updateSig = (partial: Partial<SignatureConfig>) => {
+    update({ signatureConfig: { ...sig, ...partial } });
+  };
+
+  const handleStampUpload = () => {
+    onImageUpload((data) => updateSig({ stampImage: data }));
+  };
+
+  // Generate signature preview from first name
+  const firstName = sig.signatoryName?.split(' ')[0] || '';
+
+  return (
+    <>
+      <SectionCard title="Signature & Authorization" description="Configure the signatory details and stamp for the authorization page.">
+        <div className="space-y-6">
+          {/* Signatory Details */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">Signatory Information</h3>
+            <div className="grid grid-cols-1 gap-4">
+              <InputField
+                label="Signatory Name"
+                value={sig.signatoryName}
+                onChange={v => updateSig({ signatoryName: v })}
+                placeholder="e.g., Muhammad Ali"
+              />
+              <InputField
+                label="Title / Designation"
+                value={sig.signatoryTitle}
+                onChange={v => updateSig({ signatoryTitle: v })}
+                placeholder="e.g., Authorized Representative"
+              />
+              <InputField
+                label="Contact Information"
+                value={sig.signatoryContact}
+                onChange={v => updateSig({ signatoryContact: v })}
+                placeholder="e.g., +92 300 1234567"
+              />
+            </div>
+          </div>
+
+          {/* Signature Preview */}
+          {firstName && (
+            <div>
+              <h3 className="text-sm font-semibold text-gray-700 mb-3">Signature Preview</h3>
+              <div className="bg-gray-50 rounded-xl p-6 text-center">
+                <p className="text-xs text-gray-400 mb-2">Auto-generated from first name</p>
+                <p className="text-3xl italic font-serif text-gray-800" style={{ fontFamily: 'Times New Roman, serif' }}>
+                  {firstName}
+                </p>
+                <div className="w-32 h-0.5 bg-gray-400 mx-auto mt-2" />
+              </div>
+            </div>
+          )}
+
+          {/* Stamp Upload */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">Company Stamp (Optional)</h3>
+            {sig.stampImage ? (
+              <div className="relative inline-block">
+                <img
+                  src={sig.stampImage}
+                  alt="Stamp"
+                  className="h-24 w-24 object-contain border border-gray-200 rounded-lg bg-white p-2"
+                />
+                <button
+                  onClick={() => updateSig({ stampImage: undefined })}
+                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 shadow-md"
+                >
+                  <X size={12} />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={handleStampUpload}
+                className="flex items-center gap-2 px-4 py-3 border-2 border-dashed border-gray-200 rounded-xl text-gray-500 hover:border-green-400 hover:text-green-600 transition-colors"
+              >
+                <Upload size={18} />
+                <span>Upload Stamp Image</span>
+              </button>
+            )}
+            <p className="text-xs text-gray-400 mt-2">PNG or JPG with transparent background recommended</p>
+          </div>
+        </div>
+      </SectionCard>
+
+      {/* Quotation Description */}
+      <SectionCard title="Quotation Description" description="This description appears above the subtotal in the quotation page.">
+        <textarea
+          value={invoice.quotationDescription || defaultQuotationDescription}
+          onChange={e => update({ quotationDescription: e.target.value })}
+          rows={4}
+          className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+          placeholder="Enter the description that appears on the quotation page..."
+        />
+        <button
+          onClick={() => update({ quotationDescription: defaultQuotationDescription })}
+          className="mt-2 text-xs text-gray-400 hover:text-gray-600"
+        >
+          Reset to default
+        </button>
+      </SectionCard>
+
+      {/* Preview Card */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Authorization Preview</h2>
+        <div className="bg-gray-50 rounded-xl p-6">
+          <div className="flex justify-between items-start">
+            <div className="text-center">
+              <p className="text-sm font-medium text-gray-600 mb-4">For QNS</p>
+              {firstName && (
+                <p className="text-2xl italic font-serif text-gray-800 mb-1" style={{ fontFamily: 'Times New Roman, serif' }}>
+                  {firstName}
+                </p>
+              )}
+              <div className="w-24 h-0.5 bg-gray-400 mx-auto mb-2" />
+              <p className="text-sm text-gray-700">{sig.signatoryName || '_______________'}</p>
+              <p className="text-xs text-gray-500">{sig.signatoryTitle || 'Authorized Representative'}</p>
+              {sig.signatoryContact && <p className="text-xs text-gray-400 mt-1">{sig.signatoryContact}</p>}
+            </div>
+            <div className="text-center">
+              <p className="text-sm font-medium text-gray-600 mb-4">Client Acceptance</p>
+              <div className="w-32 h-10 border-b border-gray-300" />
+              <p className="text-xs text-gray-500 mt-2">Signature</p>
+              <p className="text-sm text-gray-700 mt-2">{invoice.clientName || '_______________'}</p>
+            </div>
+          </div>
+          {sig.stampImage && (
+            <div className="flex justify-center mt-4">
+              <img src={sig.stampImage} alt="Stamp preview" className="h-16 w-16 object-contain opacity-70" />
+            </div>
+          )}
         </div>
       </div>
     </>

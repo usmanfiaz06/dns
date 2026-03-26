@@ -40,7 +40,7 @@ export interface CompanyProfile {
 
 export interface PDFPage {
   id: string;
-  type: 'cover' | 'intro' | 'projects' | 'quotation' | 'terms' | 'roi' | 'custom';
+  type: 'cover' | 'intro' | 'projects' | 'quotation' | 'terms' | 'roi' | 'signature' | 'custom';
   name: string;
   enabled: boolean;
   order: number;
@@ -60,6 +60,13 @@ export interface ROIConfig {
   expenses: ROIExpense[];
   investmentAmount: number; // auto-calculated from invoice total or manual override
   manualInvestment: boolean;
+}
+
+export interface SignatureConfig {
+  signatoryName: string;
+  signatoryTitle: string;
+  signatoryContact: string;
+  stampImage?: string; // Base64 encoded stamp image
 }
 
 export interface ShareLink {
@@ -106,6 +113,8 @@ export interface Invoice {
   pdfPages: PDFPage[];
   shareLinks: ShareLink[];
   roiConfig: ROIConfig;
+  signatureConfig: SignatureConfig;
+  quotationDescription: string;
 }
 
 export const defaultCompanyProfile: CompanyProfile = {
@@ -144,7 +153,8 @@ export const defaultPDFPages: PDFPage[] = [
   { id: '3', type: 'projects', name: 'Past Projects', enabled: true, order: 2 },
   { id: '4', type: 'quotation', name: 'Quotation Details', enabled: true, order: 3 },
   { id: '5', type: 'terms', name: 'Terms & Conditions', enabled: true, order: 4 },
-  { id: '6', type: 'roi', name: 'ROI Breakdown', enabled: true, order: 5 }
+  { id: '6', type: 'roi', name: 'ROI Breakdown', enabled: true, order: 5 },
+  { id: '7', type: 'signature', name: 'Signature & Stamp', enabled: true, order: 6 }
 ];
 
 export const defaultQuotationItems: QuotationItem[] = [
@@ -258,11 +268,20 @@ export const defaultROIConfig: ROIConfig = {
   expenses: [
     { id: '1', name: 'Workers Salary', amount: 60000 },
     { id: '2', name: 'Miscellaneous Charges', amount: 40000 },
-    { id: '3', name: 'Rent', amount: 150000 },
+    { id: '3', name: 'Rent (approximately)', amount: 150000 },
   ],
   investmentAmount: 0,
   manualInvestment: false,
 };
+
+export const defaultSignatureConfig: SignatureConfig = {
+  signatoryName: '',
+  signatoryTitle: 'Authorized Representative',
+  signatoryContact: '',
+  stampImage: undefined,
+};
+
+export const defaultQuotationDescription = 'This quotation represents a general estimate for the complete padel court structure. The estimated rates may vary depending on integration and final specifications after site visit.';
 
 export const defaultTermsAndConditions: string[] = [
   'FIELD COMPLETION TIME: 45 working days',
@@ -305,5 +324,7 @@ export const createNewInvoice = (): Invoice => {
     pdfPages: JSON.parse(JSON.stringify(defaultPDFPages)),
     shareLinks: [],
     roiConfig: JSON.parse(JSON.stringify(defaultROIConfig)),
+    signatureConfig: JSON.parse(JSON.stringify(defaultSignatureConfig)),
+    quotationDescription: defaultQuotationDescription,
   };
 };

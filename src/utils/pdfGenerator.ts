@@ -1,7 +1,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import type { Invoice, CompanyProfile } from '../types/invoice';
-import { defaultCompanyProfile, defaultPDFPages, defaultROIConfig } from '../types/invoice';
+import { defaultCompanyProfile, defaultPDFPages, defaultROIConfig, defaultSignatureConfig, defaultQuotationDescription } from '../types/invoice';
 
 const QNS_GREEN_RGB = [139, 195, 74] as const;
 const TEXT_DARK = '#1a1a1a';
@@ -249,59 +249,85 @@ const drawSingleProjectPage = (doc: jsPDF, invoice: Invoice, project: Invoice['p
     y += descLines.length * 5.5 + 12;
   }
 
-  // Images - large format
+  // Images - large format with smart collage layouts for 1-5 images
   const images = project.images || [];
   if (images.length > 0) {
     const margin = 20;
-    const gap = 8;
+    const gap = 6;
     const availableWidth = pageWidth - margin * 2;
     const availableHeight = pageHeight - y - 30;
 
+    const addImageSafe = (imgData: string, x: number, imgY: number, w: number, h: number) => {
+      try {
+        doc.addImage(imgData, 'JPEG', x, imgY, w, h);
+        // Add subtle border
+        doc.setDrawColor(220, 220, 220);
+        doc.setLineWidth(0.3);
+        doc.roundedRect(x, imgY, w, h, 2, 2, 'S');
+      } catch {
+        doc.setFillColor(240, 245, 235);
+        doc.roundedRect(x, imgY, w, h, 2, 2, 'F');
+      }
+    };
+
     if (images.length === 1) {
-      // Single image - full width
-      const imgHeight = Math.min(availableHeight, 120);
-      try {
-        doc.addImage(images[0].data, 'JPEG', margin, y, availableWidth, imgHeight);
-      } catch {
-        doc.setFillColor(240, 245, 235);
-        doc.roundedRect(margin, y, availableWidth, imgHeight, 4, 4, 'F');
-      }
+      // Single image - full width, large
+      const imgHeight = Math.min(availableHeight, 130);
+      addImageSafe(images[0].data, margin, y, availableWidth, imgHeight);
+
     } else if (images.length === 2) {
-      // Two images side by side
+      // Two images side by side, equal size
       const imgWidth = (availableWidth - gap) / 2;
-      const imgHeight = Math.min(availableHeight, 100);
-      images.forEach((img, i) => {
-        const x = margin + i * (imgWidth + gap);
-        try {
-          doc.addImage(img.data, 'JPEG', x, y, imgWidth, imgHeight);
-        } catch {
-          doc.setFillColor(240, 245, 235);
-          doc.roundedRect(x, y, imgWidth, imgHeight, 4, 4, 'F');
-        }
-      });
+      const imgHeight = Math.min(availableHeight, 110);
+      addImageSafe(images[0].data, margin, y, imgWidth, imgHeight);
+      addImageSafe(images[1].data, margin + imgWidth + gap, y, imgWidth, imgHeight);
+
+    } else if (images.length === 3) {
+      // Layout: one large on left, two stacked on right
+      const leftWidth = availableWidth * 0.6;
+      const rightWidth = availableWidth - leftWidth - gap;
+      const totalHeight = Math.min(availableHeight, 120);
+      const rightHeight = (totalHeight - gap) / 2;
+
+      addImageSafe(images[0].data, margin, y, leftWidth, totalHeight);
+      addImageSafe(images[1].data, margin + leftWidth + gap, y, rightWidth, rightHeight);
+      addImageSafe(images[2].data, margin + leftWidth + gap, y + rightHeight + gap, rightWidth, rightHeight);
+
+    } else if (images.length === 4) {
+      // Layout: one large on top, three below
+      const topHeight = Math.min(availableHeight * 0.55, 70);
+      const bottomHeight = Math.min(availableHeight - topHeight - gap, 50);
+      const bottomWidth = (availableWidth - gap * 2) / 3;
+
+      addImageSafe(images[0].data, margin, y, availableWidth, topHeight);
+
+      const bottomY = y + topHeight + gap;
+      addImageSafe(images[1].data, margin, bottomY, bottomWidth, bottomHeight);
+      addImageSafe(images[2].data, margin + bottomWidth + gap, bottomY, bottomWidth, bottomHeight);
+      addImageSafe(images[3].data, margin + (bottomWidth + gap) * 2, bottomY, bottomWidth, bottomHeight);
+
     } else {
-      // Three images: one large on top, two smaller below
-      const topHeight = Math.min(availableHeight * 0.6, 80);
-      try {
-        doc.addImage(images[0].data, 'JPEG', margin, y, availableWidth, topHeight);
-      } catch {
-        doc.setFillColor(240, 245, 235);
-        doc.roundedRect(margin, y, availableWidth, topHeight, 4, 4, 'F');
-      }
+      // 5 images: Featured layout
+      // Top row: one large featured image
+      // Middle row: two medium images
+      // Bottom row: two smaller images
+      const topHeight = Math.min(availableHeight * 0.45, 60);
+      const middleHeight = Math.min(availableHeight * 0.3, 40);
+      const bottomHeight = Math.min(availableHeight - topHeight - middleHeight - gap * 2, 35);
 
-      y += topHeight + gap;
-      const bottomWidth = (availableWidth - gap) / 2;
-      const bottomHeight = Math.min(availableHeight - topHeight - gap, 55);
+      // Top - one featured image
+      addImageSafe(images[0].data, margin, y, availableWidth, topHeight);
 
-      for (let i = 1; i < Math.min(images.length, 3); i++) {
-        const x = margin + (i - 1) * (bottomWidth + gap);
-        try {
-          doc.addImage(images[i].data, 'JPEG', x, y, bottomWidth, bottomHeight);
-        } catch {
-          doc.setFillColor(240, 245, 235);
-          doc.roundedRect(x, y, bottomWidth, bottomHeight, 4, 4, 'F');
-        }
-      }
+      // Middle row - two images
+      const middleY = y + topHeight + gap;
+      const halfWidth = (availableWidth - gap) / 2;
+      addImageSafe(images[1].data, margin, middleY, halfWidth, middleHeight);
+      addImageSafe(images[2].data, margin + halfWidth + gap, middleY, halfWidth, middleHeight);
+
+      // Bottom row - two images
+      const bottomY = middleY + middleHeight + gap;
+      addImageSafe(images[3].data, margin, bottomY, halfWidth, bottomHeight);
+      addImageSafe(images[4].data, margin + halfWidth + gap, bottomY, halfWidth, bottomHeight);
     }
   }
 
@@ -359,23 +385,31 @@ const drawQuotationPage = (doc: jsPDF, invoice: Invoice): number => {
   const pageWidth = doc.internal.pageSize.width;
   let y = 50;
 
+  // Title with decorative line
   doc.setFontSize(22);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(TEXT_DARK);
   doc.text('PADEL COURTS QUOTATION', pageWidth / 2, y, { align: 'center' });
 
+  // Decorative underline
+  doc.setDrawColor(...QNS_GREEN_RGB);
+  doc.setLineWidth(1);
+  doc.line(pageWidth / 2 - 50, y + 4, pageWidth / 2 + 50, y + 4);
+
   y += 18;
 
-  // Client info bar
+  // Client info bar with gradient-like effect
   doc.setFillColor(250, 252, 248);
   doc.roundedRect(15, y, pageWidth - 30, 22, 3, 3, 'F');
+  doc.setFillColor(...QNS_GREEN_RGB);
+  doc.rect(15, y, 4, 22, 'F');
 
   doc.setFontSize(10);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(TEXT_DARK);
-  doc.text('Client:', 22, y + 9);
+  doc.text('Client:', 25, y + 9);
   doc.setFont('helvetica', 'normal');
-  doc.text(invoice.clientName || 'N/A', 42, y + 9);
+  doc.text(invoice.clientName || 'N/A', 45, y + 9);
 
   doc.setFont('helvetica', 'bold');
   doc.text('Date:', pageWidth - 62, y + 9);
@@ -383,25 +417,36 @@ const drawQuotationPage = (doc: jsPDF, invoice: Invoice): number => {
   doc.text(formatDate(invoice.date), pageWidth - 45, y + 9);
 
   doc.setFont('helvetica', 'bold');
-  doc.text('Courts:', 22, y + 17);
+  doc.text('Courts:', 25, y + 17);
   doc.setFont('helvetica', 'normal');
-  doc.text(`${invoice.numberOfCourts} × ${invoice.courtSize}`, 45, y + 17);
+  doc.text(`${invoice.numberOfCourts} × ${invoice.courtSize}`, 48, y + 17);
 
   y += 30;
 
-  // Sub total
+  // Quotation description
+  const description = invoice.quotationDescription || defaultQuotationDescription;
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'italic');
+  doc.setTextColor(TEXT_GRAY);
+  const descLines = doc.splitTextToSize(description, pageWidth - 40);
+  doc.text(descLines, 20, y);
+  y += descLines.length * 4.5 + 8;
+
+  // Sub total with prominent styling
+  doc.setFillColor(...DARK_BG);
+  doc.roundedRect(15, y - 3, pageWidth - 30, 14, 2, 2, 'F');
   doc.setFontSize(11);
   doc.setFont('helvetica', 'bold');
-  doc.setTextColor(TEXT_DARK);
+  doc.setTextColor(255, 255, 255);
   let subTotalText = `SUB TOTAL: ${formatCurrency(invoice.subTotal * invoice.numberOfCourts)} /-`;
   if (!invoice.includeTax) {
     subTotalText += ' (excluding tax';
     if (!invoice.includeCivilWork) subTotalText += ' & civil work';
     subTotalText += ')';
   }
-  doc.text(subTotalText, 20, y);
+  doc.text(subTotalText, pageWidth / 2, y + 6, { align: 'center' });
 
-  y += 12;
+  y += 18;
 
   // Table header
   const enabledItems = invoice.quotationItems.filter(item => item.enabled);
@@ -506,7 +551,13 @@ const drawTermsPage = (doc: jsPDF, invoice: Invoice, startY?: number) => {
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(TEXT_DARK);
-    doc.text('ADD-ONS:', 20, y);
+    doc.text('ADD-ONS', 20, y);
+
+    // Add "(Prices may vary)" in smaller italic text
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'italic');
+    doc.setTextColor(TEXT_GRAY);
+    doc.text('(Prices may vary)', 52, y);
 
     y += 8;
     doc.setFontSize(10);
@@ -724,6 +775,141 @@ const drawROIPage = (doc: jsPDF, invoice: Invoice) => {
   });
 };
 
+/* ============ SIGNATURE PAGE ============ */
+const drawSignaturePage = (doc: jsPDF, invoice: Invoice) => {
+  const profile = invoice.companyProfile || defaultCompanyProfile;
+  const signatureConfig = invoice.signatureConfig || defaultSignatureConfig;
+  drawHeader(doc, profile);
+
+  const pageWidth = doc.internal.pageSize.width;
+  const pageHeight = doc.internal.pageSize.height;
+  let y = 60;
+
+  // Title
+  doc.setFontSize(20);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(TEXT_DARK);
+  doc.text('AUTHORIZATION', pageWidth / 2, y, { align: 'center' });
+
+  // Decorative line
+  doc.setDrawColor(...QNS_GREEN_RGB);
+  doc.setLineWidth(1);
+  doc.line(pageWidth / 2 - 35, y + 4, pageWidth / 2 + 35, y + 4);
+
+  y += 25;
+
+  // Authorization text
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(TEXT_GRAY);
+  const authText = `This quotation is hereby presented to ${invoice.clientName || 'the client'} for the construction of ${invoice.numberOfCourts} padel court${invoice.numberOfCourts > 1 ? 's' : ''} as detailed in this document. Upon acceptance, this quotation shall serve as the basis for the agreement between both parties.`;
+  const authLines = doc.splitTextToSize(authText, pageWidth - 50);
+  doc.text(authLines, 25, y);
+
+  y += authLines.length * 6 + 30;
+
+  // Signature section
+  const boxWidth = (pageWidth - 60) / 2;
+  const boxHeight = 80;
+
+  // Company signature box
+  doc.setFillColor(250, 252, 248);
+  doc.roundedRect(20, y, boxWidth, boxHeight, 4, 4, 'F');
+  doc.setDrawColor(200, 200, 200);
+  doc.setLineWidth(0.3);
+  doc.roundedRect(20, y, boxWidth, boxHeight, 4, 4, 'S');
+
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(TEXT_DARK);
+  doc.text('For ' + (profile.companyName || 'QNS'), 20 + boxWidth / 2, y + 10, { align: 'center' });
+
+  // Auto-generate signature from first name
+  const firstName = signatureConfig.signatoryName?.split(' ')[0] || '';
+  if (firstName) {
+    // Stylized signature effect
+    doc.setFontSize(28);
+    doc.setFont('times', 'italic');
+    doc.setTextColor(...DARK_BG);
+    doc.text(firstName, 20 + boxWidth / 2, y + 38, { align: 'center' });
+
+    // Underline for signature
+    const textWidth = doc.getTextWidth(firstName);
+    doc.setDrawColor(...DARK_BG);
+    doc.setLineWidth(0.5);
+    doc.line(20 + boxWidth / 2 - textWidth / 2, y + 42, 20 + boxWidth / 2 + textWidth / 2, y + 42);
+  }
+
+  // Stamp image if provided
+  if (signatureConfig.stampImage) {
+    try {
+      doc.addImage(signatureConfig.stampImage, 'PNG', 20 + boxWidth - 35, y + 45, 30, 30);
+    } catch {
+      // Skip if image fails
+    }
+  }
+
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(TEXT_GRAY);
+  doc.text(signatureConfig.signatoryName || '_______________', 20 + boxWidth / 2, y + 58, { align: 'center' });
+  doc.setFontSize(8);
+  doc.text(signatureConfig.signatoryTitle || 'Authorized Representative', 20 + boxWidth / 2, y + 64, { align: 'center' });
+  if (signatureConfig.signatoryContact) {
+    doc.text(signatureConfig.signatoryContact, 20 + boxWidth / 2, y + 70, { align: 'center' });
+  }
+
+  // Client signature box
+  const clientBoxX = pageWidth - 20 - boxWidth;
+  doc.setFillColor(255, 255, 255);
+  doc.roundedRect(clientBoxX, y, boxWidth, boxHeight, 4, 4, 'F');
+  doc.setDrawColor(200, 200, 200);
+  doc.roundedRect(clientBoxX, y, boxWidth, boxHeight, 4, 4, 'S');
+
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(TEXT_DARK);
+  doc.text('Client Acceptance', clientBoxX + boxWidth / 2, y + 10, { align: 'center' });
+
+  // Signature line placeholder
+  doc.setDrawColor(180, 180, 180);
+  doc.setLineWidth(0.3);
+  doc.line(clientBoxX + 15, y + 45, clientBoxX + boxWidth - 15, y + 45);
+
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(TEXT_GRAY);
+  doc.text('Signature', clientBoxX + boxWidth / 2, y + 52, { align: 'center' });
+  doc.text(invoice.clientName || '_______________', clientBoxX + boxWidth / 2, y + 62, { align: 'center' });
+  doc.text('Date: _______________', clientBoxX + boxWidth / 2, y + 70, { align: 'center' });
+
+  y += boxHeight + 25;
+
+  // Date and validity - using light green fill instead of alpha
+  doc.setFillColor(230, 245, 220);
+  doc.roundedRect(20, y, pageWidth - 40, 30, 4, 4, 'F');
+  doc.setDrawColor(...QNS_GREEN_RGB);
+  doc.setLineWidth(0.5);
+  doc.roundedRect(20, y, pageWidth - 40, 30, 4, 4, 'S');
+
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(TEXT_DARK);
+  doc.text(`Quotation Date: ${formatDate(invoice.date)}`, 30, y + 12);
+  doc.text(`Valid for: 30 days from the date of issue`, 30, y + 22);
+  doc.text(`Ref: QNS-${invoice.id.substring(0, 8).toUpperCase()}`, pageWidth - 30, y + 17, { align: 'right' });
+
+  // Footer note
+  doc.setFontSize(8);
+  doc.setFont('helvetica', 'italic');
+  doc.setTextColor(TEXT_GRAY);
+  doc.text('This document is computer generated and represents an official quotation from ' + (profile.companyName || 'QNS') + '.', pageWidth / 2, pageHeight - 20, { align: 'center' });
+
+  // Bottom accent
+  doc.setFillColor(...QNS_GREEN_RGB);
+  doc.rect(0, pageHeight - 8, pageWidth, 8, 'F');
+};
+
 /* ============ MAIN GENERATOR ============ */
 const generatePDFDocument = (invoice: Invoice): jsPDF => {
   const doc = new jsPDF({
@@ -775,6 +961,9 @@ const generatePDFDocument = (invoice: Invoice): jsPDF => {
         break;
       case 'roi':
         drawROIPage(doc, invoice);
+        break;
+      case 'signature':
+        drawSignaturePage(doc, invoice);
         break;
     }
   });
