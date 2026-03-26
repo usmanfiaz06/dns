@@ -4,6 +4,6 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/dns/',
+  // base: '/dns/', // Only needed for GitHub Pages
   plugins: [react(), tailwindcss()],
 })
