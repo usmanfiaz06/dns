@@ -6,6 +6,7 @@ interface DashboardProps {
   onCreateNew: () => void;
   onEditInvoice: (invoice: Invoice) => void;
   onDuplicate: (invoice: Invoice) => void;
+  loading?: boolean;
 }
 
 function formatCurrency(amount: number): string {
@@ -26,7 +27,18 @@ function getTimeAgo(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
 }
 
-export default function Dashboard({ invoices, onCreateNew, onEditInvoice, onDuplicate }: DashboardProps) {
+export default function Dashboard({ invoices, onCreateNew, onEditInvoice, onDuplicate, loading }: DashboardProps) {
+  if (loading) {
+    return (
+      <div className="p-6 lg:p-8 flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-500">Loading invoices...</p>
+        </div>
+      </div>
+    );
+  }
+
   const totalRevenue = invoices.reduce((sum, inv) => sum + inv.subTotal * inv.numberOfCourts, 0);
   const totalViews = invoices.reduce((sum, inv) => sum + (inv.shareLinks?.[0]?.views?.length || 0), 0);
   const recentInvoices = [...invoices]

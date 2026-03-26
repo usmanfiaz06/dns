@@ -1,21 +1,39 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from 'firebase/auth';
+import {
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+  deleteDoc,
+  onSnapshot
+} from 'firebase/firestore';
+import { auth, db } from '../lib/firebase';
 import type { User, InvitedUser, CompanySettings } from '../types/auth';
 import { defaultCompanySettings } from '../types/auth';
 
 interface AuthContextType {
   currentUser: User | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
   companySettings: CompanySettings | null;
   invitedUsers: InvitedUser[];
   teamMembers: User[];
-  login: (email: string, password: string) => { success: boolean; error?: string };
-  signup: (name: string, email: string, password: string) => { success: boolean; error?: string };
-  logout: () => void;
-  updateCompanySettings: (settings: Partial<CompanySettings>) => void;
-  inviteUser: (email: string) => { success: boolean; error?: string };
-  removeInvite: (id: string) => void;
-  removeMember: (id: string) => void;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  signup: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  logout: () => Promise<void>;
+  updateCompanySettings: (settings: Partial<CompanySettings>) => Promise<void>;
+  inviteUser: (email: string) => Promise<{ success: boolean; error?: string }>;
+  removeInvite: (id: string) => Promise<void>;
+  removeMember: (id: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -26,173 +44,203 @@ export function useAuth(): AuthContextType {
   return ctx;
 }
 
-function getUsers(): User[] {
-  try {
-    return JSON.parse(localStorage.getItem('qns-users') || '[]');
-  } catch { return []; }
-}
-
-function saveUsers(users: User[]) {
-  localStorage.setItem('qns-users', JSON.stringify(users));
-}
-
-function getInvites(): InvitedUser[] {
-  try {
-    return JSON.parse(localStorage.getItem('qns-invites') || '[]');
-  } catch { return []; }
-}
-
-function saveInvites(invites: InvitedUser[]) {
-  localStorage.setItem('qns-invites', JSON.stringify(invites));
-}
-
-function getCompanySettings(companyId: string): CompanySettings | null {
-  try {
-    const all = JSON.parse(localStorage.getItem('qns-company-settings') || '{}');
-    return all[companyId] || null;
-  } catch { return null; }
-}
-
-function saveCompanySettings(settings: CompanySettings) {
-  try {
-    const all = JSON.parse(localStorage.getItem('qns-company-settings') || '{}');
-    all[settings.id] = settings;
-    localStorage.setItem('qns-company-settings', JSON.stringify(all));
-  } catch {
-    // ignore
-  }
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [currentUser, setCurrentUser] = useState<User | null>(() => {
-    try {
-      const stored = localStorage.getItem('qns-current-user');
-      return stored ? JSON.parse(stored) : null;
-    } catch { return null; }
-  });
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [companySettings, setCompanySettings] = useState<CompanySettings | null>(null);
+  const [invitedUsers, setInvitedUsers] = useState<InvitedUser[]>([]);
+  const [teamMembers, setTeamMembers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [companySettings, setCompanySettings] = useState<CompanySettings | null>(() => {
-    if (!currentUser) return null;
-    return getCompanySettings(currentUser.companyId);
-  });
+  // Listen to auth state changes
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        // Get user data from Firestore
+        const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+        if (userDoc.exists()) {
+          const userData = userDoc.data() as User;
+          setCurrentUser(userData);
 
-  const [invitedUsers, setInvitedUsers] = useState<InvitedUser[]>(() => {
-    if (!currentUser) return [];
-    return getInvites().filter(i => i.companyId === currentUser.companyId);
-  });
+          // Get company settings
+          const settingsDoc = await getDoc(doc(db, 'companies', userData.companyId));
+          if (settingsDoc.exists()) {
+            setCompanySettings(settingsDoc.data() as CompanySettings);
+          }
+        }
+      } else {
+        setCurrentUser(null);
+        setCompanySettings(null);
+        setInvitedUsers([]);
+        setTeamMembers([]);
+      }
+      setIsLoading(false);
+    });
 
-  const [teamMembers, setTeamMembers] = useState<User[]>(() => {
-    if (!currentUser) return [];
-    return getUsers().filter(u => u.companyId === currentUser.companyId && u.id !== currentUser.id);
-  });
-
-  const refreshTeam = useCallback((user: User) => {
-    setInvitedUsers(getInvites().filter(i => i.companyId === user.companyId));
-    setTeamMembers(getUsers().filter(u => u.companyId === user.companyId && u.id !== user.id));
+    return () => unsubscribe();
   }, []);
 
-  const login = useCallback((email: string, password: string) => {
-    const users = getUsers();
-    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-    if (!user) return { success: false, error: 'No account found with this email' };
-    if (user.password !== password) return { success: false, error: 'Incorrect password' };
+  // Listen to team changes when user is logged in
+  useEffect(() => {
+    if (!currentUser) return;
 
-    localStorage.setItem('qns-current-user', JSON.stringify(user));
-    setCurrentUser(user);
-    setCompanySettings(getCompanySettings(user.companyId));
-    refreshTeam(user);
+    // Listen to invites
+    const invitesQuery = query(
+      collection(db, 'invites'),
+      where('companyId', '==', currentUser.companyId)
+    );
+    const unsubInvites = onSnapshot(invitesQuery, (snapshot) => {
+      const invites = snapshot.docs.map(d => ({ id: d.id, ...d.data() }) as InvitedUser);
+      setInvitedUsers(invites);
+    });
 
-    // Mark invite as accepted
-    const invites = getInvites();
-    const invite = invites.find(i => i.email.toLowerCase() === email.toLowerCase() && i.status === 'pending');
-    if (invite) {
-      invite.status = 'accepted';
-      saveInvites(invites);
-    }
+    // Listen to team members
+    const membersQuery = query(
+      collection(db, 'users'),
+      where('companyId', '==', currentUser.companyId)
+    );
+    const unsubMembers = onSnapshot(membersQuery, (snapshot) => {
+      const members = snapshot.docs
+        .map(d => d.data() as User)
+        .filter(u => u.id !== currentUser.id);
+      setTeamMembers(members);
+    });
 
-    return { success: true };
-  }, [refreshTeam]);
-
-  const signup = useCallback((name: string, email: string, password: string) => {
-    const users = getUsers();
-    if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
-      return { success: false, error: 'An account with this email already exists' };
-    }
-
-    // Check if invited
-    const invites = getInvites();
-    const invite = invites.find(i => i.email.toLowerCase() === email.toLowerCase() && i.status === 'pending');
-
-    const companyId = invite ? invite.companyId : uuidv4();
-    const user: User = {
-      id: uuidv4(),
-      name,
-      email: email.toLowerCase(),
-      password,
-      role: invite ? 'member' : 'owner',
-      companyId,
-      createdAt: new Date().toISOString(),
+    return () => {
+      unsubInvites();
+      unsubMembers();
     };
+  }, [currentUser]);
 
-    users.push(user);
-    saveUsers(users);
+  const login = useCallback(async (email: string, password: string) => {
+    try {
+      const result = await signInWithEmailAndPassword(auth, email, password);
 
-    // If invited, mark as accepted
-    if (invite) {
-      invite.status = 'accepted';
-      saveInvites(invites);
+      // Check if user doc exists
+      const userDoc = await getDoc(doc(db, 'users', result.user.uid));
+      if (!userDoc.exists()) {
+        await signOut(auth);
+        return { success: false, error: 'User data not found. Please sign up again.' };
+      }
+
+      // Mark invite as accepted if exists
+      const invitesQuery = query(
+        collection(db, 'invites'),
+        where('email', '==', email.toLowerCase()),
+        where('status', '==', 'pending')
+      );
+      const inviteSnap = await getDocs(invitesQuery);
+      for (const inviteDoc of inviteSnap.docs) {
+        await setDoc(doc(db, 'invites', inviteDoc.id), { ...inviteDoc.data(), status: 'accepted' });
+      }
+
+      return { success: true };
+    } catch (error: any) {
+      console.error('Login error:', error);
+      if (error.code === 'auth/user-not-found') {
+        return { success: false, error: 'No account found with this email' };
+      }
+      if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+        return { success: false, error: 'Incorrect password' };
+      }
+      return { success: false, error: error.message || 'Login failed' };
     }
-
-    // If owner, create company settings
-    if (!invite) {
-      const settings: CompanySettings = {
-        ...defaultCompanySettings,
-        id: companyId,
-        ownerId: user.id,
-      };
-      saveCompanySettings(settings);
-      setCompanySettings(settings);
-    } else {
-      setCompanySettings(getCompanySettings(companyId));
-    }
-
-    localStorage.setItem('qns-current-user', JSON.stringify(user));
-    setCurrentUser(user);
-    refreshTeam(user);
-
-    return { success: true };
-  }, [refreshTeam]);
-
-  const logout = useCallback(() => {
-    localStorage.removeItem('qns-current-user');
-    setCurrentUser(null);
-    setCompanySettings(null);
-    setInvitedUsers([]);
-    setTeamMembers([]);
   }, []);
 
-  const updateCompanySettings = useCallback((partial: Partial<CompanySettings>) => {
+  const signup = useCallback(async (name: string, email: string, password: string) => {
+    try {
+      // Check if invited
+      const invitesQuery = query(
+        collection(db, 'invites'),
+        where('email', '==', email.toLowerCase()),
+        where('status', '==', 'pending')
+      );
+      const inviteSnap = await getDocs(invitesQuery);
+      const invite = inviteSnap.docs[0]?.data() as InvitedUser | undefined;
+
+      // Create Firebase auth user
+      const result = await createUserWithEmailAndPassword(auth, email, password);
+
+      const companyId = invite?.companyId || result.user.uid;
+      const user: User = {
+        id: result.user.uid,
+        name,
+        email: email.toLowerCase(),
+        role: invite ? 'member' : 'owner',
+        companyId,
+        createdAt: new Date().toISOString(),
+      };
+
+      // Save user to Firestore
+      await setDoc(doc(db, 'users', result.user.uid), user);
+
+      // If owner, create company settings
+      if (!invite) {
+        const settings: CompanySettings = {
+          ...defaultCompanySettings,
+          id: companyId,
+          ownerId: result.user.uid,
+        };
+        await setDoc(doc(db, 'companies', companyId), settings);
+      }
+
+      // Mark invite as accepted
+      if (invite && inviteSnap.docs[0]) {
+        await setDoc(doc(db, 'invites', inviteSnap.docs[0].id), {
+          ...invite,
+          status: 'accepted'
+        });
+      }
+
+      return { success: true };
+    } catch (error: any) {
+      console.error('Signup error:', error);
+      if (error.code === 'auth/email-already-in-use') {
+        return { success: false, error: 'An account with this email already exists' };
+      }
+      if (error.code === 'auth/weak-password') {
+        return { success: false, error: 'Password should be at least 6 characters' };
+      }
+      return { success: false, error: error.message || 'Signup failed' };
+    }
+  }, []);
+
+  const logout = useCallback(async () => {
+    await signOut(auth);
+  }, []);
+
+  const updateCompanySettings = useCallback(async (partial: Partial<CompanySettings>) => {
     if (!currentUser || !companySettings) return;
     const updated = { ...companySettings, ...partial };
-    saveCompanySettings(updated);
+    await setDoc(doc(db, 'companies', currentUser.companyId), updated);
     setCompanySettings(updated);
   }, [currentUser, companySettings]);
 
-  const inviteUser = useCallback((email: string) => {
+  const inviteUser = useCallback(async (email: string) => {
     if (!currentUser) return { success: false, error: 'Not logged in' };
 
-    const existing = getInvites().find(
-      i => i.email.toLowerCase() === email.toLowerCase() && i.companyId === currentUser.companyId
+    // Check if already invited
+    const existingInviteQuery = query(
+      collection(db, 'invites'),
+      where('email', '==', email.toLowerCase()),
+      where('companyId', '==', currentUser.companyId)
     );
-    if (existing) return { success: false, error: 'This email has already been invited' };
+    const existingInvite = await getDocs(existingInviteQuery);
+    if (!existingInvite.empty) {
+      return { success: false, error: 'This email has already been invited' };
+    }
 
-    const existingUser = getUsers().find(
-      u => u.email.toLowerCase() === email.toLowerCase() && u.companyId === currentUser.companyId
+    // Check if already a member
+    const existingMemberQuery = query(
+      collection(db, 'users'),
+      where('email', '==', email.toLowerCase()),
+      where('companyId', '==', currentUser.companyId)
     );
-    if (existingUser) return { success: false, error: 'This user is already a member' };
+    const existingMember = await getDocs(existingMemberQuery);
+    if (!existingMember.empty) {
+      return { success: false, error: 'This user is already a member' };
+    }
 
-    const invite: InvitedUser = {
-      id: uuidv4(),
+    const invite: Omit<InvitedUser, 'id'> = {
       email: email.toLowerCase(),
       invitedBy: currentUser.id,
       invitedAt: new Date().toISOString(),
@@ -200,32 +248,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       companyId: currentUser.companyId,
     };
 
-    const invites = getInvites();
-    invites.push(invite);
-    saveInvites(invites);
-    setInvitedUsers(invites.filter(i => i.companyId === currentUser.companyId));
+    const inviteRef = doc(collection(db, 'invites'));
+    await setDoc(inviteRef, { id: inviteRef.id, ...invite });
 
     return { success: true };
   }, [currentUser]);
 
-  const removeInvite = useCallback((id: string) => {
-    if (!currentUser) return;
-    const invites = getInvites().filter(i => i.id !== id);
-    saveInvites(invites);
-    setInvitedUsers(invites.filter(i => i.companyId === currentUser.companyId));
-  }, [currentUser]);
+  const removeInvite = useCallback(async (id: string) => {
+    await deleteDoc(doc(db, 'invites', id));
+  }, []);
 
-  const removeMember = useCallback((id: string) => {
-    if (!currentUser) return;
-    const users = getUsers().filter(u => u.id !== id);
-    saveUsers(users);
-    setTeamMembers(users.filter(u => u.companyId === currentUser.companyId && u.id !== currentUser.id));
-  }, [currentUser]);
+  const removeMember = useCallback(async (id: string) => {
+    await deleteDoc(doc(db, 'users', id));
+  }, []);
 
   return (
     <AuthContext.Provider value={{
       currentUser,
       isAuthenticated: !!currentUser,
+      isLoading,
       companySettings,
       invitedUsers,
       teamMembers,

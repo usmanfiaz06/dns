@@ -8,7 +8,7 @@ export default function UserManagement() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const handleInvite = (e: React.FormEvent) => {
+  const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess('');
@@ -23,7 +23,7 @@ export default function UserManagement() {
       return;
     }
 
-    const result = inviteUser(email);
+    const result = await inviteUser(email);
     if (result.success) {
       setSuccess(`Invite created for ${email}. They can sign up with this email to join your team.`);
       setEmail('');
