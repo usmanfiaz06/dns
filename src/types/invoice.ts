@@ -40,10 +40,26 @@ export interface CompanyProfile {
 
 export interface PDFPage {
   id: string;
-  type: 'cover' | 'intro' | 'projects' | 'quotation' | 'terms' | 'custom';
+  type: 'cover' | 'intro' | 'projects' | 'quotation' | 'terms' | 'roi' | 'custom';
   name: string;
   enabled: boolean;
   order: number;
+}
+
+export interface ROIExpense {
+  id: string;
+  name: string;
+  amount: number;
+}
+
+export interface ROIConfig {
+  enabled: boolean;
+  hourlyRate: number;
+  dailyBookingHours: number;
+  daysPerMonth: number;
+  expenses: ROIExpense[];
+  investmentAmount: number; // auto-calculated from invoice total or manual override
+  manualInvestment: boolean;
 }
 
 export interface ShareLink {
@@ -89,6 +105,7 @@ export interface Invoice {
   companyProfile: CompanyProfile;
   pdfPages: PDFPage[];
   shareLinks: ShareLink[];
+  roiConfig: ROIConfig;
 }
 
 export const defaultCompanyProfile: CompanyProfile = {
@@ -126,7 +143,8 @@ export const defaultPDFPages: PDFPage[] = [
   { id: '2', type: 'intro', name: 'Company Introduction', enabled: true, order: 1 },
   { id: '3', type: 'projects', name: 'Past Projects', enabled: true, order: 2 },
   { id: '4', type: 'quotation', name: 'Quotation Details', enabled: true, order: 3 },
-  { id: '5', type: 'terms', name: 'Terms & Conditions', enabled: true, order: 4 }
+  { id: '5', type: 'terms', name: 'Terms & Conditions', enabled: true, order: 4 },
+  { id: '6', type: 'roi', name: 'ROI Breakdown', enabled: true, order: 5 }
 ];
 
 export const defaultQuotationItems: QuotationItem[] = [
@@ -232,6 +250,20 @@ export const defaultAddOns: AddOn[] = [
   }
 ];
 
+export const defaultROIConfig: ROIConfig = {
+  enabled: true,
+  hourlyRate: 5000,
+  dailyBookingHours: 5,
+  daysPerMonth: 30,
+  expenses: [
+    { id: '1', name: 'Workers Salary', amount: 60000 },
+    { id: '2', name: 'Miscellaneous Charges', amount: 40000 },
+    { id: '3', name: 'Rent', amount: 150000 },
+  ],
+  investmentAmount: 0,
+  manualInvestment: false,
+};
+
 export const defaultTermsAndConditions: string[] = [
   'FIELD COMPLETION TIME: 45 working days',
   'Civil Work is not part of quotation.',
@@ -271,6 +303,7 @@ export const createNewInvoice = (): Invoice => {
     pastProjects: JSON.parse(JSON.stringify(defaultPastProjects)),
     companyProfile: JSON.parse(JSON.stringify(defaultCompanyProfile)),
     pdfPages: JSON.parse(JSON.stringify(defaultPDFPages)),
-    shareLinks: []
+    shareLinks: [],
+    roiConfig: JSON.parse(JSON.stringify(defaultROIConfig)),
   };
 };

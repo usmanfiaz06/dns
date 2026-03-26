@@ -12,7 +12,6 @@ import InvoiceWizard from './components/InvoiceWizard';
 import CompanySettings from './components/CompanySettings';
 import UserManagement from './components/UserManagement';
 import SharedInvoiceView from './components/SharedInvoiceView';
-import PresentationPage from './components/PresentationPage';
 import { v4 as uuidv4 } from 'uuid';
 
 function AppContent() {
@@ -167,8 +166,6 @@ function AppContent() {
           onDuplicate={handleDuplicate}
           onDelete={handleDelete}
         />
-      ) : currentRoute === 'presentation' ? (
-        <PresentationPage />
       ) : currentRoute === 'settings' ? (
         <CompanySettings />
       ) : currentRoute === 'users' ? (
